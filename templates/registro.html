@@ -1,0 +1,41 @@
+{%extends 'layout.html'%}
+
+{%block content%}
+{% import "_macros.html" as macros %}
+{% from "_macros.html" import render_field %}
+<h1>Registrar Usuario</h1>
+
+<form action="/registro" method="post" id="form">
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.nombre, class="form-control")}}
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.username, class="form-control")}}
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.password, class="form-control")}}
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.permisos, class="form-control")}}
+    </div>
+    {{render_field(form.recaptcha, class="form-control")}}
+    <input type="submit" name="btn1" id="btn1" value="registrar">
+    <input type="hidden" name="csrf_token" id="csrf" value="{{csrf_token()}}" />
+    {{ recaptcha }}
+</form>
+<p>{{mensaje}}</p>
+
+
+<script>
+
+    $(document).ready(function () {
+        $("body").bind("ajaxSend", function (elm, xhr, s) {
+            if (s.type == "POST") {
+                xhr.setRequestHeader('X-CSRF-Token', getCSRFTokenValue());
+            }
+        });
+    });
+</script>
+
+
+{%endblock%}

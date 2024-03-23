@@ -1,0 +1,28 @@
+{%extends 'layout.html'%}
+
+{%block content%}
+{% from "_macros.html" import render_field %}
+<div class="container">
+    <h4><a href="/nuevoProducto" class="btn btn-danger">regresar</a></h4>
+    <div class="row">
+        <form name="registro" action="/nuevoProducto" id="registro" method="post">
+            <div class="row control-group">
+                <div class="form-group col-xs-12 float-label-form-group">
+                    {{render_field(form.nombre, class="form-control")}}
+                </div>
+                <div class="form-group col-xs-12 float-label-form-group">
+                    {{render_field(form.precio, class="form-control")}}
+                </div>
+                    <div class="form-group col-xs-12 float-label-form-group">
+                        {{render_field(form.stock, class="form-control")}}
+                    </div>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+            <input type="submit" name="registrar" id="registrar" value="Registrar"/>
+            
+        </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
