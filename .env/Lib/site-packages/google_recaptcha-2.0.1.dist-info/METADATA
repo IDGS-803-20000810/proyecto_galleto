@@ -1,0 +1,104 @@
+Metadata-Version: 2.1
+Name: google-recaptcha
+Version: 2.0.1
+Summary: Google recaptcha helps you protect your web form by using google's latest recaptcha (Completely Automated Public Turing test to tell Computers and Humans Apart) technology.
+Home-page: https://github.com/jpraychev/google-recaptcha
+License: MIT
+Keywords: recaptcha,google recaptcha
+Author: Jordan Raychev
+Author-email: jpraychev@gmail.com
+Maintainer: Jordan Raychev
+Maintainer-email: jpraychev@gmail.com
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: Flask (>=2.2.2,<3.0.0)
+Requires-Dist: requests (>=2.28.1,<3.0.0)
+Project-URL: Repository, https://github.com/jpraychev/google-recaptcha
+Description-Content-Type: text/markdown
+
+# Standalone Google Recaptcha for Python
+Google recaptcha helps you protect your web form by using google's latest recaptcha 
+(Completely Automated Public Turing test to tell Computers and Humans Apart) technology.
+
+[![PyPi](https://github.com/jpraychev/google-recaptcha/actions/workflows/python-publish.yml/badge.svg)](https://github.com/jpraychev/google-recaptcha/actions/workflows/python-publish.yml)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/google-recaptcha.svg)](https://pypistats.org/packages/google-recaptcha)
+
+# Documentation
+
+# Installation
+```
+pip install google-recaptcha
+```
+
+# Introduction
+Current version of the library works by placing the {{ recaptcha }} object in the form you want to protect. It searches automatically for the form that the object is placed in.
+
+From version 2.0.0, you can use the "Checkbox" version of Google's recaptcha. By default, the library is using v3, so if you want to use v2 you have to explicitly set it when initializing the ReCaptcha object (See below).
+
+Site's and secret's keys can be either passed to the object in your views file or export them as environment variables respectively RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY.
+
+```
+# With environment variables
+
+from google_recaptcha import ReCaptcha
+app = Flask(__name__)
+recaptcha = ReCaptcha(app) # Uses version 3 by default
+recaptcha = ReCaptcha(app, version=3) # Explicitly set version 3 (same as above, just for brevity)
+recaptcha = ReCaptcha(app, version=2) # Excplicitly set version 2
+
+@app.route("/contact/", methods=["GET", "POST"])
+def home():
+
+    if recaptcha.verify():
+        print('Recaptcha has successded.')
+    else:
+        print('Recaptcha has failed.')
+```
+
+```
+# Without environment variables
+from google_recaptcha import ReCaptcha
+app = Flask(__name__)
+recaptcha = ReCaptcha(
+    app=app,
+    site_key="your-site-key",
+    secret_key="your-secret-key"
+)
+
+@app.route("/contact/", methods=["GET", "POST"])
+def home():
+
+    if recaptcha.verify():
+        print('Recaptcha has successded.')
+    else:
+        print('Recaptcha has failed.')
+```
+In your HTML template file:
+```
+<form id="contact-form" method="post" class="control-form">
+    <div class="row">
+        <div class="col-xl-6">
+            <input type="text" name="name" placeholder="Name" required="" id="id_name">
+        </div>
+        <div class="col-xl-6">
+            <input type="text" name="email" placeholder="Email" required="" id="id_email">
+        </div>
+        <div class="col-xl-12">
+            <input type="text" name="subject" placeholder="Subject" required="" id="id_subject">
+        </div>
+        <div class="col-xl-12">
+            <textarea name="message" cols="40" rows="10" placeholder="Message" required="" id="id_message"></textarea>
+        </div>
+        <div class="col-xl-12">
+            <button id="form-btn" type="submit" class="btn btn-block btn-primary">Send now</button>
+        </div>
+    </div>
+    {{ recaptcha }}
+</form>
+```

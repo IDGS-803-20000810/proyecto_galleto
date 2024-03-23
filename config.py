@@ -11,5 +11,5 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     DEBUG=True
-    SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/seguridadInformatica'
+    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/seguridadInformatica'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
