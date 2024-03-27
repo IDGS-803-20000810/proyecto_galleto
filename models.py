@@ -18,6 +18,12 @@ class Productos(db.Model):
     nombre=db.Column(db.String(50))
     precio=db.Column(db.Double)
     stock=db.Column(db.Integer)
+    
+class Proveedor(db.Model):
+    _tablename_='proveedores'
+    id=db.Column(db.Integer,primary_key=True)
+    nombre=db.Column(db.String(255))
+    direccion=db.Column(db.String(255))
+    telefono=db.Column(db.String(25))
 
-   
 class Users(UserMixin, Usuarios): ...

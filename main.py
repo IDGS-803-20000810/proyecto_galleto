@@ -1,17 +1,15 @@
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_cors import CORS, cross_origin
-import time
 from flask_wtf.csrf import CSRFProtect
-import forms
 from io import open
 from google_recaptcha import ReCaptcha
-import bcrypt
-
+from proveedores import proveedores
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-
 from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
-
+import forms
+import bcrypt
+import time
 
 
 
@@ -44,6 +42,10 @@ principals = Principal(app)
 
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
+
+
+#Aqui vamos a registrar blueprints
+app.register_blueprint(proveedores)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -167,11 +169,12 @@ def registro():
         return redirect("/login")
     return render_template("registro.html",form=form,mensaje=mensaje)
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = forms.LoginForm(request.form)
     res = ""
+    print("app.url_map")
+    print(app.url_map)
     if request.method == "POST":
         data = request.get_json()
         res = loginCompare(data["user"], data["password"])
