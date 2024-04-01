@@ -7,45 +7,58 @@ from google_recaptcha import ReCaptcha
 from proveedores import proveedores
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_babelex import Babel
+
 import forms
 import bcrypt
 import time
+import secrets
 
-
+from models import db
+from models import Usuarios, Productos, Users, Proveedor
+from config import DevelopmentConfig
 
 app = Flask(__name__)
-from config import DevelopmentConfig
 app.config.from_object(DevelopmentConfig)
+
 csrf=CSRFProtect()
-import secrets
+
 cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
+
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 # load the extension
 principals = Principal(app)
 
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
-
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 secretkey=app.config['SECRET_KEY']
 
-
-
-from models import db
-from models import Usuarios, Productos, Users
-
 # load the extension
 principals = Principal(app)
-
 
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
 
-
 #Aqui vamos a registrar blueprints
 app.register_blueprint(proveedores)
+
+#Flask admin
+admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')
+admin.add_view(ModelView(Proveedor, db.session))
+#Fin flask admin
+
+#Iniciar traduccion
+babel = Babel(app)
+
+@babel.localeselector
+def get_locale():
+        return 'es'
 
 @app.errorhandler(404)
 def page_not_found(e):

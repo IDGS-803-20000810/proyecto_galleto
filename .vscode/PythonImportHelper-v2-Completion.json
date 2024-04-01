@@ -1,0 +1,1075 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "create_engine",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "urllib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "urllib",
+        "description": "urllib",
+        "detail": "urllib",
+        "documentation": {}
+    },
+    {
+        "label": "Form",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "StringField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "SelectField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "RadioField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "EmailField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "IntegerField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "PasswordField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "DecimalField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "validators",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "Form",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "StringField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "SelectField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "RadioField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "EmailField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "IntegerField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "PasswordField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "DecimalField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "validators",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "RecaptchaField",
+        "importPath": "flask_wtf.recaptcha",
+        "description": "flask_wtf.recaptcha",
+        "isExtraImport": true,
+        "detail": "flask_wtf.recaptcha",
+        "documentation": {}
+    },
+    {
+        "label": "RecaptchaField",
+        "importPath": "flask_wtf.recaptcha",
+        "description": "flask_wtf.recaptcha",
+        "isExtraImport": true,
+        "detail": "flask_wtf.recaptcha",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Response",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "g",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Response",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "g",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "LoginManager",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "UserMixin",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "logout_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "LoginManager",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "UserMixin",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "logout_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "UserMixin",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "CORS",
+        "importPath": "flask_cors",
+        "description": "flask_cors",
+        "isExtraImport": true,
+        "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "cross_origin",
+        "importPath": "flask_cors",
+        "description": "flask_cors",
+        "isExtraImport": true,
+        "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "CSRFProtect",
+        "importPath": "flask_wtf.csrf",
+        "description": "flask_wtf.csrf",
+        "isExtraImport": true,
+        "detail": "flask_wtf.csrf",
+        "documentation": {}
+    },
+    {
+        "label": "open",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "ReCaptcha",
+        "importPath": "google_recaptcha",
+        "description": "google_recaptcha",
+        "isExtraImport": true,
+        "detail": "google_recaptcha",
+        "documentation": {}
+    },
+    {
+        "label": "proveedores",
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "isExtraImport": true,
+        "detail": "proveedores",
+        "documentation": {}
+    },
+    {
+        "label": "Principal",
+        "importPath": "flask_principal",
+        "description": "flask_principal",
+        "isExtraImport": true,
+        "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "identity_loaded",
+        "importPath": "flask_principal",
+        "description": "flask_principal",
+        "isExtraImport": true,
+        "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "UserNeed",
+        "importPath": "flask_principal",
+        "description": "flask_principal",
+        "isExtraImport": true,
+        "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "RoleNeed",
+        "importPath": "flask_principal",
+        "description": "flask_principal",
+        "isExtraImport": true,
+        "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "Permission",
+        "importPath": "flask_principal",
+        "description": "flask_principal",
+        "isExtraImport": true,
+        "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "Admin",
+        "importPath": "flask_admin",
+        "description": "flask_admin",
+        "isExtraImport": true,
+        "detail": "flask_admin",
+        "documentation": {}
+    },
+    {
+        "label": "ModelView",
+        "importPath": "flask_admin.contrib.sqla",
+        "description": "flask_admin.contrib.sqla",
+        "isExtraImport": true,
+        "detail": "flask_admin.contrib.sqla",
+        "documentation": {}
+    },
+    {
+        "label": "Babel",
+        "importPath": "flask_babelex",
+        "description": "flask_babelex",
+        "isExtraImport": true,
+        "detail": "flask_babelex",
+        "documentation": {}
+    },
+    {
+        "label": "forms",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "forms",
+        "description": "forms",
+        "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bcrypt",
+        "description": "bcrypt",
+        "detail": "bcrypt",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "secrets",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "secrets",
+        "description": "secrets",
+        "detail": "secrets",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Usuarios",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Productos",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Users",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Proveedor",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Proveedor",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "DevelopmentConfig",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "SQLAlchemy",
+        "importPath": "flask_sqlalchemy",
+        "description": "flask_sqlalchemy",
+        "isExtraImport": true,
+        "detail": "flask_sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "datetime",
+        "description": "datetime",
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "TemplateNotFound",
+        "importPath": "jinja2",
+        "description": "jinja2",
+        "isExtraImport": true,
+        "detail": "jinja2",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorForm",
+        "importPath": "proveedorForm",
+        "description": "proveedorForm",
+        "isExtraImport": true,
+        "detail": "proveedorForm",
+        "documentation": {}
+    },
+    {
+        "label": "Config",
+        "kind": 6,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "class Config(object):\n    SECRET_KEY='Clave_Nueva'\n    SESSION_COOKIE_SECURE=False\n    RECAPTCHA_PUBLIC_KEY = \"6LdoUpQpAAAAAHMJhflBg6gi6L04IfBw82xK5V5_\"\n    RECAPTCHA_PRIVATE_KEY= \"6LdoUpQpAAAAADCpDA8zxCWCF3OsGz3PG-SsoKIe\"\nclass DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "DevelopmentConfig",
+        "kind": 6,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "class DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "LoginForm",
+        "kind": 6,
+        "importPath": "forms",
+        "description": "forms",
+        "peekOfCode": "class LoginForm(Form):\n    username = StringField('usuario', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=20, message='ingresa un usuario valido')\n    ])\n    password = PasswordField('contraseña',[\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=20, message='ingresa una contraseña valida')\n    ])\n    recaptcha = RecaptchaField()",
+        "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "RegistroForm",
+        "kind": 6,
+        "importPath": "forms",
+        "description": "forms",
+        "peekOfCode": "class RegistroForm(Form):\n    nombre = StringField('nombre', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=50, message='ingresa un nombre válido')\n    ])\n    username = StringField('usuario', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=20, message='ingresa un usuario valido')\n    ])\n    password = PasswordField('contraseña',[",
+        "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "ProductoForm",
+        "kind": 6,
+        "importPath": "forms",
+        "description": "forms",
+        "peekOfCode": "class ProductoForm(Form):\n    nombre = StringField('nombre', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=20, message='ingresa un usuario valido')\n    ])\n    precio = DecimalField('precio', [\n        validators.DataRequired(message='el campo es requerido'),\n       validators.number_range(min=0.1, max=99999999, message='valor no valido')\n    ])\n    stock =  IntegerField('stock', [",
+        "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "get_locale",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):\n    return Users.query.get(id)\n@app.route(\"/\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "page_not_found",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):\n    return Users.query.get(id)\n@app.route(\"/\")\n@login_required\ndef index():\n    return render_template(\"index.html\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "loader_user",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def loader_user(id):\n    return Users.query.get(id)\n@app.route(\"/\")\n@login_required\ndef index():\n    return render_template(\"index.html\")\n@login_manager.unauthorized_handler\ndef unauthorized():\n    return render_template('401.html'),401\n@app.errorhandler(403)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def index():\n    return render_template(\"index.html\")\n@login_manager.unauthorized_handler\ndef unauthorized():\n    return render_template('401.html'),401\n@app.errorhandler(403)\ndef page_not_found(e):\n    session['redirected_from'] = request.url\n    return render_template('403.html'),403\n@app.before_request",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "unauthorized",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def unauthorized():\n    return render_template('401.html'),401\n@app.errorhandler(403)\ndef page_not_found(e):\n    session['redirected_from'] = request.url\n    return render_template('403.html'),403\n@app.before_request\ndef before_request():\n    verificar_inactividad()\n@app.after_request",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "page_not_found",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def page_not_found(e):\n    session['redirected_from'] = request.url\n    return render_template('403.html'),403\n@app.before_request\ndef before_request():\n    verificar_inactividad()\n@app.after_request\ndef after_request(response):\n    return response\n@identity_loaded.connect_via(app)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "before_request",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def before_request():\n    verificar_inactividad()\n@app.after_request\ndef after_request(response):\n    return response\n@identity_loaded.connect_via(app)\ndef on_identity_loaded(sender, identity):\n    # Set the identity user object\n    identity.user = current_user\n    # Add the UserNeed to the identity",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "after_request",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def after_request(response):\n    return response\n@identity_loaded.connect_via(app)\ndef on_identity_loaded(sender, identity):\n    # Set the identity user object\n    identity.user = current_user\n    # Add the UserNeed to the identity\n    if hasattr(current_user, 'id'):\n        identity.provides.add(UserNeed(current_user.id))\n    # Assuming the User model has a list of roles, update the",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "on_identity_loaded",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def on_identity_loaded(sender, identity):\n    # Set the identity user object\n    identity.user = current_user\n    # Add the UserNeed to the identity\n    if hasattr(current_user, 'id'):\n        identity.provides.add(UserNeed(current_user.id))\n    # Assuming the User model has a list of roles, update the\n    # identity with the roles that the user provides\n    if hasattr(current_user, 'permisos'):\n        if current_user.permisos == 1:",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "verificar_inactividad",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def verificar_inactividad():\n    tiempo_actual = time.time()\n    tiempo_inactivo = tiempo_actual - session.get('tiempo', tiempo_actual)\n    umbral_inactividad_segundos = 60\n    if tiempo_inactivo > umbral_inactividad_segundos:\n        session.clear() \n        session.modified = True\n        form=forms.LoginForm()\n        return render_template(\"login.html\", form=form) \n    session['tiempo'] = tiempo_actual",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "password_check",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def password_check(passwd):\n    SpecialSym =['$', '@', '#', '%']\n    val = True\n    mensaje = \"\"\n    if len(passwd) < 9:\n        mensaje=\"la contraseña debe de tener una logitud minima de 9\"\n        val = False\n    if not any(char.isdigit() for char in passwd):\n        mensaje = \"La contraseña debe de tener al menos un numero\"\n        val = False",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "registro",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def registro():\n    mensaje = \"\"\n    form = forms.RegistroForm(request.form)\n    print(form.nombre.data)\n    if request.method == \"POST\" and form.validate() :\n        print(form.nombre.data)\n        nombre = sanitizar(form.nombre.data)\n        username=form.username.data\n        password=form.password.data\n        username = sanitizar(username)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def login():\n    form = forms.LoginForm(request.form)\n    res = \"\"\n    print(\"app.url_map\")\n    print(app.url_map)\n    if request.method == \"POST\":\n        data = request.get_json()\n        res = loginCompare(data[\"user\"], data[\"password\"])\n        if res == \"wronguser\":\n            return jsonify(fail=1)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "loginCompare",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def loginCompare(username, password):\n    username = sanitizar(username)\n    password = sanitizar(password)\n    user = Users.query.filter_by(\n                username=username).first()\n    if \"<\" in user or \">\" in user :\n        return \"usuario con caracteres no validos '<', '>'\"\n    if user is not None:\n        # if user.password == password:\n        if bcrypt.checkpw(password=password.encode('utf-8'),hashed_password=user.password.encode('utf-8')):",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "sanitizar",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def sanitizar(palabra):\n    palabra=str(palabra)\n    if \";\" in palabra or \"delete\" in palabra or \"update\" in palabra or \"select\" in palabra or \"'\" in palabra or '\"' in palabra:\n        palabra = palabra.replace(';', '')\n        palabra = palabra.replace('delete', '')\n        palabra = palabra.replace('update', '')\n        palabra = palabra.replace('select', '')\n        palabra = palabra.replace(\"'\", '')\n        palabra = palabra.replace('\"', '')\n    return palabra",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "logout",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def logout():\n    logout_user()\n    return redirect(url_for(\"home\"))\n@app.route(\"/productos\", methods = [\"GET\",\"POST\"])\n@login_required\ndef productos():\n    productos=Productos.query.all()\n    return render_template(\"productos.html\", empleados=productos)\n@app.route(\"/nuevoProducto\", methods = [\"GET\",\"POST\"])\n@login_required",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "productos",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def productos():\n    productos=Productos.query.all()\n    return render_template(\"productos.html\", empleados=productos)\n@app.route(\"/nuevoProducto\", methods = [\"GET\",\"POST\"])\n@login_required\ndef nuevoProducto():\n    prod_form = forms.ProductoForm(request.form)\n    if request.method == \"POST\" and prod_form.validate() :\n        prod=Productos(nombre=prod_form.nombre.data, precio=prod_form.precio.data, stock=prod_form.stock.data)\n        db.session.add(prod)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "nuevoProducto",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def nuevoProducto():\n    prod_form = forms.ProductoForm(request.form)\n    if request.method == \"POST\" and prod_form.validate() :\n        prod=Productos(nombre=prod_form.nombre.data, precio=prod_form.precio.data, stock=prod_form.stock.data)\n        db.session.add(prod)\n        db.session.commit()\n        return redirect(\"productos\")\n    return render_template(\"nuevoProducto.html\",form=prod_form)\n@app.route(\"/eliminarProducto\", methods=[\"GET\", \"POST\"])\n@admin_permission.require(http_exception=403)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "eliminarProducto",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def eliminarProducto():\n    form=forms.ProductoForm(request.form)\n    if request.method=='GET':\n        id=sanitizar(request.args.get(\"id\"))\n        name=db.session.query(Productos).filter(Productos.id==id).first().nombre\n        form.id.data = id\n        form.nombre.data = name\n    if request.method == 'POST':\n        id=sanitizar(form.id.data)\n        prod=Productos.query.get(id)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "modificarProducto",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def modificarProducto():\n    form=forms.ProductoForm(request.form)\n    if request.method=='GET':\n        id=sanitizar(request.args.get(\"id\"))\n        prod=db.session.query(Productos).filter(Productos.id==id).first()\n        form.id.data = request.args.get(\"id\")\n        form.nombre.data=prod.nombre\n        form.precio.data = prod.precio\n        form.stock.data=prod.stock\n    if request.method == 'POST':",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "app = Flask(__name__)\napp.config.from_object(DevelopmentConfig)\ncsrf=CSRFProtect()\ncors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "cors",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "cors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "login_manager",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "login_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "principals",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "admin_permission",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "app.config['SECRET_KEY']",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "app.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "principals",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "admin_permission",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "admin",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "babel",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "babel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "Usuarios",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Usuarios(db.Model):\n    _tablename_='usuarios'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(50))\n    username=db.Column(db.String(50))\n    password=db.Column(db.String(250))\n    permisos=db.Column(db.Integer)\nclass Productos(db.Model):\n    _tablename_='productos'\n    id=db.Column(db.Integer,primary_key=True)",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Productos",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Productos(db.Model):\n    _tablename_='productos'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(50))\n    precio=db.Column(db.Double)\n    stock=db.Column(db.Integer)\nclass Proveedor(db.Model):\n    _tablename_='proveedores'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(255))",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Proveedor",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Proveedor(db.Model):\n    _tablename_='proveedores'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(255))\n    direccion=db.Column(db.String(255))\n    telefono=db.Column(db.String(25))\nclass Users(UserMixin, Usuarios): ...",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Users",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Users(UserMixin, Usuarios): ...",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "showProveedores",
+        "kind": 2,
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "peekOfCode": "def showProveedores():\n    form = ProveedorForm(request.form)\n    prov = db.session.query(Proveedor).all()\n    return render_template('proveedores.html',form=form, proveedores=prov)",
+        "detail": "proveedores",
+        "documentation": {}
+    },
+    {
+        "label": "proveedores",
+        "kind": 5,
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "peekOfCode": "proveedores = Blueprint('proveedores', __name__, template_folder = 'templates')\n@proveedores.route('/proveedores')\ndef showProveedores():\n    form = ProveedorForm(request.form)\n    prov = db.session.query(Proveedor).all()\n    return render_template('proveedores.html',form=form, proveedores=prov)",
+        "detail": "proveedores",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorForm",
+        "kind": 6,
+        "importPath": "proveedorForm",
+        "description": "proveedorForm",
+        "peekOfCode": "class ProveedorForm(Form):\n    nombre = StringField('Nombre', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=1, max=100, message='ingresa un usuario valido')\n    ])\n    direccion = StringField('Direccion',[\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=1, max=100, message='ingresa una contraseña valida')\n    ])\n    telefono = StringField('contraseña',[",
+        "detail": "proveedorForm",
+        "documentation": {}
+    }
+]
