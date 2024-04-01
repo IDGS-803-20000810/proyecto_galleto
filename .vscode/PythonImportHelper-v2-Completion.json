@@ -572,14 +572,6 @@
         "documentation": {}
     },
     {
-        "label": "Admin",
-        "importPath": "flask_admin",
-        "description": "flask_admin",
-        "isExtraImport": true,
-        "detail": "flask_admin",
-        "documentation": {}
-    },
-    {
         "label": "ModelView",
         "importPath": "flask_admin.contrib.sqla",
         "description": "flask_admin.contrib.sqla",
@@ -593,38 +585,6 @@
         "description": "flask_admin.contrib.sqla",
         "isExtraImport": true,
         "detail": "flask_admin.contrib.sqla",
-        "documentation": {}
-    },
-    {
-        "label": "ModelView",
-        "importPath": "flask_admin.contrib.sqla",
-        "description": "flask_admin.contrib.sqla",
-        "isExtraImport": true,
-        "detail": "flask_admin.contrib.sqla",
-        "documentation": {}
-    },
-    {
-        "label": "open",
-        "importPath": "io",
-        "description": "io",
-        "isExtraImport": true,
-        "detail": "io",
-        "documentation": {}
-    },
-    {
-        "label": "ReCaptcha",
-        "importPath": "google_recaptcha",
-        "description": "google_recaptcha",
-        "isExtraImport": true,
-        "detail": "google_recaptcha",
-        "documentation": {}
-    },
-    {
-        "label": "proveedores",
-        "importPath": "proveedores",
-        "description": "proveedores",
-        "isExtraImport": true,
-        "detail": "proveedores",
         "documentation": {}
     },
     {
@@ -835,6 +795,14 @@
         "description": "views",
         "isExtraImport": true,
         "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "DevelopmentConfig",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
         "documentation": {}
     },
     {
@@ -1104,7 +1072,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = Flask(__name__)\napp.config.from_object(DevelopmentConfig)\ncsrf=CSRFProtect()\ncors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))",
+        "peekOfCode": "app = Flask(__name__)\napp.config.from_object(DevelopmentConfig)\ncsrf=CSRFProtect()\ncors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')",
         "detail": "main",
         "documentation": {}
     },
@@ -1113,7 +1081,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "cors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\nadmin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))",
+        "peekOfCode": "cors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.",
         "detail": "main",
         "documentation": {}
     },
@@ -1122,7 +1090,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "login_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\nadmin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))",
+        "peekOfCode": "login_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))",
         "detail": "main",
         "documentation": {}
     },
@@ -1131,16 +1099,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\nadmin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))",
-        "detail": "main",
-        "documentation": {}
-    },
-    {
-        "label": "admin_permission",
-        "kind": 5,
-        "importPath": "main",
-        "description": "main",
-        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\nadmin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
+        "peekOfCode": "principals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))",
         "detail": "main",
         "documentation": {}
     },
@@ -1149,7 +1108,16 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension",
+        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "admin_permission",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
         "detail": "main",
         "documentation": {}
     },
@@ -1158,7 +1126,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')",
+        "peekOfCode": "app.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# app.register_blueprint(proveedores)\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector",
         "detail": "main",
         "documentation": {}
     },
@@ -1167,7 +1135,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion",
+        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# app.register_blueprint(proveedores)\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)",
         "detail": "main",
         "documentation": {}
     },
@@ -1176,16 +1144,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector",
-        "detail": "main",
-        "documentation": {}
-    },
-    {
-        "label": "admin",
-        "kind": 5,
-        "importPath": "main",
-        "description": "main",
-        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# app.register_blueprint(proveedores)\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404",
         "detail": "main",
         "documentation": {}
     },
