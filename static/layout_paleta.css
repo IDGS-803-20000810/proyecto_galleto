@@ -1,0 +1,139 @@
+body {
+	color: #c3195d;
+	/* background-color: #ffebeb;  */
+	background-color: #fffafa; 
+}
+
+#content {
+	background-color: #fffafa;
+	/* background: white; */
+	box-shadow: 0px 0px 40px -1px rgb(255, 232, 232);
+	border-radius: 15px;
+	padding: 15px 20px 30px 35px;
+}
+
+#content .row {
+	margin-left: 0px;
+}
+
+#brand {
+	display: inline;
+	font-weight: 600;
+	margin: 15px 20px 30px 35px;
+}
+
+.letras-logo{
+	font-size: 20px;
+	/* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+	font-weight: 600;
+}
+
+.search-form {
+	margin: 0 5px;
+}
+
+.search-form form {
+	margin: 0;
+}
+
+.btn,
+textarea,
+input[type],
+button,
+.model-list {
+	border-radius: 0;
+}
+
+.model-list {
+	border-radius: 0;
+}
+
+.nav-pills li>a {
+	border-radius: 0;
+}
+
+.nav-pills li>a {
+	border-radius: 0;
+}
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+	background-color: white;
+	padding: 10px;
+	font-weight: bold;
+	color: #c3195d;
+	box-shadow: 0px 16px 48px 0px rgba(0, 0, 0, 0.176);
+	border-radius: 10;
+}
+
+a {
+	color: #ff347f;
+}
+
+a:hover {
+	color: #ff347f;
+}
+
+.btn {
+	border-radius: 15px !important;
+	border: 2px solid;
+
+}
+
+.btn-primary {
+	color: #ff347f;
+	background-color: white;
+	border-color: #ff347f;
+	transition: all 0.2s ease-out;
+
+	&:hover {
+		/* background: #0c1824; */
+		/* color: white; */
+		color: #ff347f;
+		background-color: white;
+		border-color: #ff347f;
+		transform: translateY(-2px);
+		box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.3);
+		opacity: 1;
+		font-weight: 700;
+	}
+}
+
+.btn-danger {
+	color:#ff5757;
+	background-color: #ffff;
+	border-color: #ff5757;
+	transition: all 0.2s ease-out;
+
+	&:hover {
+		/* background: #0c1824; */
+		/* color: white; */
+		color: #ff5757;
+		background-color: #ffff;
+		border-color: #ff5757;
+		transform: translateY(-2px);
+		box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.3);
+		opacity: 1;
+		font-weight: 700;
+	}
+}
+.btn-secondary {
+	color:#003B4A;
+	background-color: #ffff;
+	border-color: #003B4A;
+	transition: all 0.2s ease-out;
+
+	&:hover {
+		/* background: #0c1824; */
+		/* color: white; */
+		color: #003B4A;
+		background-color: #ffff;
+		border-color: #003B4A;
+		transform: translateY(-2px);
+		box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.3);
+		opacity: 1;
+		font-weight: 700;
+	}
+}
+

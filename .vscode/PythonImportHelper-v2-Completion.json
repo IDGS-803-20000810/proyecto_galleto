@@ -114,6 +114,14 @@
         "documentation": {}
     },
     {
+        "label": "Form",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
         "label": "StringField",
         "importPath": "wtforms",
         "description": "wtforms",
@@ -167,6 +175,78 @@
         "description": "wtforms",
         "isExtraImport": true,
         "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "validators",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "StringField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "SelectField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "RadioField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "EmailField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "IntegerField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "PasswordField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "DecimalField",
+        "importPath": "wtforms",
+        "description": "wtforms",
+        "isExtraImport": true,
+        "detail": "wtforms",
+        "documentation": {}
+    },
+    {
+        "label": "RecaptchaField",
+        "importPath": "flask_wtf.recaptcha",
+        "description": "flask_wtf.recaptcha",
+        "isExtraImport": true,
+        "detail": "flask_wtf.recaptcha",
         "documentation": {}
     },
     {
@@ -251,6 +331,94 @@
     },
     {
         "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Response",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "g",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -370,15 +538,6 @@
         "documentation": {}
     },
     {
-        "label": "time",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "time",
-        "description": "time",
-        "detail": "time",
-        "documentation": {}
-    },
-    {
         "label": "CSRFProtect",
         "importPath": "flask_wtf.csrf",
         "description": "flask_wtf.csrf",
@@ -413,6 +572,14 @@
         "documentation": {}
     },
     {
+        "label": "Admin",
+        "importPath": "flask_admin",
+        "description": "flask_admin",
+        "isExtraImport": true,
+        "detail": "flask_admin",
+        "documentation": {}
+    },
+    {
         "label": "ModelView",
         "importPath": "flask_admin.contrib.sqla",
         "description": "flask_admin.contrib.sqla",
@@ -426,6 +593,38 @@
         "description": "flask_admin.contrib.sqla",
         "isExtraImport": true,
         "detail": "flask_admin.contrib.sqla",
+        "documentation": {}
+    },
+    {
+        "label": "ModelView",
+        "importPath": "flask_admin.contrib.sqla",
+        "description": "flask_admin.contrib.sqla",
+        "isExtraImport": true,
+        "detail": "flask_admin.contrib.sqla",
+        "documentation": {}
+    },
+    {
+        "label": "open",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "ReCaptcha",
+        "importPath": "google_recaptcha",
+        "description": "google_recaptcha",
+        "isExtraImport": true,
+        "detail": "google_recaptcha",
+        "documentation": {}
+    },
+    {
+        "label": "proveedores",
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "isExtraImport": true,
+        "detail": "proveedores",
         "documentation": {}
     },
     {
@@ -466,6 +665,32 @@
         "description": "flask_principal",
         "isExtraImport": true,
         "detail": "flask_principal",
+        "documentation": {}
+    },
+    {
+        "label": "Babel",
+        "importPath": "flask_babelex",
+        "description": "flask_babelex",
+        "isExtraImport": true,
+        "detail": "flask_babelex",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "secrets",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "secrets",
+        "description": "secrets",
+        "detail": "secrets",
         "documentation": {}
     },
     {
@@ -549,6 +774,22 @@
         "documentation": {}
     },
     {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Proveedor",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
         "label": "Insumo",
         "importPath": "models",
         "description": "models",
@@ -594,23 +835,6 @@
         "description": "views",
         "isExtraImport": true,
         "detail": "views",
-        "documentation": {}
-    },
-    {
-        "label": "DevelopmentConfig",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "secrets",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "secrets",
-        "description": "secrets",
-        "detail": "secrets",
         "documentation": {}
     },
     {
@@ -671,6 +895,22 @@
         "documentation": {}
     },
     {
+        "label": "TemplateNotFound",
+        "importPath": "jinja2",
+        "description": "jinja2",
+        "isExtraImport": true,
+        "detail": "jinja2",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorForm",
+        "importPath": "proveedorForm",
+        "description": "proveedorForm",
+        "isExtraImport": true,
+        "detail": "proveedorForm",
+        "documentation": {}
+    },
+    {
         "label": "Config",
         "kind": 6,
         "importPath": "config",
@@ -713,6 +953,15 @@
         "description": "forms",
         "peekOfCode": "class ProductoForm(Form):\n    nombre = StringField('nombre', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=3, max=20, message='ingresa un usuario valido')\n    ])\n    precio = DecimalField('precio', [\n        validators.DataRequired(message='el campo es requerido'),\n       validators.number_range(min=0.1, max=99999999, message='valor no valido')\n    ])\n    stock =  IntegerField('stock', [",
         "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "get_locale",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):\n    return Users.query.get(id)\n@app.route(\"/\")",
+        "detail": "main",
         "documentation": {}
     },
     {
@@ -819,7 +1068,7 @@
         "kind": 2,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "def login():\n    form = forms.LoginForm(request.form)\n    res = \"\"\n    if request.method == \"POST\":\n        data = request.get_json()\n        res = loginCompare(data[\"user\"], data[\"password\"])\n        if res == \"wronguser\":\n            return jsonify(fail=1)\n        elif res == \"wrongpass\":\n            return jsonify(fail=2)",
+        "peekOfCode": "def login():\n    form = forms.LoginForm(request.form)\n    res = \"\"\n    print(\"app.url_map\")\n    print(app.url_map)\n    if request.method == \"POST\":\n        data = request.get_json()\n        res = loginCompare(data[\"user\"], data[\"password\"])\n        if res == \"wronguser\":\n            return jsonify(fail=1)",
         "detail": "main",
         "documentation": {}
     },
@@ -855,7 +1104,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = Flask(__name__)\nfrom config import DevelopmentConfig\napp.config.from_object(DevelopmentConfig)\ncsrf=CSRFProtect()\nimport secrets\ncors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)",
+        "peekOfCode": "app = Flask(__name__)\napp.config.from_object(DevelopmentConfig)\ncsrf=CSRFProtect()\ncors = CORS(app, resources={r\"/*\": {\"origins\": [\"*\"]}})\nlogin_manager = LoginManager()\nlogin_manager.init_app(app)\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))",
         "detail": "main",
         "documentation": {}
     },
@@ -909,7 +1158,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id",
+        "peekOfCode": "app.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']\n# load the extension\nprincipals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')",
         "detail": "main",
         "documentation": {}
     },
@@ -918,7 +1167,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):\n    return Users.query.get(id)",
+        "peekOfCode": "principals = Principal(app)\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion",
         "detail": "main",
         "documentation": {}
     },
@@ -927,7 +1176,25 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):\n    return Users.query.get(id)\n@app.route(\"/\")\n@login_required",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n#Aqui vamos a registrar blueprints\napp.register_blueprint(proveedores)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "admin",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\nadmin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n#Iniciar traduccion\nbabel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "babel",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "babel = Babel(app)\n@babel.localeselector\ndef get_locale():\n        return 'es'\n@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'),404\n# Creates a user loader callback that returns the user object given an id\n@login_manager.user_loader\ndef loader_user(id):",
         "detail": "main",
         "documentation": {}
     },
@@ -1109,6 +1376,33 @@
         "description": "models",
         "peekOfCode": "class Users(UserMixin, Usuarios): ...",
         "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "showProveedores",
+        "kind": 2,
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "peekOfCode": "def showProveedores():\n    form = ProveedorForm(request.form)\n    prov = db.session.query(Proveedor).all()\n    return render_template('proveedores.html',form=form, proveedores=prov)",
+        "detail": "proveedores",
+        "documentation": {}
+    },
+    {
+        "label": "proveedores",
+        "kind": 5,
+        "importPath": "proveedores",
+        "description": "proveedores",
+        "peekOfCode": "proveedores = Blueprint('proveedores', __name__, template_folder = 'templates')\n@proveedores.route('/proveedores')\ndef showProveedores():\n    form = ProveedorForm(request.form)\n    prov = db.session.query(Proveedor).all()\n    return render_template('proveedores.html',form=form, proveedores=prov)",
+        "detail": "proveedores",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorForm",
+        "kind": 6,
+        "importPath": "proveedorForm",
+        "description": "proveedorForm",
+        "peekOfCode": "class ProveedorForm(Form):\n    nombre = StringField('Nombre', [\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=1, max=100, message='ingresa un usuario valido')\n    ])\n    direccion = StringField('Direccion',[\n        validators.DataRequired(message='el campo es requerido'),\n        validators.length(min=1, max=100, message='ingresa una contraseña valida')\n    ])\n    telefono = StringField('contraseña',[",
+        "detail": "proveedorForm",
         "documentation": {}
     },
     {
