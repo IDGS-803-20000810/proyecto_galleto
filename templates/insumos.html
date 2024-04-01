@@ -1,0 +1,92 @@
+{%extends 'layout.html'%}
+
+{%block content%}
+{% import "_macros.html" as macros %}
+{% from "_macros.html" import render_field %}
+<h1>Insumos</h1>
+
+<form action="" method="post" id="form">
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.username, class="form-control")}}
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group">
+        {{render_field(form.password, class="form-control")}}
+    </div>
+    {{render_field(form.recaptcha, class="form-control")}}
+    <input type="button" name="btn1" id="btn1" class="btn bg-gradient-dark mb-0" value="Iniciar sesion">
+    <a href="/registro">Registro</a>
+    <input type="hidden" name="csrf_token" id="csrf" value="{{csrf_token()}}" />
+    {{ recaptcha }}
+</form>
+<div class="row">
+    <h3>
+        Insumos
+        <h4><a href="/nuevoInsumo" class="btn btn-danger">nuevo</a></h4>
+    </h3>
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for ins in insumos%}
+            <tr>
+                <td>{{ins.nombre}}</td>
+                <td><a href="eliminarInsumo?id={{ins.id}}" class="btn btn-danger"> eliminar</a></td>
+                <td><a href="modificarInsumo?id={{ins.id}}" class="btn btn-danger">modificar</a></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+
+<script src="../static/jquery/jquery-3.7.1.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $("body").bind("ajaxSend", function (elm, xhr, s) {
+            if (s.type == "POST") {
+                xhr.setRequestHeader('X-CSRF-Token', getCSRFTokenValue());
+            }
+        });
+
+
+        $("#btn1").click(function () {
+
+            data = $("#form").serializeArray();
+            server_data = {
+                user: $('#username').val(),
+                password: $('#password').val()
+            };
+            $.ajax({
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-CSRF-Token", document.getElementById("csrf").value);
+                },
+                url: "/login", type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(server_data),
+                success: function (result) {
+                    if (result.fail == 1) {
+                        alert("Usuario incorrecto");
+                    }
+                    if (result.fail == 2) {
+                        alert("Contraseña incorrecta");
+                    }
+                    if (result.fail == 3) {
+                        alert("usuario con caracteres no validos '<', '>'");
+                    }
+                    if (result.success == 1) {
+                        window.location.replace("/");
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+{%endblock%}

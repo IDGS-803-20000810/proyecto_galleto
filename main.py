@@ -4,16 +4,16 @@ from flask_cors import CORS, cross_origin
 import time
 from flask_wtf.csrf import CSRFProtect
 import forms
-from io import open
-from google_recaptcha import ReCaptcha
 import bcrypt
-
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-
 from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
 
 
-
+from models import db
+from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
+from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 
 app = Flask(__name__)
 from config import DevelopmentConfig
@@ -26,8 +26,19 @@ login_manager.init_app(app)
 # load the extension
 principals = Principal(app)
 
+
+
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
+admin = Admin(app, name='pruebainsumos')
+admin.add_view(ModelView(Insumo, db.session))
+admin.add_view(ModelView(Proveedor, db.session))
+admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))
+admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
+admin.add_view(MermaInventarioView(Merma_Inventario, db.session))
+admin.add_view(ModelView(Receta, db.session))
+
+
 
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
@@ -35,8 +46,6 @@ secretkey=app.config['SECRET_KEY']
 
 
 
-from models import db
-from models import Usuarios, Productos, Users
 
 # load the extension
 principals = Principal(app)
@@ -109,11 +118,9 @@ def verificar_inactividad():
     return None  
 
 def password_check(passwd):
-
     SpecialSym =['$', '@', '#', '%']
     val = True
     mensaje = ""
-
     if len(passwd) < 9:
         mensaje="la contraseña debe de tener una logitud minima de 9"
         val = False
@@ -133,7 +140,7 @@ def password_check(passwd):
     if not any(char in SpecialSym for char in passwd):
         mensaje = "La contraseña debe de tener al menos un caracter especial '$','@','#' "
         val = False
-            
+
     return {'valido':val,'mensaje':mensaje}
 
 
@@ -222,69 +229,7 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/productos", methods = ["GET","POST"])
-@login_required
-def productos():
-    productos=Productos.query.all()
-    return render_template("productos.html", empleados=productos)
 
-@app.route("/nuevoProducto", methods = ["GET","POST"])
-@login_required
-def nuevoProducto():
-    prod_form = forms.ProductoForm(request.form)
-    if request.method == "POST" and prod_form.validate() :
-        prod=Productos(nombre=prod_form.nombre.data, precio=prod_form.precio.data, stock=prod_form.stock.data)
-        db.session.add(prod)
-        db.session.commit()
-        return redirect("productos")
-    return render_template("nuevoProducto.html",form=prod_form)
-
-
-@app.route("/eliminarProducto", methods=["GET", "POST"])
-@admin_permission.require(http_exception=403)
-@login_required
-def eliminarProducto():
-    form=forms.ProductoForm(request.form)
-    if request.method=='GET':
-        id=sanitizar(request.args.get("id"))
-        name=db.session.query(Productos).filter(Productos.id==id).first().nombre
-        form.id.data = id
-        form.nombre.data = name
-    if request.method == 'POST':
-        id=sanitizar(form.id.data)
-        prod=Productos.query.get(id)
-        db.session.delete(prod)
-        db.session.commit()
-        return redirect('productos')
-    return render_template("eliminar.html", form=form)
-
-
-@app.route("/modificarProducto", methods=["GET", "POST"])
-@admin_permission.require(http_exception=403)
-@login_required
-def modificarProducto():
-    form=forms.ProductoForm(request.form)
-    if request.method=='GET':
-        id=sanitizar(request.args.get("id"))
-        prod=db.session.query(Productos).filter(Productos.id==id).first()
-        form.id.data = request.args.get("id")
-        form.nombre.data=prod.nombre
-        form.precio.data = prod.precio
-        form.stock.data=prod.stock
-    if request.method == 'POST':
-        id=form.id.data
-        print(id)
-        print(id)
-        print(id)
-        prod=db.session.query(Productos).filter(Productos.id==id).first()
-        print(prod.nombre)
-        prod.nombre=form.nombre.data
-        prod.precio=form.precio.data
-        prod.stock=form.stock.data
-        db.session.add(prod)
-        db.session.commit()
-        return redirect('productos')
-    return render_template("modificar.html", form=form)
 
 
 if __name__ == "__main__":
@@ -293,3 +238,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(host='0.0.0.0',debug=True)
+
