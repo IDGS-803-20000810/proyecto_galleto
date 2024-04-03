@@ -27,9 +27,11 @@ class Insumo(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     nombre=db.Column(db.String(80))
     insumo_inventario = relationship("Insumo_Inventario", back_populates="insumo")
-    pedidos_insumo = relationship("Pedidos_Proveedor", back_populates="insumo")
+    # pedidos_insumo = relationship("Pedidos_Proveedor", back_populates="insumo")
     insumo_ingredientes = relationship("Ingredientes_Receta", back_populates="insumo")
     compras = relationship("Detalle_Compra", back_populates="insumo")
+    medida_id = mapped_column(ForeignKey("medida.id"))
+    medida = relationship("Medida", back_populates="insumo_medida")  
     insumo_merma_produccion = relationship("Merma_Produccion", back_populates="insumo")
     def __str__(self):
         return self.nombre
@@ -41,8 +43,8 @@ class Proveedor(db.Model):
     direccion=db.Column(db.String(90))
     telefono=db.Column(db.String(10))
     proveedor_compras = relationship("Compra", back_populates="proveedor")
-    proveedor_inventario = relationship("Insumo_Inventario", back_populates="proveedor")
-    proveedor = db.relationship("Pedidos_Proveedor", back_populates="proveedor")
+    # proveedor_inventario = relationship("Insumo_Inventario", back_populates="proveedor")
+    # proveedor = db.relationship("Pedidos_Proveedor", back_populates="proveedor")
     def __str__(self):
         return self.nombre
     
@@ -50,26 +52,51 @@ class Insumo_Inventario(db.Model):
     __tablename__='insumo_inventario'
     id=db.Column(db.Integer,primary_key=True)
     cantidad=db.Column(db.Float)
-    anaquel=db.Column(db.String(30))
+    # anaquel=db.Column(db.String(30))
     insumo_id = mapped_column(ForeignKey("insumo.id"))
     insumo = relationship("Insumo", back_populates="insumo_inventario")  
-    proveedor_id = mapped_column(ForeignKey("proveedor.id"))
-    proveedor = relationship("Proveedor", back_populates="proveedor_inventario")  
+    detalle_id = mapped_column(ForeignKey("detalle_compra.id"))
+    detalle = relationship("Detalle_Compra", back_populates="insumo_inventario")    
     merma_inventario = relationship("Merma_Inventario", back_populates="insumo_inventario")
     def __str__(self):
-        out = str(self.insumo) + ' ' + str(self.proveedor) + ' '  + str(self.anaquel)
+        out = str(self.insumo) + ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out
 
-class Pedidos_Proveedor(db.Model):
-    __tablename__='pedidos_proveedor'
-    id=db.Column(db.Integer, primary_key=True)
+# class Pedidos_Proveedor(db.Model):
+#     __tablename__='pedidos_proveedor'
+#     id=db.Column(db.Integer, primary_key=True)
+#     cantidad=db.Column(db.Float)
+#     precioActual=db.Column(db.Float) 
+#     periodicidad=db.Column(db.Integer)
+#     insumo_id = db.Column(db.Integer, db.ForeignKey("insumo.id")) 
+#     insumo = relationship(Insumo, back_populates="pedidos_insumo")
+#     proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedor.id")) 
+#     proveedor = db.relationship(Proveedor, back_populates="proveedor")
+
+class Compra(db.Model):
+    __tablename__='compra'
+    id=db.Column(db.Integer,primary_key=True)
+    fecha=db.Column(db.DateTime,default=datetime.datetime.now)
+    usuario_id = mapped_column(ForeignKey("usuarios.id"))
+    usuario = relationship("Usuarios", back_populates="compras_usuario")  
+    proveedor_id = mapped_column(ForeignKey("proveedor.id"))
+    proveedor = relationship("Proveedor", back_populates="proveedor_compras")  
+    detalles_compra = relationship("Detalle_Compra", back_populates="compra")
+    total =db.Column(db.Float)
+
+class Detalle_Compra(db.Model):
+    __tablename__='detalle_compra'
+    id=db.Column(db.Integer,primary_key=True)
+    compra_id = mapped_column(ForeignKey("compra.id"))
+    compra = relationship("Compra", back_populates="detalles_compra")  
+    insumo_id = mapped_column(ForeignKey("insumo.id"))
+    insumo = relationship("Insumo", back_populates="compras")  
+    insumo_inventario = relationship("Insumo_Inventario", back_populates="detalle")
+    medida_id = mapped_column(ForeignKey("medida.id"))
+    medida = relationship("Medida", back_populates="medida_detalle")
+    caducidad=db.Column(db.DateTime,default=datetime.datetime.now)
+    subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
-    precioActual=db.Column(db.Float) 
-    periodicidad=db.Column(db.Integer)
-    insumo_id = db.Column(db.Integer, db.ForeignKey("insumo.id")) 
-    insumo = relationship(Insumo, back_populates="pedidos_insumo")
-    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedor.id")) 
-    proveedor = db.relationship(Proveedor, back_populates="proveedor")
 
 class Merma_Inventario(db.Model):
     __tablename__='merma_inventario'
@@ -78,7 +105,7 @@ class Merma_Inventario(db.Model):
     insumo_inventario_id = mapped_column(ForeignKey("insumo_inventario.id"))
     insumo_inventario = relationship("Insumo_Inventario", back_populates="merma_inventario")  
     descripcion=db.Column(db.String(300))
-    
+
 class Receta(db.Model):
     __tablename__='receta'
     id=db.Column(db.Integer,primary_key=True)
@@ -102,7 +129,7 @@ class Ingredientes_Receta(db.Model):
 class Produccion(db.Model):
     __tablename__='produccion'
     id=db.Column(db.Integer,primary_key=True)
-    hora=db.Column(db.DateTime,default=datetime.datetime.now)
+    fecha_hora=db.Column(db.DateTime,default=datetime.datetime.now)
     usuario_id = mapped_column(ForeignKey("usuarios.id"))
     usuario = relationship("Usuarios", back_populates="producciones_usuario")  
     detalles = relationship("Produccion_Detalle", back_populates="produccion")
@@ -116,7 +143,8 @@ class Produccion_Detalle(db.Model):
     produccion_id = mapped_column(ForeignKey("produccion.id"))
     produccion = relationship("Produccion", back_populates="detalles")  
     mermas = relationship("Merma_Produccion", back_populates="detalle_produccion")  
-    
+    produccion_detalle = relationship("Producto_Inventario", back_populates="produccion_detalle")
+
 class Merma_Produccion(db.Model):
     __tablename__='merma_produccion'
     id=db.Column(db.Integer,primary_key=True)
@@ -126,7 +154,7 @@ class Merma_Produccion(db.Model):
     insumo_id = mapped_column(ForeignKey("insumo.id"))
     insumo = relationship("Insumo", back_populates="insumo_merma_produccion")  
     descripcion=db.Column(db.String(300))
-    
+
 class Producto(db.Model):
     __tablename__='producto'
     id=db.Column(db.Integer,primary_key=True)
@@ -134,10 +162,8 @@ class Producto(db.Model):
     receta_id = mapped_column(ForeignKey("receta.id"))
     receta = relationship("Receta", back_populates="producto_receta")  
     inventario = relationship("Producto_Inventario", back_populates="producto")  
-    merma = relationship("Merma_Producto", back_populates="producto")  
     orden = relationship("Orden", back_populates="producto")  
     detalle_venta = relationship("Detalle_Venta", back_populates="producto")
-    precio =db.Column(db.Float)
     peso =db.Column(db.Float)
 
 class Producto_Inventario(db.Model):
@@ -148,14 +174,17 @@ class Producto_Inventario(db.Model):
     producto = relationship("Producto", back_populates="inventario")  
     precio =db.Column(db.Float)
     peso =db.Column(db.Float)
+    produccion_detalle_id = mapped_column(ForeignKey("produccion_detalle.id"))
+    produccion_detalle = relationship("Produccion_Detalle", back_populates="produccion_detalle")
+    merma = relationship("Merma_Producto", back_populates="producto")  
 
 class Merma_Producto(db.Model):
     __tablename__='merma_producto'
     id=db.Column(db.Integer,primary_key=True)
     cantidad=db.Column(db.Float)
     hora=db.Column(db.DateTime,default=datetime.datetime.now)
-    producto_id = mapped_column(ForeignKey("producto.id"))
-    producto = relationship("Producto", back_populates="merma")  
+    producto_id = mapped_column(ForeignKey("producto_inventario.id"))
+    producto = relationship("Producto_Inventario", back_populates="merma")  
     descripcion=db.Column(db.String(300))
 
 class Orden(db.Model):
@@ -183,26 +212,21 @@ class Detalle_Venta(db.Model):
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
 
-class Compra(db.Model):
-    __tablename__='compra'
+class Medida(db.Model):
+    __tablename__='medida'
     id=db.Column(db.Integer,primary_key=True)
-    fecha=db.Column(db.DateTime,default=datetime.datetime.now)
-    usuario_id = mapped_column(ForeignKey("usuarios.id"))
-    usuario = relationship("Usuarios", back_populates="compras_usuario")  
-    proveedor_id = mapped_column(ForeignKey("proveedor.id"))
-    proveedor = relationship("Proveedor", back_populates="proveedor_compras")  
-    detalles_compra = relationship("Detalle_Compra", back_populates="compra")
-    total =db.Column(db.Float)
+    medida=db.Column(db.String(100))
+    medida_inicial = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates="medida_inicial")
+    medida_equival = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates="medida_equival")
+    medida_detalle = relationship("Detalle_Compra", back_populates="medida")
+    insumo_medida = relationship("Insumo", back_populates="medida")  
 
-class Detalle_Compra(db.Model):
-    __tablename__='detalle_compra'
+class Equivalencia_Medida(db.Model):
+    __tablename__='equivalencia_medida'
     id=db.Column(db.Integer,primary_key=True)
-    compra_id = mapped_column(ForeignKey("compra.id"))
-    compra = relationship("Compra", back_populates="detalles_compra")  
-    insumo_id = mapped_column(ForeignKey("insumo.id"))
-    insumo = relationship("Insumo", back_populates="compras")  
-    subtotal=db.Column(db.Float)
-    cantidad=db.Column(db.Float)
-
+    medida_inicial_id = mapped_column(ForeignKey("medida.id"))
+    medida_equival_id = mapped_column(ForeignKey("medida.id"))
+    medida_inicial = relationship("Medida",back_populates="medida_inicial", foreign_keys=[medida_inicial_id])
+    medida_equival = relationship("Medida",back_populates="medida_equival", foreign_keys=[medida_equival_id])
 
 class Users(UserMixin, Usuarios): ...

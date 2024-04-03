@@ -702,14 +702,6 @@
         "documentation": {}
     },
     {
-        "label": "Pedidos_Proveedor",
-        "importPath": "models",
-        "description": "models",
-        "isExtraImport": true,
-        "detail": "models",
-        "documentation": {}
-    },
-    {
         "label": "Merma_Inventario",
         "importPath": "models",
         "description": "models",
@@ -766,23 +758,7 @@
         "documentation": {}
     },
     {
-        "label": "Pedidos_Proveedor",
-        "importPath": "models",
-        "description": "models",
-        "isExtraImport": true,
-        "detail": "models",
-        "documentation": {}
-    },
-    {
         "label": "MermaInventarioView",
-        "importPath": "views",
-        "description": "views",
-        "isExtraImport": true,
-        "detail": "views",
-        "documentation": {}
-    },
-    {
-        "label": "Pedidos_ProveedorView",
         "importPath": "views",
         "description": "views",
         "isExtraImport": true,
@@ -1108,7 +1084,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))",
+        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))",
         "detail": "main",
         "documentation": {}
     },
@@ -1117,7 +1093,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\nadmin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
         "detail": "main",
         "documentation": {}
     },
@@ -1171,7 +1147,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    pedidos_insumo = relationship(\"Pedidos_Proveedor\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    insumo_merma_produccion = relationship(\"Merma_Produccion\", back_populates=\"insumo\")\n    def __str__(self):",
+        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    # pedidos_insumo = relationship(\"Pedidos_Proveedor\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"insumo_medida\")  ",
         "detail": "models",
         "documentation": {}
     },
@@ -1180,7 +1156,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Proveedor(db.Model):\n    __tablename__='proveedor'\n    id=db.Column(db.Integer, primary_key=True)\n    nombre=db.Column(db.String(80))\n    direccion=db.Column(db.String(90))\n    telefono=db.Column(db.String(10))\n    proveedor_compras = relationship(\"Compra\", back_populates=\"proveedor\")\n    proveedor_inventario = relationship(\"Insumo_Inventario\", back_populates=\"proveedor\")\n    proveedor = db.relationship(\"Pedidos_Proveedor\", back_populates=\"proveedor\")\n    def __str__(self):",
+        "peekOfCode": "class Proveedor(db.Model):\n    __tablename__='proveedor'\n    id=db.Column(db.Integer, primary_key=True)\n    nombre=db.Column(db.String(80))\n    direccion=db.Column(db.String(90))\n    telefono=db.Column(db.String(10))\n    proveedor_compras = relationship(\"Compra\", back_populates=\"proveedor\")\n    # proveedor_inventario = relationship(\"Insumo_Inventario\", back_populates=\"proveedor\")\n    # proveedor = db.relationship(\"Pedidos_Proveedor\", back_populates=\"proveedor\")\n    def __str__(self):",
         "detail": "models",
         "documentation": {}
     },
@@ -1189,16 +1165,25 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Insumo_Inventario(db.Model):\n    __tablename__='insumo_inventario'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    anaquel=db.Column(db.String(30))\n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"insumo_inventario\")  \n    proveedor_id = mapped_column(ForeignKey(\"proveedor.id\"))\n    proveedor = relationship(\"Proveedor\", back_populates=\"proveedor_inventario\")  \n    merma_inventario = relationship(\"Merma_Inventario\", back_populates=\"insumo_inventario\")",
+        "peekOfCode": "class Insumo_Inventario(db.Model):\n    __tablename__='insumo_inventario'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    # anaquel=db.Column(db.String(30))\n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"insumo_inventario\")  \n    detalle_id = mapped_column(ForeignKey(\"detalle_compra.id\"))\n    detalle = relationship(\"Detalle_Compra\", back_populates=\"insumo_inventario\")    \n    merma_inventario = relationship(\"Merma_Inventario\", back_populates=\"insumo_inventario\")",
         "detail": "models",
         "documentation": {}
     },
     {
-        "label": "Pedidos_Proveedor",
+        "label": "Compra",
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Pedidos_Proveedor(db.Model):\n    __tablename__='pedidos_proveedor'\n    id=db.Column(db.Integer, primary_key=True)\n    cantidad=db.Column(db.Float)\n    precioActual=db.Column(db.Float) \n    periodicidad=db.Column(db.Integer)\n    insumo_id = db.Column(db.Integer, db.ForeignKey(\"insumo.id\")) \n    insumo = relationship(Insumo, back_populates=\"pedidos_insumo\")\n    proveedor_id = db.Column(db.Integer, db.ForeignKey(\"proveedor.id\")) \n    proveedor = db.relationship(Proveedor, back_populates=\"proveedor\")",
+        "peekOfCode": "class Compra(db.Model):\n    __tablename__='compra'\n    id=db.Column(db.Integer,primary_key=True)\n    fecha=db.Column(db.DateTime,default=datetime.datetime.now)\n    usuario_id = mapped_column(ForeignKey(\"usuarios.id\"))\n    usuario = relationship(\"Usuarios\", back_populates=\"compras_usuario\")  \n    proveedor_id = mapped_column(ForeignKey(\"proveedor.id\"))\n    proveedor = relationship(\"Proveedor\", back_populates=\"proveedor_compras\")  \n    detalles_compra = relationship(\"Detalle_Compra\", back_populates=\"compra\")\n    total =db.Column(db.Float)",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Detalle_Compra",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Detalle_Compra(db.Model):\n    __tablename__='detalle_compra'\n    id=db.Column(db.Integer,primary_key=True)\n    compra_id = mapped_column(ForeignKey(\"compra.id\"))\n    compra = relationship(\"Compra\", back_populates=\"detalles_compra\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"compras\")  \n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"detalle\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"medida_detalle\")",
         "detail": "models",
         "documentation": {}
     },
@@ -1234,7 +1219,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Produccion(db.Model):\n    __tablename__='produccion'\n    id=db.Column(db.Integer,primary_key=True)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    usuario_id = mapped_column(ForeignKey(\"usuarios.id\"))\n    usuario = relationship(\"Usuarios\", back_populates=\"producciones_usuario\")  \n    detalles = relationship(\"Produccion_Detalle\", back_populates=\"produccion\")\nclass Produccion_Detalle(db.Model):\n    __tablename__='produccion_detalle'\n    id=db.Column(db.Integer,primary_key=True)",
+        "peekOfCode": "class Produccion(db.Model):\n    __tablename__='produccion'\n    id=db.Column(db.Integer,primary_key=True)\n    fecha_hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    usuario_id = mapped_column(ForeignKey(\"usuarios.id\"))\n    usuario = relationship(\"Usuarios\", back_populates=\"producciones_usuario\")  \n    detalles = relationship(\"Produccion_Detalle\", back_populates=\"produccion\")\nclass Produccion_Detalle(db.Model):\n    __tablename__='produccion_detalle'\n    id=db.Column(db.Integer,primary_key=True)",
         "detail": "models",
         "documentation": {}
     },
@@ -1243,7 +1228,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Produccion_Detalle(db.Model):\n    __tablename__='produccion_detalle'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    receta_id = mapped_column(ForeignKey(\"receta.id\"))\n    receta = relationship(\"Receta\", back_populates=\"producciones\")  \n    produccion_id = mapped_column(ForeignKey(\"produccion.id\"))\n    produccion = relationship(\"Produccion\", back_populates=\"detalles\")  \n    mermas = relationship(\"Merma_Produccion\", back_populates=\"detalle_produccion\")  \nclass Merma_Produccion(db.Model):",
+        "peekOfCode": "class Produccion_Detalle(db.Model):\n    __tablename__='produccion_detalle'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    receta_id = mapped_column(ForeignKey(\"receta.id\"))\n    receta = relationship(\"Receta\", back_populates=\"producciones\")  \n    produccion_id = mapped_column(ForeignKey(\"produccion.id\"))\n    produccion = relationship(\"Produccion\", back_populates=\"detalles\")  \n    mermas = relationship(\"Merma_Produccion\", back_populates=\"detalle_produccion\")  \n    produccion_detalle = relationship(\"Producto_Inventario\", back_populates=\"produccion_detalle\")",
         "detail": "models",
         "documentation": {}
     },
@@ -1261,7 +1246,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Producto(db.Model):\n    __tablename__='producto'\n    id=db.Column(db.Integer,primary_key=True)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    receta_id = mapped_column(ForeignKey(\"receta.id\"))\n    receta = relationship(\"Receta\", back_populates=\"producto_receta\")  \n    inventario = relationship(\"Producto_Inventario\", back_populates=\"producto\")  \n    merma = relationship(\"Merma_Producto\", back_populates=\"producto\")  \n    orden = relationship(\"Orden\", back_populates=\"producto\")  \n    detalle_venta = relationship(\"Detalle_Venta\", back_populates=\"producto\")",
+        "peekOfCode": "class Producto(db.Model):\n    __tablename__='producto'\n    id=db.Column(db.Integer,primary_key=True)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    receta_id = mapped_column(ForeignKey(\"receta.id\"))\n    receta = relationship(\"Receta\", back_populates=\"producto_receta\")  \n    inventario = relationship(\"Producto_Inventario\", back_populates=\"producto\")  \n    orden = relationship(\"Orden\", back_populates=\"producto\")  \n    detalle_venta = relationship(\"Detalle_Venta\", back_populates=\"producto\")\n    peso =db.Column(db.Float)",
         "detail": "models",
         "documentation": {}
     },
@@ -1270,7 +1255,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Producto_Inventario(db.Model):\n    __tablename__='producto_inventario'\n    id=db.Column(db.Integer,primary_key=True)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    producto_id = mapped_column(ForeignKey(\"producto.id\"))\n    producto = relationship(\"Producto\", back_populates=\"inventario\")  \n    precio =db.Column(db.Float)\n    peso =db.Column(db.Float)\nclass Merma_Producto(db.Model):\n    __tablename__='merma_producto'",
+        "peekOfCode": "class Producto_Inventario(db.Model):\n    __tablename__='producto_inventario'\n    id=db.Column(db.Integer,primary_key=True)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    producto_id = mapped_column(ForeignKey(\"producto.id\"))\n    producto = relationship(\"Producto\", back_populates=\"inventario\")  \n    precio =db.Column(db.Float)\n    peso =db.Column(db.Float)\n    produccion_detalle_id = mapped_column(ForeignKey(\"produccion_detalle.id\"))\n    produccion_detalle = relationship(\"Produccion_Detalle\", back_populates=\"produccion_detalle\")",
         "detail": "models",
         "documentation": {}
     },
@@ -1279,7 +1264,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Merma_Producto(db.Model):\n    __tablename__='merma_producto'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    producto_id = mapped_column(ForeignKey(\"producto.id\"))\n    producto = relationship(\"Producto\", back_populates=\"merma\")  \n    descripcion=db.Column(db.String(300))\nclass Orden(db.Model):\n    __tablename__='orden'",
+        "peekOfCode": "class Merma_Producto(db.Model):\n    __tablename__='merma_producto'\n    id=db.Column(db.Integer,primary_key=True)\n    cantidad=db.Column(db.Float)\n    hora=db.Column(db.DateTime,default=datetime.datetime.now)\n    producto_id = mapped_column(ForeignKey(\"producto_inventario.id\"))\n    producto = relationship(\"Producto_Inventario\", back_populates=\"merma\")  \n    descripcion=db.Column(db.String(300))\nclass Orden(db.Model):\n    __tablename__='orden'",
         "detail": "models",
         "documentation": {}
     },
@@ -1306,25 +1291,25 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Detalle_Venta(db.Model):\n    __tablename__='detalle_venta'\n    id=db.Column(db.Integer,primary_key=True)\n    producto_id = mapped_column(ForeignKey(\"producto.id\"))\n    producto = relationship(\"Producto\", back_populates=\"detalle_venta\")  \n    subtotal=db.Column(db.Float)\n    cantidad=db.Column(db.Float)\nclass Compra(db.Model):\n    __tablename__='compra'\n    id=db.Column(db.Integer,primary_key=True)",
+        "peekOfCode": "class Detalle_Venta(db.Model):\n    __tablename__='detalle_venta'\n    id=db.Column(db.Integer,primary_key=True)\n    producto_id = mapped_column(ForeignKey(\"producto.id\"))\n    producto = relationship(\"Producto\", back_populates=\"detalle_venta\")  \n    subtotal=db.Column(db.Float)\n    cantidad=db.Column(db.Float)\nclass Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)",
         "detail": "models",
         "documentation": {}
     },
     {
-        "label": "Compra",
+        "label": "Medida",
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Compra(db.Model):\n    __tablename__='compra'\n    id=db.Column(db.Integer,primary_key=True)\n    fecha=db.Column(db.DateTime,default=datetime.datetime.now)\n    usuario_id = mapped_column(ForeignKey(\"usuarios.id\"))\n    usuario = relationship(\"Usuarios\", back_populates=\"compras_usuario\")  \n    proveedor_id = mapped_column(ForeignKey(\"proveedor.id\"))\n    proveedor = relationship(\"Proveedor\", back_populates=\"proveedor_compras\")  \n    detalles_compra = relationship(\"Detalle_Compra\", back_populates=\"compra\")\n    total =db.Column(db.Float)",
+        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    medida_inicial = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates=\"medida_inicial\")\n    medida_equival = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates=\"medida_equival\")\n    medida_detalle = relationship(\"Detalle_Compra\", back_populates=\"medida\")\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'",
         "detail": "models",
         "documentation": {}
     },
     {
-        "label": "Detalle_Compra",
+        "label": "Equivalencia_Medida",
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Detalle_Compra(db.Model):\n    __tablename__='detalle_compra'\n    id=db.Column(db.Integer,primary_key=True)\n    compra_id = mapped_column(ForeignKey(\"compra.id\"))\n    compra = relationship(\"Compra\", back_populates=\"detalles_compra\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"compras\")  \n    subtotal=db.Column(db.Float)\n    cantidad=db.Column(db.Float)\nclass Users(UserMixin, Usuarios): ...",
+        "peekOfCode": "class Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida_inicial_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_equival_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_inicial = relationship(\"Medida\",back_populates=\"medida_inicial\", foreign_keys=[medida_inicial_id])\n    medida_equival = relationship(\"Medida\",back_populates=\"medida_equival\", foreign_keys=[medida_equival_id])\nclass Users(UserMixin, Usuarios): ...",
         "detail": "models",
         "documentation": {}
     },
@@ -1374,20 +1359,11 @@
         "documentation": {}
     },
     {
-        "label": "Pedidos_ProveedorView",
-        "kind": 6,
-        "importPath": "views",
-        "description": "views",
-        "peekOfCode": "class Pedidos_ProveedorView(ModelView):\n    column_auto_select_related = True\n    column_list = ['cantidad', 'precioActual', 'periodicidad', 'proveedor', 'insumo' ]  # Campos a mostrar en la lista\n    column_editable_list = ['cantidad', 'precioActual', 'periodicidad']  # Campos editables en la lista\n    form_columns = ['cantidad', 'medida', 'precioActual', 'periodicidad', 'proveedor', 'insumo' ]  # Campos a mostrar en el formulario de edición\n    form_extra_fields = {\n        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])\n    }\n    def on_model_change(self, form, model, is_created):\n        if is_created:",
-        "detail": "views",
-        "documentation": {}
-    },
-    {
         "label": "Insumo_InventarioView",
         "kind": 6,
         "importPath": "views",
         "description": "views",
-        "peekOfCode": "class Insumo_InventarioView(ModelView):\n    column_auto_select_related = True\n    column_list = ['cantidad', 'anaquel', 'insumo', 'proveedor' ]  # Campos a mostrar en la lista\n    column_editable_list = ['cantidad', 'anaquel', 'insumo', 'proveedor' ] # Campos editables en la lista\n    form_columns = ['cantidad','medida', 'anaquel', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición\n    form_extra_fields = {\n        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])\n    }\n    def on_model_change(self, form, model, is_created):\n        if is_created:",
+        "peekOfCode": "class Insumo_InventarioView(ModelView):\n    column_auto_select_related = True\n    column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista\n    column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista\n    form_columns = ['cantidad','medida',  'insumo']  # Campos a mostrar en el formulario de edición\n    form_extra_fields = {\n        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])\n    }\n    def on_model_change(self, form, model, is_created):\n        if is_created:",
         "detail": "views",
         "documentation": {}
     },
@@ -1396,7 +1372,7 @@
         "kind": 6,
         "importPath": "views",
         "description": "views",
-        "peekOfCode": "class RecetaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','descripcion', 'anaquel', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición",
+        "peekOfCode": "class RecetaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición",
         "detail": "views",
         "documentation": {}
     }
