@@ -1147,7 +1147,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    # pedidos_insumo = relationship(\"Pedidos_Proveedor\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"insumo_medida\")  ",
+        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    # pedidos_insumo = relationship(\"Pedidos_Proveedor\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    # compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"insumo_medida\")  ",
         "detail": "models",
         "documentation": {}
     },
@@ -1183,7 +1183,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Detalle_Compra(db.Model):\n    __tablename__='detalle_compra'\n    id=db.Column(db.Integer,primary_key=True)\n    compra_id = mapped_column(ForeignKey(\"compra.id\"))\n    compra = relationship(\"Compra\", back_populates=\"detalles_compra\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"compras\")  \n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"detalle\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"medida_detalle\")",
+        "peekOfCode": "class Detalle_Compra(db.Model):\n    __tablename__='detalle_compra'\n    id=db.Column(db.Integer,primary_key=True)\n    compra_id = mapped_column(ForeignKey(\"compra.id\"))\n    compra = relationship(\"Compra\", back_populates=\"detalles_compra\")  \n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"detalle\")\n    abastecimiento_id = mapped_column(ForeignKey(\"abastecimiento.id\"))\n    abastecimiento = relationship(\"Abastecimiento\", back_populates=\"detalle_abastecimiento\")  \n    caducidad=db.Column(db.DateTime,default=datetime.datetime.now)\n    subtotal=db.Column(db.Float)",
         "detail": "models",
         "documentation": {}
     },
@@ -1300,16 +1300,16 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    medida_inicial = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates=\"medida_inicial\")\n    medida_equival = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates=\"medida_equival\")\n    medida_detalle = relationship(\"Detalle_Compra\", back_populates=\"medida\")\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'",
+        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Abastecimiento\", back_populates=\"abastecimiento\")  ",
         "detail": "models",
         "documentation": {}
     },
     {
-        "label": "Equivalencia_Medida",
+        "label": "Abastecimiento",
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida_inicial_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_equival_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_inicial = relationship(\"Medida\",back_populates=\"medida_inicial\", foreign_keys=[medida_inicial_id])\n    medida_equival = relationship(\"Medida\",back_populates=\"medida_equival\", foreign_keys=[medida_equival_id])\nclass Users(UserMixin, Usuarios): ...",
+        "peekOfCode": "class Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Abastecimiento\", back_populates=\"abastecimiento\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"abastecimiento\")  \n    cantidad_insumo=db.Column(db.Float)\nclass Users(UserMixin, Usuarios): ...",
         "detail": "models",
         "documentation": {}
     },
