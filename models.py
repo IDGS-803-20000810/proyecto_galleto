@@ -221,7 +221,7 @@ class Abastecimiento(db.Model):
     __tablename__='abastecimiento'
     id=db.Column(db.Integer,primary_key=True)
     descripcion=db.Column(db.String(255))
-    detalle_abastecimiento = relationship("Abastecimiento", back_populates="abastecimiento")  
+    detalle_abastecimiento = relationship("Detalle_Compra", back_populates="abastecimiento")  
     insumo_id = mapped_column(ForeignKey("insumo.id"))
     insumo = relationship("Insumo", back_populates="abastecimiento")  
     cantidad_insumo=db.Column(db.Float)

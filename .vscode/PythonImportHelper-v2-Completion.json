@@ -1300,7 +1300,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Abastecimiento\", back_populates=\"abastecimiento\")  ",
+        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Detalle_Compra\", back_populates=\"abastecimiento\")  ",
         "detail": "models",
         "documentation": {}
     },
@@ -1309,7 +1309,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Abastecimiento\", back_populates=\"abastecimiento\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"abastecimiento\")  \n    cantidad_insumo=db.Column(db.Float)\nclass Users(UserMixin, Usuarios): ...",
+        "peekOfCode": "class Abastecimiento(db.Model):\n    __tablename__='abastecimiento'\n    id=db.Column(db.Integer,primary_key=True)\n    descripcion=db.Column(db.String(255))\n    detalle_abastecimiento = relationship(\"Detalle_Compra\", back_populates=\"abastecimiento\")  \n    insumo_id = mapped_column(ForeignKey(\"insumo.id\"))\n    insumo = relationship(\"Insumo\", back_populates=\"abastecimiento\")  \n    cantidad_insumo=db.Column(db.Float)\nclass Users(UserMixin, Usuarios): ...",
         "detail": "models",
         "documentation": {}
     },
