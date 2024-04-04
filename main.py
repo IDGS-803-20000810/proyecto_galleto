@@ -2,18 +2,17 @@ from flask import Flask, render_template, request, Response, flash, g, redirect,
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_cors import CORS, cross_origin
 from flask_wtf.csrf import CSRFProtect
-import forms
-import bcrypt
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
 from flask_babelex import Babel
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 import forms
 import bcrypt
 import time
 import secrets
+import bcrypt
 
 from models import db
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta

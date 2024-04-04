@@ -546,48 +546,6 @@
         "documentation": {}
     },
     {
-        "label": "forms",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "forms",
-        "description": "forms",
-        "detail": "forms",
-        "documentation": {}
-    },
-    {
-        "label": "bcrypt",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "bcrypt",
-        "description": "bcrypt",
-        "detail": "bcrypt",
-        "documentation": {}
-    },
-    {
-        "label": "Admin",
-        "importPath": "flask_admin",
-        "description": "flask_admin",
-        "isExtraImport": true,
-        "detail": "flask_admin",
-        "documentation": {}
-    },
-    {
-        "label": "ModelView",
-        "importPath": "flask_admin.contrib.sqla",
-        "description": "flask_admin.contrib.sqla",
-        "isExtraImport": true,
-        "detail": "flask_admin.contrib.sqla",
-        "documentation": {}
-    },
-    {
-        "label": "ModelView",
-        "importPath": "flask_admin.contrib.sqla",
-        "description": "flask_admin.contrib.sqla",
-        "isExtraImport": true,
-        "detail": "flask_admin.contrib.sqla",
-        "documentation": {}
-    },
-    {
         "label": "Principal",
         "importPath": "flask_principal",
         "description": "flask_principal",
@@ -633,6 +591,48 @@
         "description": "flask_babelex",
         "isExtraImport": true,
         "detail": "flask_babelex",
+        "documentation": {}
+    },
+    {
+        "label": "Admin",
+        "importPath": "flask_admin",
+        "description": "flask_admin",
+        "isExtraImport": true,
+        "detail": "flask_admin",
+        "documentation": {}
+    },
+    {
+        "label": "ModelView",
+        "importPath": "flask_admin.contrib.sqla",
+        "description": "flask_admin.contrib.sqla",
+        "isExtraImport": true,
+        "detail": "flask_admin.contrib.sqla",
+        "documentation": {}
+    },
+    {
+        "label": "ModelView",
+        "importPath": "flask_admin.contrib.sqla",
+        "description": "flask_admin.contrib.sqla",
+        "isExtraImport": true,
+        "detail": "flask_admin.contrib.sqla",
+        "documentation": {}
+    },
+    {
+        "label": "forms",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "forms",
+        "description": "forms",
+        "detail": "forms",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bcrypt",
+        "description": "bcrypt",
+        "detail": "bcrypt",
         "documentation": {}
     },
     {
@@ -859,7 +859,7 @@
         "kind": 6,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "class Config(object):\n    SECRET_KEY='Clave_Nueva'\n    SESSION_COOKIE_SECURE=False\n    RECAPTCHA_PUBLIC_KEY = \"6LdoUpQpAAAAAHMJhflBg6gi6L04IfBw82xK5V5_\"\n    RECAPTCHA_PRIVATE_KEY= \"6LdoUpQpAAAAADCpDA8zxCWCF3OsGz3PG-SsoKIe\"\nclass DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    # SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
+        "peekOfCode": "class Config(object):\n    SECRET_KEY='Clave_Nueva'\n    SESSION_COOKIE_SECURE=False\n    RECAPTCHA_PUBLIC_KEY = \"6LdoUpQpAAAAAHMJhflBg6gi6L04IfBw82xK5V5_\"\n    RECAPTCHA_PRIVATE_KEY= \"6LdoUpQpAAAAADCpDA8zxCWCF3OsGz3PG-SsoKIe\"\nclass DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/galletosdelight'\n    # SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
         "detail": "config",
         "documentation": {}
     },
@@ -868,7 +868,7 @@
         "kind": 6,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "class DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    # SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
+        "peekOfCode": "class DevelopmentConfig(Config):\n    DEBUG=True\n    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/galletosdelight'\n    # SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'\n    SQLALCHEMY_TRACK_MODIFICATIONS=False",
         "detail": "config",
         "documentation": {}
     },
