@@ -774,6 +774,22 @@
         "documentation": {}
     },
     {
+        "label": "InsumoView",
+        "importPath": "views",
+        "description": "views",
+        "isExtraImport": true,
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorView",
+        "importPath": "views",
+        "description": "views",
+        "isExtraImport": true,
+        "detail": "views",
+        "documentation": {}
+    },
+    {
         "label": "DevelopmentConfig",
         "importPath": "config",
         "description": "config",
@@ -1075,7 +1091,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "principals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))",
+        "peekOfCode": "principals = Principal(app)\n#Flask admin\nadmin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(InsumoView(Insumo, db.session))\nadmin.add_view(ProveedorView(Proveedor, db.session))",
         "detail": "main",
         "documentation": {}
     },
@@ -1084,7 +1100,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))",
+        "peekOfCode": "admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')\n# admin.add_view(ModelView(Proveedor, db.session))\n#Fin flask admin\n# Create a permission with a single Need, in this case a RoleNeed.\nadmin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(InsumoView(Insumo, db.session))\nadmin.add_view(ProveedorView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))",
         "detail": "main",
         "documentation": {}
     },
@@ -1093,7 +1109,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(ModelView(Insumo, db.session))\nadmin.add_view(ModelView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
+        "peekOfCode": "admin_permission = Permission(RoleNeed('admin'))\n# admin = Admin(app, name='pruebainsumos')\nadmin.add_view(InsumoView(Insumo, db.session))\nadmin.add_view(ProveedorView(Proveedor, db.session))\nadmin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))\n# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))\nadmin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))\nadmin.add_view(ModelView(Receta, db.session))\napp.config['SECRET_KEY'] = secrets.token_hex(16)\nsecretkey=app.config['SECRET_KEY']",
         "detail": "main",
         "documentation": {}
     },
@@ -1147,7 +1163,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    # pedidos_insumo = relationship(\"Pedidos_Proveedor\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    # compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"insumo_medida\")  ",
+        "peekOfCode": "class Insumo(db.Model):\n    __tablename__='insumo'\n    id=db.Column(db.Integer,primary_key=True)\n    nombre=db.Column(db.String(80))\n    insumo_inventario = relationship(\"Insumo_Inventario\", back_populates=\"insumo\")\n    insumo_ingredientes = relationship(\"Ingredientes_Receta\", back_populates=\"insumo\")\n    # compras = relationship(\"Detalle_Compra\", back_populates=\"insumo\")\n    medida_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida = relationship(\"Medida\", back_populates=\"insumo_medida\")  \n    insumo_merma_produccion = relationship(\"Merma_Produccion\", back_populates=\"insumo\")",
         "detail": "models",
         "documentation": {}
     },
@@ -1372,7 +1388,61 @@
         "kind": 6,
         "importPath": "views",
         "description": "views",
-        "peekOfCode": "class RecetaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición",
+        "peekOfCode": "class RecetaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición\nclass InsumoView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','medida']  # Campos a mostrar en el formulario de edición\nclass ProveedorView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass MedidaView(ModelView):",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "InsumoView",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class InsumoView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','medida']  # Campos a mostrar en el formulario de edición\nclass ProveedorView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass MedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['medida','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass EquivalenciaMedidaView(ModelView):",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "ProveedorView",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class ProveedorView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass MedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['medida','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass EquivalenciaMedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass Medida(db.Model):",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "MedidaView",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class MedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['medida','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass EquivalenciaMedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "EquivalenciaMedidaView",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class EquivalenciaMedidaView(ModelView):\n    column_auto_select_related = True\n    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición\nclass Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    medida_inicial = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates=\"medida_inicial\")\n    medida_equival = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates=\"medida_equival\")\n    medida_detalle = relationship(\"Detalle_Compra\", back_populates=\"medida\")",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "Medida",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class Medida(db.Model):\n    __tablename__='medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida=db.Column(db.String(100))\n    medida_inicial = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates=\"medida_inicial\")\n    medida_equival = relationship(\"Equivalencia_Medida\", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates=\"medida_equival\")\n    medida_detalle = relationship(\"Detalle_Compra\", back_populates=\"medida\")\n    insumo_medida = relationship(\"Insumo\", back_populates=\"medida\")  \nclass Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "Equivalencia_Medida",
+        "kind": 6,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "class Equivalencia_Medida(db.Model):\n    __tablename__='equivalencia_medida'\n    id=db.Column(db.Integer,primary_key=True)\n    medida_inicial_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_equival_id = mapped_column(ForeignKey(\"medida.id\"))\n    medida_inicial = relationship(\"Medida\",back_populates=\"medida_inicial\", foreign_keys=[medida_inicial_id])\n    medida_equival = relationship(\"Medida\",back_populates=\"medida_equival\", foreign_keys=[medida_equival_id])",
         "detail": "views",
         "documentation": {}
     }
