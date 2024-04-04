@@ -27,7 +27,6 @@ class Insumo(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     nombre=db.Column(db.String(80))
     insumo_inventario = relationship("Insumo_Inventario", back_populates="insumo")
-    # pedidos_insumo = relationship("Pedidos_Proveedor", back_populates="insumo")
     insumo_ingredientes = relationship("Ingredientes_Receta", back_populates="insumo")
     compras = relationship("Detalle_Compra", back_populates="insumo")
     medida_id = mapped_column(ForeignKey("medida.id"))

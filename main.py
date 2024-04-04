@@ -19,7 +19,7 @@ from models import db
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView
 from config import DevelopmentConfig
 
 app = Flask(__name__)
@@ -44,11 +44,11 @@ admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_tem
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
 # admin = Admin(app, name='pruebainsumos')
-admin.add_view(ModelView(Insumo, db.session))
-admin.add_view(ModelView(Proveedor, db.session))
-admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session))
+admin.add_view(InsumoView(Insumo, db.session))
+admin.add_view(ProveedorView(Proveedor, db.session))
+admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
-admin.add_view(MermaInventarioView(Merma_Inventario, db.session))
+admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
 admin.add_view(ModelView(Receta, db.session))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
