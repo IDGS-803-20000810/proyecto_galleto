@@ -2,6 +2,8 @@ from flask_admin.contrib.sqla import ModelView
 from models import Proveedor, Insumo, Insumo_Inventario
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import mapped_column
 from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
 
 db=SQLAlchemy()
@@ -85,20 +87,3 @@ class MedidaView(ModelView):
 class EquivalenciaMedidaView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
-
-class Medida(db.Model):
-    __tablename__='medida'
-    id=db.Column(db.Integer,primary_key=True)
-    medida=db.Column(db.String(100))
-    medida_inicial = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates="medida_inicial")
-    medida_equival = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates="medida_equival")
-    medida_detalle = relationship("Detalle_Compra", back_populates="medida")
-    insumo_medida = relationship("Insumo", back_populates="medida")  
-
-class Equivalencia_Medida(db.Model):
-    __tablename__='equivalencia_medida'
-    id=db.Column(db.Integer,primary_key=True)
-    medida_inicial_id = mapped_column(ForeignKey("medida.id"))
-    medida_equival_id = mapped_column(ForeignKey("medida.id"))
-    medida_inicial = relationship("Medida",back_populates="medida_inicial", foreign_keys=[medida_inicial_id])
-    medida_equival = relationship("Medida",back_populates="medida_equival", foreign_keys=[medida_equival_id])
