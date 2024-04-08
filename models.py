@@ -130,15 +130,16 @@ class Produccion(db.Model):
     fecha_hora=db.Column(db.DateTime,default=datetime.datetime.now)
     usuario_id = mapped_column(ForeignKey("usuarios.id"))
     usuario = relationship("Usuarios", back_populates="producciones_usuario")  
-    # detalles = relationship("Produccion_Detalle", back_populates="produccion")
+    detalles = relationship("Produccion_Detalle", back_populates="produccion")
     #nuevos campos de detalle
-    cantidad=db.Column(db.Float)
-    receta_id = mapped_column(ForeignKey("receta.id"))
-    receta = relationship("Receta", back_populates="producciones")  
-    produccion_id = mapped_column(ForeignKey("produccion.id"))
-    produccion = relationship("Produccion", back_populates="detalles")  
-    mermas = relationship("Merma_Produccion", back_populates="detalle_produccion")  
-    produccion_detalle = relationship("Producto_Inventario", back_populates="produccion_detalle")
+
+    # cantidad=db.Column(db.Float)
+    # receta_id = mapped_column(ForeignKey("receta.id"))
+    # receta = relationship("Receta", back_populates="producciones")  
+    # produccion_id = mapped_column(ForeignKey("produccion.id"))
+    # produccion = relationship("Produccion", back_populates="detalles")  
+    # mermas = relationship("Merma_Produccion", back_populates="detalle_produccion")  
+    # produccion_detalle = relationship("Producto_Inventario", back_populates="produccion_detalle")
 
 
 class Produccion_Detalle(db.Model):
