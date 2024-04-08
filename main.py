@@ -52,7 +52,7 @@ admin.add_view(AbastecimientoView(Abastecimiento, db.session))
 admin.add_view(DetalleCompraView(Detalle_Compra,  db.session))
 admin.add_view(CompraView(Compra,  db.session))
 admin.add_view(ProveedorView(Proveedor, db.session))
-admin.add_view(MedidaView(Medida, db.session))
+# admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(ProductoView(Producto, db.session))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
 

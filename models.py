@@ -29,7 +29,7 @@ class Insumo(db.Model):
     insumo_ingredientes = relationship("Ingredientes_Receta", back_populates="insumo")
     # compras = relationship("Detalle_Compra", back_populates="insumo")
     medida_id = mapped_column(ForeignKey("medida.id"))
-    medida = relationship("Medida", back_populates="insumo")  
+    medida = relationship("Medida", back_populates="insumo_medida")  
     insumo_merma_produccion = relationship("Merma_Produccion", back_populates="insumo")
     abastecimiento = relationship("Abastecimiento", back_populates="insumo")  
     def __str__(self):
@@ -196,7 +196,7 @@ class Producto_Inventario(db.Model):
     precio =db.Column(db.Float)
     peso =db.Column(db.Float)
     produccion_detalle_id = mapped_column(ForeignKey("produccion_detalle.id"))
-    produccion_detalle = relationship("Produccion_Detalle", back_populates="producto_inventario")
+    produccion_detalle = relationship("Produccion_Detalle", back_populates="produccion_detalle")
     merma = relationship("Merma_Producto", back_populates="producto")  
 
 class Merma_Producto(db.Model):
