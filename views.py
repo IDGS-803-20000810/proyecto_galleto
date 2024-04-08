@@ -6,6 +6,11 @@ from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
 from forms import RecetaForm, IngredientesRecetaForm
+from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
+# from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import mapped_column
 from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
 
 # db=SQLAlchemy()
@@ -327,3 +332,17 @@ class ProduccionCocinaView(BaseView):
         recetas = Receta.query.all()
         
         return self.render('recetas.html',recetas=recetas)
+class AbastecimientoView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
+
+class CompraView(ModelView):
+    column_auto_select_related = True
+    inline_models = ((Detalle_Compra, ))
+    form_columns = ['usuario','proveedor','detalles_compra']  
+    create_template = 'crear_compra.html'
+
+class DetalleCompraView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['abastecimiento','caducidad','cantidad']  
+    create_template = 'crear_compra.html'

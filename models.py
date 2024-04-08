@@ -27,6 +27,7 @@ class Insumo(db.Model):
     nombre=db.Column(db.String(80))
     insumo_inventario = relationship("Insumo_Inventario", back_populates="insumo")
     insumo_ingredientes = relationship("Ingredientes_Receta", back_populates="insumo")
+    # compras = relationship("Detalle_Compra", back_populates="insumo")
     medida_id = mapped_column(ForeignKey("medida.id"))
     medida = relationship("Medida", back_populates="insumo")  
     insumo_merma_produccion = relationship("Merma_Produccion", back_populates="insumo")
@@ -60,6 +61,20 @@ class Insumo_Inventario(db.Model):
         out = str(self.insumo) + ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out
 
+
+class Abastecimiento(db.Model):
+    __tablename__='abastecimiento'
+    id=db.Column(db.Integer,primary_key=True)
+    descripcion=db.Column(db.String(255))
+    insumo_id = mapped_column(ForeignKey("insumo.id"))
+    insumo = relationship("Insumo", back_populates="abastecimiento")  
+    cantidad_insumo=db.Column(db.Float)
+    detalle_compra = relationship("Detalle_Compra", back_populates="abastecimiento")
+    def __str__(self):
+        out = str(self.descripcion) #+ ' '  + str(self.anaquel)
+        return out
+
+
 # class Pedidos_Proveedor(db.Model):
 #     __tablename__='pedidos_proveedor'
 #     id=db.Column(db.Integer, primary_key=True)
@@ -89,7 +104,7 @@ class Detalle_Compra(db.Model):
     compra = relationship("Compra", back_populates="detalles_compra")  
     insumo_inventario = relationship("Insumo_Inventario", back_populates="detalle")
     abastecimiento_id = mapped_column(ForeignKey("abastecimiento.id"))
-    abastecimiento = relationship("Abastecimiento", back_populates="detalle_abastecimiento")  
+    abastecimiento = relationship("Abastecimiento", back_populates="detalle_compra")  
     caducidad=db.Column(db.DateTime,default=datetime.datetime.now)
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
@@ -222,17 +237,8 @@ class Medida(db.Model):
     __tablename__='medida'
     id=db.Column(db.Integer,primary_key=True)
     medida=db.Column(db.String(100))
-    insumo = relationship("Insumo", back_populates="medida")
+    insumo_medida = relationship("Insumo", back_populates="medida")  
     def __str__(self):
         return self.medida
-
-class Abastecimiento(db.Model):
-    __tablename__='abastecimiento'
-    id=db.Column(db.Integer,primary_key=True)
-    descripcion=db.Column(db.String(255))
-    detalle_abastecimiento = relationship("Detalle_Compra", back_populates="abastecimiento")  
-    insumo_id = mapped_column(ForeignKey("insumo.id"))
-    insumo = relationship("Insumo", back_populates="abastecimiento")  
-    cantidad_insumo=db.Column(db.Float)
 
 class Users(UserMixin, Usuarios): ...
