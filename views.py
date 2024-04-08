@@ -1,5 +1,5 @@
 from flask_admin.contrib.sqla import ModelView
-from models import Proveedor, Insumo, Insumo_Inventario
+from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
@@ -87,3 +87,18 @@ class MedidaView(ModelView):
 class EquivalenciaMedidaView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
+
+class AbastecimientoView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
+
+class CompraView(ModelView):
+    column_auto_select_related = True
+    inline_models = ((Detalle_Compra, ))
+    form_columns = ['usuario','proveedor','detalles_compra']  
+    create_template = 'crear_compra.html'
+
+class DetalleCompraView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['abastecimiento','caducidad','cantidad']  
+    create_template = 'crear_compra.html'
