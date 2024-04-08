@@ -21,7 +21,7 @@ from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView, RecetaView, MedidaView, ProductoView
 from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, DetalleCompraView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig
 
 app = Flask(__name__)
@@ -49,7 +49,6 @@ admin_permission = Permission(RoleNeed('admin'))
 admin.add_view(ModelView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
-admin.add_view(DetalleCompraView(Detalle_Compra,  db.session))
 admin.add_view(CompraView(Compra,  db.session))
 admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))

@@ -336,13 +336,16 @@ class AbastecimientoView(ModelView):
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
 
+class InlineaCompraView(ModelView):
+    column_auto_select_related = True
+    form_columns=['abastecimiento','caducidad','cantidad', 'medida'] 
+    form_extra_fields = {
+        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
+    }
+    create_template = 'crear_detalle_compra.html'
+
 class CompraView(ModelView):
     column_auto_select_related = True
-    inline_models = ((Detalle_Compra, ))
+    inline_models = (InlineaCompraView(Detalle_Compra, db.session),)
     form_columns = ['usuario','proveedor','detalles_compra']  
-    create_template = 'crear_compra.html'
-
-class DetalleCompraView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['abastecimiento','caducidad','cantidad']  
     create_template = 'crear_compra.html'

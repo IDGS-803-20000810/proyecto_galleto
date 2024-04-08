@@ -7,6 +7,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 import datetime
+from datetime import date
 
 db=SQLAlchemy()
 
@@ -105,7 +106,7 @@ class Detalle_Compra(db.Model):
     insumo_inventario = relationship("Insumo_Inventario", back_populates="detalle")
     abastecimiento_id = mapped_column(ForeignKey("abastecimiento.id"))
     abastecimiento = relationship("Abastecimiento", back_populates="detalle_compra")  
-    caducidad=db.Column(db.DateTime,default=datetime.datetime.now)
+    caducidad=db.Column(db.Date,default=date.today())
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
 
