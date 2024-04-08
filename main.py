@@ -14,11 +14,11 @@ import time
 import secrets
 import bcrypt
 
-from models import db
+from models import Producto, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
-from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta
+from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView, RecetaView, MedidaView, ProductoView
 from config import DevelopmentConfig
 
 app = Flask(__name__)
@@ -45,10 +45,14 @@ admin_permission = Permission(RoleNeed('admin'))
 # admin = Admin(app, name='pruebainsumos')
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(ProveedorView(Proveedor, db.session))
+admin.add_view(MedidaView(Medida, db.session))
+admin.add_view(ProductoView(Producto, db.session))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
+
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
-admin.add_view(ModelView(Receta, db.session))
+admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
+# admin.add_view(ModelView(Receta, db.session))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 secretkey=app.config['SECRET_KEY']
@@ -60,8 +64,6 @@ principals = Principal(app)
 admin_permission = Permission(RoleNeed('admin'))
 
 # app.register_blueprint(proveedores)
-
-
 
 #Iniciar traduccion
 babel = Babel(app)
@@ -245,9 +247,6 @@ def sanitizar(palabra):
 def logout():
     logout_user()
     return redirect(url_for("home"))
-
-
-
 
 if __name__ == "__main__":
     csrf.init_app(app)

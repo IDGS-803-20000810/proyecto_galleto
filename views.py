@@ -1,10 +1,14 @@
 from flask_admin.contrib.sqla import ModelView
-from models import Proveedor, Insumo, Insumo_Inventario
+from flask_admin import BaseView, expose
+from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
+from models import Ingredientes_Receta, Insumo, Insumo_Inventario, Producto, Proveedor, Receta, Medida
+from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
+from forms import RecetaForm, IngredientesRecetaForm
 from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
 
-db=SQLAlchemy()
+# db=SQLAlchemy()
 
 class MermaInventarioView(ModelView):
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
@@ -66,39 +70,260 @@ class Insumo_InventarioView(ModelView):
                 id=model.id).update({"cantidad": model.cantidad})
                 db.session.commit()
 
-class RecetaView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición
+# class RecetaView(ModelView):
+#     column_auto_select_related = True
+#     form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición
 
 class InsumoView(ModelView):
     column_auto_select_related = True
-    form_columns = ['nombre','medida']  # Campos a mostrar en el formulario de edición
+    form_columns = ['nombre','medida']  #
+    column_list = ['nombre','medida']  # Campos a mostrar en la lista
+    column_editable_list = ['nombre','medida'] # Campos editables en la lista
+    
 
 class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
 
+class ProductoView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['nombre','peso']  # Campos a mostrar en el formulario de edición
+
 class MedidaView(ModelView):
     column_auto_select_related = True
-    form_columns = ['medida','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
+    form_columns = ['medida']  # Campos a mostrar en el formulario de edición
+    
 
-class EquivalenciaMedidaView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
+class RecetaView(BaseView):
+    
+    @expose('/')
+    def viewReceta(self):
+        session["detalle"] = []
+        recetas = Receta.query.all()
+        
+        return self.render('recetas.html',recetas=recetas)
+    
+    @expose('/eliminarReceta',methods=['GET'])
+    def deleteReceta(self):
+        session["detalle"] = []
 
-class Medida(db.Model):
-    __tablename__='medida'
-    id=db.Column(db.Integer,primary_key=True)
-    medida=db.Column(db.String(100))
-    medida_inicial = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_inicial_id', back_populates="medida_inicial")
-    medida_equival = relationship("Equivalencia_Medida", foreign_keys='Equivalencia_Medida.medida_equival_id',back_populates="medida_equival")
-    medida_detalle = relationship("Detalle_Compra", back_populates="medida")
-    insumo_medida = relationship("Insumo", back_populates="medida")  
+        id = request.args.get("id")
+        receta = db.session.query(Receta).filter(Receta.id == id).first()
+        db.session.delete(receta)
+        db.session.commit()
+        
+        recetas = Receta.query.all()
+        return self.render('recetas.html',recetas=recetas)
+    
+    @expose('/addReceta', methods=['POST','GET'])
+    def addReceta(self):
+        if 'detalle' not in session.keys():
+            session['detalle'] = []
 
-class Equivalencia_Medida(db.Model):
-    __tablename__='equivalencia_medida'
-    id=db.Column(db.Integer,primary_key=True)
-    medida_inicial_id = mapped_column(ForeignKey("medida.id"))
-    medida_equival_id = mapped_column(ForeignKey("medida.id"))
-    medida_inicial = relationship("Medida",back_populates="medida_inicial", foreign_keys=[medida_inicial_id])
-    medida_equival = relationship("Medida",back_populates="medida_equival", foreign_keys=[medida_equival_id])
+        ingsRecetaForm = IngredientesRecetaForm(request.form)
+        recetaForm = RecetaForm(request.form)
+        insumos = Insumo.query.all()
+        productos = Producto.query.all()
+        
+        lista_insumos = []
+
+        for i in insumos:
+            medida = Medida.query.filter(Medida.id == i.medida_id).first()
+            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
+
+        
+        lista_productos = [(i.id, i.nombre) for i in productos]
+        ingsRecetaForm.insumo.choices = lista_insumos
+        recetaForm.producto.choices = lista_productos
+
+        detalle = session["detalle"]
+        
+        if request.method == "GET":
+
+            session['accion'] = request.args.get("accion")
+
+            if session['accion'] == 'modificar':
+
+                #MODIFICAR
+
+                id = request.args.get("id")
+                session['id'] = id
+                receta = db.session.query(Receta).filter(Receta.id == id).first()
+
+                recetaForm.nombre.data = receta.nombre
+                recetaForm.descripcion.data = receta.descripcion
+                recetaForm.producto.data = receta.producto_id
+                recetaForm.cantidad.data = receta.cantidad_producto
+
+                ingsReceta = db.session.query(Ingredientes_Receta).filter(Ingredientes_Receta.receta_id == id).all()
+
+                detalle = []
+
+                for item in ingsReceta:
+
+                    insumo = Insumo.query.filter(Insumo.id == item.insumo_id).first()
+
+                    detalle.append({
+                    "id": item.insumo_id,
+                    "nombre": insumo.nombre,
+                    "cantidad": item.cantidad,
+                    })
+
+                session['detalle'] = detalle
+
+                #MODIFICAR
+
+            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=[])        
+        if request.method == "POST":
+
+            nombre = recetaForm.nombre.data
+            descripcion = recetaForm.descripcion.data
+            producto = int(recetaForm.producto.data)
+            cantidad = int(recetaForm.cantidad.data)
+
+            if session['accion'] == 'crear':
+            # CREAR
+
+                receta = Receta(nombre=nombre,descripcion=descripcion,producto_id=producto,cantidad_producto=cantidad)
+
+                db.session.add(receta)
+                db.session.commit()
+
+                db.session.refresh(receta)
+                
+                for det in detalle:
+                    ings = Ingredientes_Receta(cantidad=det['cantidad'],insumo_id=det['id'],receta_id=receta.id)
+                    db.session.add(ings)
+                    db.session.commit()
+
+            else:
+
+                # MODIFICAR
+
+                receta = Receta.query.filter(Receta.id == session['id']).first()
+
+                receta.nombre = nombre
+                receta.descripcion = descripcion
+                receta.producto_id = producto
+                receta.cantidad = cantidad
+
+                #Eliminar ingredientes para insertar los nuevos 
+                Ingredientes_Receta.query.filter(Ingredientes_Receta.receta_id == session['id']).delete()
+                
+                db.session.add(receta)
+                db.session.commit()
+                
+                for det in detalle:
+                    ings = Ingredientes_Receta(cantidad=det['cantidad'],insumo_id=det['id'],receta_id=receta.id)
+                    db.session.add(ings)
+                    db.session.commit()
+                
+        recetas = Receta.query.all()
+        return self.render('recetas.html',recetas=recetas)  
+    
+    @expose('/añadirDetalle', methods=['POST'])
+    def addDetalle(self):
+        ingsRecetaForm = IngredientesRecetaForm(request.form)
+        recetaForm = RecetaForm(request.form)
+        insumos = Insumo.query.all()
+        productos = Producto.query.all()
+
+        lista_insumos = []
+
+        for i in insumos:
+            medida = Medida.query.filter(Medida.id == i.medida_id).first()
+            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
+        
+        lista_productos = [(i.id, i.nombre) for i in productos]
+        ingsRecetaForm.insumo.choices = lista_insumos
+        recetaForm.producto.choices = lista_productos
+        
+        mensajes = []
+        
+        for i in insumos:
+            medida = Medida.query.filter(Medida.id == i.medida_id).first()
+            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
+            
+        ingsRecetaForm.insumo.choices = lista_insumos
+        
+        if request.method == "POST":
+            cantidad_detalle = int(ingsRecetaForm.cantidad.data)
+            id_insumo = int(ingsRecetaForm.insumo.data)
+            insumo = Insumo.query.filter(Insumo.id == id_insumo).first()
+            
+            detalle = session["detalle"]
+            
+            if detalle:
+                for det in detalle:
+                    if det['id'] == insumo.id:
+                        mensajes.append("Este articulo ya está agregado")
+                        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)    
+
+            detalle.append({
+            "id": insumo.id,
+            "nombre": insumo.nombre,
+            "cantidad": cantidad_detalle,
+            })
+              
+            session['detalle'] = detalle
+            
+            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
+        
+        session['detalle'] = []
+        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
+
+        
+    @expose('/eliminarDetalle', methods=['GET'])
+    def deleteDetalle(self):
+        ingsRecetaForm = IngredientesRecetaForm(request.form)
+        recetaForm = RecetaForm(request.form)
+        insumos = Insumo.query.all()
+        productos = Producto.query.all()
+        
+        
+        lista_productos = [(i.id, i.nombre) for i in productos]
+        recetaForm.producto.choices = lista_productos
+
+        insumos = Insumo.query.all()
+        
+        lista_insumos = []
+        mensajes = []
+        
+        for i in insumos:
+            medida = Medida.query.filter(Medida.id == i.medida_id).first()
+            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
+            
+        ingsRecetaForm.insumo.choices = lista_insumos
+        
+        if request.method == "GET":
+            id = int(request.args.get("id"))
+            if session["detalle"]:
+                detalle = session["detalle"]
+
+            print("Detalle :")
+            print(detalle)
+
+            if detalle:
+                for item in detalle:
+                    if item['id'] == id:
+                        detalle.remove({
+                        "id": item['id'],
+                        "nombre": item['nombre'],
+                        "cantidad": item['cantidad'],
+                        })
+              
+            session['detalle'] = detalle
+            
+            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
+
+        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
+
+class ProduccionCocinaView(BaseView):
+    
+    @expose('/')
+    def viewReceta(self):
+        
+        session["detalle"] = []
+        recetas = Receta.query.all()
+        
+        return self.render('recetas.html',recetas=recetas)

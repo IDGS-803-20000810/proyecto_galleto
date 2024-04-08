@@ -1,0 +1,83 @@
+{% extends 'admin/master.html' %}
+{% import "_macros.html" as macros %}
+{% from "_macros.html" import render_field %}
+{% block body %}
+{% if session['accion']=='crear' %}
+    <h3>Crear Receta</h3>
+{% endif %}
+{% if session['accion']=='modificar'%}
+    <h3>Modificar Receta</h3>
+{% endif %}
+
+<form action="{{url_for('recetas.addReceta')}}" method="POST">
+    <div class="row">
+        <div class="col">
+            {{render_field(recetaForm.nombre, class="form-control")}}
+        </div>
+        <div class="col">
+            {{render_field(recetaForm.descripcion, class="form-control")}}
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            {{render_field(recetaForm.producto, class="form-control")}}
+        </div>
+        <div class="col">
+            {{render_field(recetaForm.cantidad, class="form-control")}}
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <input type="submit" class="btn btn-success col m-4" style="height: 50% !important;" name="" id="" value="Guardar Receta">
+    </div>
+
+</form>
+<hr class="solid">
+{% for m in mensajes %}
+
+<div class="alert alert-danger" role="alert">
+    {{m}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+{% endfor %}
+<form action="{{url_for('recetas.addDetalle')}}" method="POST">
+    <div class="row">
+        <div class="col">
+            {{render_field(ingsRecetaForm.insumo, class="form-control")}}
+        </div>
+        <div class="col">
+            {{render_field(ingsRecetaForm.cantidad, class="form-control")}}
+        </div>
+        <div class="col">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-success m-4" name="" id="" value="Agregar">
+        </div>
+    </div>
+</form>
+
+<div class="container-flex">
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Insumo</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for ing in detalle %}
+            <tr>
+                <td>{{ing.nombre}}</td>
+                <td>{{ing.cantidad}}</td>
+                <td><a href="eliminarDetalle?id={{ing.id}}" class="btn btn-danger">Eliminar</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

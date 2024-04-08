@@ -1,0 +1,29 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<a href=""></a>
+<a class="btn btn-success" href="addReceta?accion=crear">CREAR RECETA</a>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Receta</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in recetas %}
+    <tr>
+      <td>{{item.nombre}}</td>
+      <td>{{item.descripcion}}</td>
+      <td>
+        <a class="btn btn-danger" href="eliminarReceta?id={{item.id}}">Eliminar</a>
+        <a class="btn btn-warning" href="addReceta?accion=modificar&id={{item.id}}">Editar</a>
+      </td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+{% endblock %}
