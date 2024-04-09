@@ -1,0 +1,54 @@
+{% extends 'admin/master.html' %}
+{% import "_macros.html" as macros %}
+{% from "_macros.html" import render_field %}
+
+{% block body %}
+<form action="{{url_for('produccion_cocina.addProduccionesCocina')}}" method="POST">
+    <div class="row">
+        <div class="col">
+            {{render_field(produccionForm.receta, class="form-control")}}
+        </div>
+        <div class="col">
+            {{render_field(produccionForm.cantidad, class="form-control")}}
+        </div>
+    </div>
+    <div class="row">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <input type="submit" class="btn btn-success col m-4" style="height: 50% !important;" name="" id="" value="Iniciar produccion">
+    </div>
+</form>
+{% for m in mensajes %}
+
+<div class="alert alert-danger" role="alert">
+    {{m}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+{% endfor %}
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Receta</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in producciones %}
+        <tr>
+            <td>{{item['receta']}}</td>
+            <td>{{item['cantidad']}}</td>
+            <td>
+                <a class="btn btn-danger" href="cambiarEstatus?id={{item['id']}}&estatus=1">Completar</a>
+                <a class="btn btn-warning" href="cambiarEstatus?id={{item['id']}}&estatus=2">Cancelar</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+
+{% endblock %}

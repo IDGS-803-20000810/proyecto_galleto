@@ -14,11 +14,11 @@ import time
 import secrets
 import bcrypt
 
-from models import Producto, db, Medida
+from models import Presentacion, Producto, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView, RecetaView, MedidaView, ProductoView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
 from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, DetalleCompraView
@@ -59,6 +59,9 @@ admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario 
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
 admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
+admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
+admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
+admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))
 # admin.add_view(ModelView(Receta, db.session))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
