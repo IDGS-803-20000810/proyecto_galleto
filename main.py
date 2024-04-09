@@ -22,10 +22,10 @@ import bcrypt
 
 from models import Producto, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
-from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
+from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView, RecetaView, MedidaView, ProductoView
-from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
+from models import  Insumo,  Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig
@@ -41,36 +41,6 @@ cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 # load the extension
 principals = Principal(app)
 
-# Create user model.
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100))
-    last_name = db.Column(db.String(100))
-    login = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120))
-    password = db.Column(db.String(400))
-
-    # Flask-Login integration
-    # NOTE: is_authenticated, is_active, and is_anonymous
-    # are methods in Flask-Login < 0.3.0
-    @property
-    def is_authenticated(self):
-        return True
-
-    @property
-    def is_active(self):
-        return True
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    # Required for administrative interface
-    def __unicode__(self):
-        return self.username
 
 
 # Define login and registration forms (for flask-login)
@@ -115,22 +85,16 @@ def init_login():
         return db.session.query(User).get(user_id)
 
 
-# Create customized model view class
-class MyModelView(sqla.ModelView):
-    def is_accessible(self):
-        return login.current_user.is_authenticated
-
-
 # Create customized index view class that handles login & registration
 class MyAdminIndexView(admin.AdminIndexView):
 
     @expose('/')
     def index(self):
         if not login.current_user.is_authenticated:
-            return redirect("/")
+            return redirect(url_for('.login_view'))
         return super(MyAdminIndexView, self).index()
 
-    @expose('/login/', methods=['POST'])
+    @expose('/login/', methods=('GET', 'POST'))
     def login_view(self):
         # handle user login
         form = LoginForm(request.form)
@@ -176,7 +140,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 @app.route('/')
 def index():
     form = LoginForm(request.form)
-    return render_template('index.html',form=form)
+    return redirect('/admin')
 
 
 @app.route('/login/', methods=['POST'])
@@ -201,7 +165,7 @@ admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(),
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
 # admin = Admin(app, name='pruebainsumos')
-admin.add_view(ModelView(Medida, db.session))
+admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
 admin.add_view(CompraView(Compra,  db.session))

@@ -1,9 +1,11 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
+from flask_admin.model.template import macro
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
 from models import Ingredientes_Receta, Insumo, Insumo_Inventario, Producto, Proveedor, Receta, Medida
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
+from wtforms.validators import Length
 from flask_sqlalchemy import SQLAlchemy
 from forms import RecetaForm, IngredientesRecetaForm
 from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
@@ -13,17 +15,16 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import mapped_column
 from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
 from wtforms import validators
-from wtforms.validators import ValidationError
+from wtforms.validators import ValidationError, DataRequired, NumberRange
 import flask_login as login
+from datetime import date
+from flask_admin.model import typefmt
 
 # db=SQLAlchemy()
 
 class MermaInventarioView(ModelView):
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
+    def is_accessible(self):
+        return login.current_user.is_authenticated
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'medida', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
@@ -66,11 +67,8 @@ class MermaInventarioView(ModelView):
 
 class Insumo_InventarioView(ModelView):
     column_auto_select_related = True
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
+    def is_accessible(self):
+        return login.current_user.is_authenticated
     column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad','medida',  'insumo']  # Campos a mostrar en el formulario de edición
@@ -91,52 +89,39 @@ class Insumo_InventarioView(ModelView):
 # class RecetaView(ModelView):
 #     column_auto_select_related = True
 #     form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición
-
-class InsumoView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['nombre','medida']  #
-    column_list = ['nombre','medida']  # Campos a mostrar en la lista
-    column_editable_list = ['nombre','medida'] # Campos editables en la lista
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
-
+def phonelenght(form, field):
+    print(field)
+    if len(str(field.data)) != 10:
+        print("igual ptm")
+        raise ValidationError('Debe introducir un número de teléfono con 10 dígitos')  
+    else:
+        print("ptm")  
 class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
+    form_args = dict(
+        nombre=dict( validators=[DataRequired(message="pon algo we"), Length(min=3, max=30)]),
+        direccion=dict(validators=[DataRequired(message="pon algo we"), Length(min=7, max=30)]),
+        telefono=dict(validators=[DataRequired(message="pon algo we"), phonelenght])
+    )
+    def is_accessible(self):
+        return login.current_user.is_authenticated
 
 class ProductoView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','peso']  # Campos a mostrar en el formulario de edición
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
+    def is_accessible(self):
+        return login.current_user.is_authenticated
 
-class MedidaView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['medida']  # Campos a mostrar en el formulario de edición
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
-    
+
+
 
 class RecetaView(BaseView):
+    def is_accessible(self):
+        return login.current_user.is_authenticated
     
     @expose('/')
     def viewReceta(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
         session["detalle"] = []
         recetas = Receta.query.all()
         
@@ -381,11 +366,8 @@ class ProduccionCocinaView(BaseView):
 class AbastecimientoView(ModelView):
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
+    def is_accessible(self):
+        return login.current_user.is_authenticated
 
 class InlineaCompraView(ModelView):
     column_auto_select_related = True
@@ -399,43 +381,50 @@ def max_allowed(form, field):
         raise ValidationError('Max number of interfaces exceeded')
     
 def not_null(form, field):
+    print(field)
     if field.data == None:
-        raise ValidationError('Debe seleccionar un elemento')    
+        print("igual ptm")
+        raise ValidationError('Debe seleccionar un elemento')  
+    else:
+        print("ptm")  
+
 def min_allowed(form, field):
     if field.data == None:
         raise ValidationError('Debe seleccionar un elemento')    
     if len(str(field.data)) < 0:
         raise ValidationError('Debe introducir un valor')    
-def not_null(form, field):
-    if field.data == None:
-        raise ValidationError('Debe seleccionar un elemento')    
-def not_null(form, field):
-    if field.data == None:
-        raise ValidationError('Debe seleccionar un elemento')
     
-class CompraView(ModelView):
-    @expose('/')
-    def index(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        return self.index_view()
 
-    column_auto_select_related = True
-    column_list = [ 'usuario','proveedor', 'detalles_compra','total','caducidad']
+def date_format(view, value):
+    return value.strftime('%d.%m.%Y')
+
+MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
+MY_DEFAULT_FORMATTERS.update({
+        type(None): typefmt.null_formatter,
+        date: date_format
+    })
+   
+
+class CompraView(ModelView):
+   
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+    column_formatters = dict(price=macro('render_price'))
+    column_list = [ 'user','proveedor', 'detalles_compra','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
     form_args = dict(
-        cantidad=dict(validators=[max_allowed,min_allowed]), 
-        subtotal=dict(validators=[max_allowed,min_allowed]),
+        cantidad=dict(validators=[ NumberRange(min=1, max=100)]), 
+        subtotal=dict(validators=[ NumberRange(min=2, max=10000)]),
         abastecimiento=dict(validators=[not_null])
     )))]
-    form_columns = ['usuario','proveedor','detalles_compra']  
+    form_columns = ['user','proveedor','detalles_compra']  
     form_args = dict(
         usuario=dict(validators=[not_null]), 
         proveedor=dict(validators=[not_null])
     )
     def on_model_change(self, form, model, is_created):
         if is_created: 
-            print(model.usuario)
+            print(model.user)
             total = 0
             for detalles in model.detalles_compra:
                 cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
@@ -446,3 +435,39 @@ class CompraView(ModelView):
                 db.session.add(insumoInv)
             model.total = total
             db.session.commit()
+    
+class MedidaView(ModelView):
+   
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+    column_auto_select_related = True
+    column_list = [ 'medida']
+    form_args = dict(
+        medida=dict(
+        validators=[DataRequired("Por favor, llena este campo"), Length(min=2, max=30)]
+    ),
+    )
+    form_columns = ['medida']  
+    
+    
+class AbastecimientoView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['descripcion','insumo', 'cantidad_insumo']
+    form_args = dict(
+        insumo=dict(validators=[DataRequired("Por favor, llena este campo")]),
+        descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)])
+    )
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
+class InsumoView(ModelView):
+    column_auto_select_related = True
+    form_columns = ['nombre','medida']  #
+    form_args = dict(
+        nombre=dict( validators=[DataRequired(message="pon algo we"), Length(min=2, max=30)]  ),
+        medida=dict(validators=[DataRequired(message="pon algo we")])
+    )
+    column_list = ['nombre','medida']  # Campos a mostrar en la lista
+    column_editable_list = ['nombre','medida'] # Campos editables en la lista
+    def is_accessible(self):
+        return login.current_user.is_authenticated

@@ -15,3 +15,9 @@
 </ul>
 {%endif%}
 {%endmacro%}
+
+{% macro render_detalle(model, column) %}
+
+{% for my_item in my_collection %}  {{ model.price * 2 }} {% endfor %}
+   
+{% endmacro %}
