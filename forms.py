@@ -164,12 +164,4 @@ class DetalleVentaForm(Form):
         default=1
     )
 
-class EliminarDetalleVentaForm(Form):
-    presentacion_id = HiddenField(
-        "presentacion_id",
-        [
-            validators.DataRequired(message="Se requiere este campo"),
-        ],
-        default=1
-    )
 

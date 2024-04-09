@@ -64,17 +64,17 @@
                             <td>{{pre['cantidad']}}</td>
                             <td>{{pre['subtotal']}}</td>
                             <td>
-                                <a class="btn" href="#">X</a>
+                                <a href="deleteDetalle?index={{pre['index']}}" class="btn btn-danger"></a>
+                                
                             </td>
                         </tr>
                         {% endfor %}
-
                     </tbody>
                 </table>
             </div>
 
             <div class="card-footer text-muted">
-                <h2>Total:{{total}} </h2>
+                <h2>Total: ${{total}}</h2>
             </div>
 
         </div>

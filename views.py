@@ -6,7 +6,7 @@ from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, asc
-from forms import DetalleVentaForm, EliminarDetalleVentaForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
+from forms import DetalleVentaForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
 from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
@@ -540,50 +540,77 @@ class VentaPrincipalView(BaseView):
     @expose('/')
     def indexRecetas(self):
         detalleVentaForm = DetalleVentaForm(request.form)
-        eliminardetalleVentaForm = EliminarDetalleVentaForm(request.form)
 
         session['total'] = 0
         session['detalle'] = []
         
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,eliminardetalleVentaForm=eliminardetalleVentaForm)
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
     
 
     @expose('/addDetalle',methods=['POST'])
     def addDetalle(self):
         detalleVentaForm = DetalleVentaForm(request.form)
-        eliminardetalleVentaForm = EliminarDetalleVentaForm(request.form)
+
+        if request.method == "POST":
         
-        session['detalle'] = []
+            presentacion_id = int(detalleVentaForm.presentacion_id.data)
+            cantidad = int(detalleVentaForm.cantidad.data)
 
-        presentacion_id = int(detalleVentaForm.presentacion_id.data)
-        cantidad = int(detalleVentaForm.cantidad.data)
+            #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
 
-        #TODO: VALIDACIONES
+            presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
+            precio = presentacion.precio*cantidad
 
-        presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
-        precio = presentacion.precio*cantidad
+            total = session['total']
+            total+=precio
+            session['total'] = total
 
-        total = session['total']
-        total+=precio
+            detalle = session['detalle']
+
+            detalle.append({
+                "index": len(detalle) + 1,
+                "presentacion_id":presentacion_id,
+                "presentacion":presentacion.nombre,
+                "cantidad":cantidad,
+                "subtotal":precio
+            })
+
+            session['detalle'] = detalle
+
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+
+    @expose('/deleteDetalle',methods=['GET'])
+    def deleteDetalle(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        index = int(request.args.get("index"))
+
+        #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
+
+        detalle = session["detalle"]
+
+        if detalle:
+            detalle.pop(index - 1)
+
+        num = 0
+        total = 0
+
+        print("**************detalle*****************")
+        print(detalle)
+
+        for det in detalle:
+            num += 1
+            detalle[num]["index"] = num
+            precio = detalle[num]['subtotal']
+            total += precio
+
         session['total'] = total
-
-        detalle = session['detalle']
-        
-        detalle.append({
-            "presentacion_id":presentacion_id,
-            "presentacion":presentacion.nombre,
-            "cantidad":cantidad,
-            "subtotal":precio
-        })
-
         session['detalle'] = detalle
 
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,eliminardetalleVentaForm=eliminardetalleVentaForm)
-
-
-    
-
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
