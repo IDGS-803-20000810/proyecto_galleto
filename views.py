@@ -639,7 +639,7 @@ class VentaPrincipalView(BaseView):
             db.session.commit()
 
         session['detalle'] = []
-        session['total'] = []
+        session['total'] = 0
 
         presentaciones = Presentacion.query.all()
 
