@@ -1,11 +1,16 @@
-from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
+import os
+from flask import Flask, redirect, render_template, request, Response, flash, g, session, url_for, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from flask_wtf.csrf import CSRFProtect
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from wtforms import form, fields, validators
 from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
 from flask_babelex import Babel
-from flask_admin import Admin
+import flask_admin as admin
+import flask_login as login
+from flask_admin.contrib import sqla
+from flask_admin import helpers, expose
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.contrib.sqla import ModelView
 
 import forms
@@ -13,6 +18,7 @@ import bcrypt
 import time
 import secrets
 import bcrypt
+
 
 from models import Producto, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
@@ -24,6 +30,7 @@ from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Merma_
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig
 
+# Create Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 
@@ -31,17 +38,165 @@ csrf=CSRFProtect()
 
 cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-
 # load the extension
 principals = Principal(app)
 
+# Create user model.
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
+    login = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120))
+    password = db.Column(db.String(400))
 
-#Flask admin
-admin = Admin(app, name='Galletos Delight', template_mode='bootstrap4', base_template='custom_master.html')
-# admin.add_view(ModelView(Proveedor, db.session))
-#Fin flask admin
+    # Flask-Login integration
+    # NOTE: is_authenticated, is_active, and is_anonymous
+    # are methods in Flask-Login < 0.3.0
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.username
+
+
+# Define login and registration forms (for flask-login)
+class LoginForm(form.Form):
+    login = fields.StringField(validators=[validators.InputRequired()])
+    password = fields.PasswordField(validators=[validators.InputRequired()])
+
+    def validate_login(self, field):
+        user = self.get_user()
+
+        if user is None:
+            raise validators.ValidationError('Invalid user')
+
+        # we're comparing the plaintext pw with the the hash from the db
+        if not check_password_hash(user.password, self.password.data):
+        # to compare plain text passwords use
+        # if user.password != self.password.data:
+            raise validators.ValidationError('Invalid password')
+
+    def get_user(self):
+        return db.session.query(User).filter_by(login=self.login.data).first()
+
+
+class RegistrationForm(form.Form):
+    login = fields.StringField(validators=[validators.InputRequired()])
+    email = fields.StringField()
+    password = fields.PasswordField(validators=[validators.InputRequired()])
+
+    def validate_login(self, field):
+        if db.session.query(User).filter_by(login=self.login.data).count() > 0:
+            raise validators.ValidationError('Duplicate username')
+
+
+# Initialize flask-login
+def init_login():
+    login_manager = login.LoginManager()
+    login_manager.init_app(app)
+
+    # Create user loader function
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.query(User).get(user_id)
+
+
+# Create customized model view class
+class MyModelView(sqla.ModelView):
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
+
+# Create customized index view class that handles login & registration
+class MyAdminIndexView(admin.AdminIndexView):
+
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return super(MyAdminIndexView, self).index()
+
+    @expose('/login/', methods=['POST'])
+    def login_view(self):
+        # handle user login
+        form = LoginForm(request.form)
+        if helpers.validate_form_on_submit(form):
+            user = form.get_user()
+            login.login_user(user)
+
+        if login.current_user.is_authenticated:
+            return redirect(url_for('.index'))
+        link = '<p>Don\'t have an account? <a href="' + url_for('.register_view') + '">Click here to register.</a></p>'
+        self._template_args['form'] = form
+        self._template_args['link'] = link
+        return super(MyAdminIndexView, self).index()
+
+    @expose('/register/', methods=('GET', 'POST'))
+    def register_view(self):
+        form = RegistrationForm(request.form)
+        if helpers.validate_form_on_submit(form):
+            user = User()
+
+            form.populate_obj(user)
+            # we hash the users password to avoid saving it as plaintext in the db,
+            # remove to use plain text:
+            user.password = generate_password_hash(form.password.data)
+
+            db.session.add(user)
+            db.session.commit()
+
+            login.login_user(user)
+            return redirect(url_for('.index'))
+        link = '<p>Already have an account? <a href="' + url_for('.login_view') + '">Click here to log in.</a></p>'
+        self._template_args['form'] = form
+        self._template_args['link'] = link
+        return super(MyAdminIndexView, self).index()
+
+    @expose('/logout/')
+    def logout_view(self):
+        login.logout_user()
+        return redirect(url_for('.index'))
+
+
+# Flask views
+@app.route('/')
+def index():
+    form = LoginForm(request.form)
+    return render_template('index.html',form=form)
+
+
+@app.route('/login/', methods=['POST'])
+def login_vista():
+    # handle user login
+    form = LoginForm(request.form)
+    if helpers.validate_form_on_submit(form):
+        user = form.get_user()
+        login.login_user(user)
+    if login.current_user.is_authenticated:
+        return redirect("/admin")
+    return render_template('index.html',form=form)
+    
+
+    
+# Initialize flask-login
+init_login()
+
+# Create admin
+admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
 
 # Create a permission with a single Need, in this case a RoleNeed.
 admin_permission = Permission(RoleNeed('admin'))
@@ -63,196 +218,6 @@ admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 secretkey=app.config['SECRET_KEY']
 
-# load the extension
-principals = Principal(app)
-
-# Create a permission with a single Need, in this case a RoleNeed.
-admin_permission = Permission(RoleNeed('admin'))
-
-# app.register_blueprint(proveedores)
-
-#Iniciar traduccion
-babel = Babel(app)
-
-@babel.localeselector
-def get_locale():
-        return 'es'
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'),404
-
-# Creates a user loader callback that returns the user object given an id
-@login_manager.user_loader
-def loader_user(id):
-    return Users.query.get(id)
-
-@app.route("/")
-@login_required
-def index():
-    return render_template("index.html")
-
-@login_manager.unauthorized_handler
-def unauthorized():
-    return render_template('401.html'),401
-
-@app.errorhandler(403)
-def page_not_found(e):
-    session['redirected_from'] = request.url
-    return render_template('403.html'),403
-
-@app.before_request
-def before_request():
-    verificar_inactividad()
-
-@app.after_request
-def after_request(response):
-    return response
-
-@identity_loaded.connect_via(app)
-def on_identity_loaded(sender, identity):
-    # Set the identity user object
-    identity.user = current_user
-    # Add the UserNeed to the identity
-    if hasattr(current_user, 'id'):
-        identity.provides.add(UserNeed(current_user.id))
-
-    # Assuming the User model has a list of roles, update the
-    # identity with the roles that the user provides
-    if hasattr(current_user, 'permisos'):
-        if current_user.permisos == 1:
-            # for role in current_user.role:
-            identity.provides.add(RoleNeed('admin'))
-        else:
-            identity.provides.add(RoleNeed('user'))
-
-
-
-# En cada solicitud (antes de procesar la solicitud)
-def verificar_inactividad():
-    tiempo_actual = time.time()
-    tiempo_inactivo = tiempo_actual - session.get('tiempo', tiempo_actual)
-    umbral_inactividad_segundos = 60
-    if tiempo_inactivo > umbral_inactividad_segundos:
-        session.clear() 
-        session.modified = True
-        form=forms.LoginForm()
-        return render_template("login.html", form=form) 
-    session['tiempo'] = tiempo_actual
-    return None  
-
-def password_check(passwd):
-    SpecialSym =['$', '@', '#', '%']
-    val = True
-    mensaje = ""
-    if len(passwd) < 9:
-        mensaje="la contraseña debe de tener una logitud minima de 9"
-        val = False
-
-    if not any(char.isdigit() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos un numero"
-        val = False
-
-    if not any(char.isupper() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos una mayuscula"
-        val = False
-
-    if not any(char.islower() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos una minuscula"
-        val = False
-
-    if not any(char in SpecialSym for char in passwd):
-        mensaje = "La contraseña debe de tener al menos un caracter especial '$','@','#' "
-        val = False
-
-    return {'valido':val,'mensaje':mensaje}
-
-
-
-@app.route("/registro", methods = ["GET","POST"])
-def registro():
-    mensaje = ""
-    form = forms.RegistroForm(request.form)
-    print(form.nombre.data)
-    if request.method == "POST" and form.validate() :
-        print(form.nombre.data)
-        nombre = sanitizar(form.nombre.data)
-        username=form.username.data
-        password=form.password.data
-        username = sanitizar(username)
-        password = sanitizar(password)
-        permisos = sanitizar(form.permisos.data)
-        resCheck = password_check(password)
-        
-        if username in password:
-            mensaje = "La contraseña no debe de contener el nombre de usuario"
-            return render_template("registro.html",form=form,mensaje=mensaje)
-        
-        if not resCheck['valido']:
-            mensaje = resCheck['mensaje']
-            return render_template("registro.html",form=form,mensaje=mensaje)
-        
-        usu=Usuarios(nombre=nombre,username=username,password=bcrypt.hashpw( password=password.encode('utf-8'),salt=bcrypt.gensalt()),permisos=permisos)
-        db.session.add(usu)
-        db.session.commit()
-        return redirect("/login")
-    return render_template("registro.html",form=form,mensaje=mensaje)
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    form = forms.LoginForm(request.form)
-    res = ""
-    print("app.url_map")
-    print(app.url_map)
-    if request.method == "POST":
-        data = request.get_json()
-        res = loginCompare(data["user"], data["password"])
-        if res == "wronguser":
-            return jsonify(fail=1)
-        elif res == "wrongpass":
-            return jsonify(fail=2)
-        elif res == "success":
-            return jsonify(success=1)
-        elif res == "usuario con caracteres no validos '<', '>":
-            return jsonify(fail=3)
-    if request.method == "GET":
-        return render_template("login.html", form=form)
-
-def loginCompare(username, password):
-    username = sanitizar(username)
-    password = sanitizar(password)
-    user = Users.query.filter_by(
-                username=username).first()
-    
-    if "<" in user or ">" in user :
-        return "usuario con caracteres no validos '<', '>'"
-    
-    if user is not None:
-        # if user.password == password:
-        if bcrypt.checkpw(password=password.encode('utf-8'),hashed_password=user.password.encode('utf-8')):
-            login_user(user)
-            session['tiempo'] = time.time()
-            return "success"
-        else:
-            return "wrongpass"
-    return "wronguser"
-
-def sanitizar(palabra):
-    palabra=str(palabra)
-    if ";" in palabra or "delete" in palabra or "update" in palabra or "select" in palabra or "'" in palabra or '"' in palabra:
-        palabra = palabra.replace(';', '')
-        palabra = palabra.replace('delete', '')
-        palabra = palabra.replace('update', '')
-        palabra = palabra.replace('select', '')
-        palabra = palabra.replace("'", '')
-        palabra = palabra.replace('"', '')
-    return palabra
-
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     csrf.init_app(app)

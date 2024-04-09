@@ -12,10 +12,18 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import mapped_column
 from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
+from wtforms import validators
+from wtforms.validators import ValidationError
+import flask_login as login
 
 # db=SQLAlchemy()
 
 class MermaInventarioView(ModelView):
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'medida', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
@@ -58,6 +66,11 @@ class MermaInventarioView(ModelView):
 
 class Insumo_InventarioView(ModelView):
     column_auto_select_related = True
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
     column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad','medida',  'insumo']  # Campos a mostrar en el formulario de edición
@@ -84,25 +97,46 @@ class InsumoView(ModelView):
     form_columns = ['nombre','medida']  #
     column_list = ['nombre','medida']  # Campos a mostrar en la lista
     column_editable_list = ['nombre','medida'] # Campos editables en la lista
-    
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
 
 class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
 
 class ProductoView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','peso']  # Campos a mostrar en el formulario de edición
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
 
 class MedidaView(ModelView):
     column_auto_select_related = True
     form_columns = ['medida']  # Campos a mostrar en el formulario de edición
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
     
 
 class RecetaView(BaseView):
     
     @expose('/')
     def viewReceta(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         session["detalle"] = []
         recetas = Receta.query.all()
         
@@ -110,6 +144,8 @@ class RecetaView(BaseView):
     
     @expose('/eliminarReceta',methods=['GET'])
     def deleteReceta(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         session["detalle"] = []
 
         id = request.args.get("id")
@@ -122,6 +158,8 @@ class RecetaView(BaseView):
     
     @expose('/addReceta', methods=['POST','GET'])
     def addReceta(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         if 'detalle' not in session.keys():
             session['detalle'] = []
 
@@ -228,6 +266,8 @@ class RecetaView(BaseView):
     
     @expose('/añadirDetalle', methods=['POST'])
     def addDetalle(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         ingsRecetaForm = IngredientesRecetaForm(request.form)
         recetaForm = RecetaForm(request.form)
         insumos = Insumo.query.all()
@@ -280,6 +320,8 @@ class RecetaView(BaseView):
         
     @expose('/eliminarDetalle', methods=['GET'])
     def deleteDetalle(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         ingsRecetaForm = IngredientesRecetaForm(request.form)
         recetaForm = RecetaForm(request.form)
         insumos = Insumo.query.all()
@@ -327,25 +369,80 @@ class ProduccionCocinaView(BaseView):
     
     @expose('/')
     def viewReceta(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
         
         session["detalle"] = []
         recetas = Receta.query.all()
         
         return self.render('recetas.html',recetas=recetas)
+    
+
 class AbastecimientoView(ModelView):
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
 
 class InlineaCompraView(ModelView):
     column_auto_select_related = True
-    form_columns=['abastecimiento','caducidad','cantidad', 'medida'] 
-    form_extra_fields = {
-        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
-    }
-    create_template = 'crear_detalle_compra.html'
+    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
 
+
+def max_allowed(form, field):
+    if field.data == None:
+        raise ValidationError('Debe introducir un número')    
+    if field.data > 50:
+        raise ValidationError('Max number of interfaces exceeded')
+    
+def not_null(form, field):
+    if field.data == None:
+        raise ValidationError('Debe seleccionar un elemento')    
+def min_allowed(form, field):
+    if field.data == None:
+        raise ValidationError('Debe seleccionar un elemento')    
+    if len(str(field.data)) < 0:
+        raise ValidationError('Debe introducir un valor')    
+def not_null(form, field):
+    if field.data == None:
+        raise ValidationError('Debe seleccionar un elemento')    
+def not_null(form, field):
+    if field.data == None:
+        raise ValidationError('Debe seleccionar un elemento')
+    
 class CompraView(ModelView):
+    @expose('/')
+    def index(self):
+        if not login.current_user.is_authenticated:
+            return redirect("/")
+        return self.index_view()
+
     column_auto_select_related = True
-    inline_models = (InlineaCompraView(Detalle_Compra, db.session),)
+    column_list = [ 'usuario','proveedor', 'detalles_compra','total','caducidad']
+    inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
+    form_args = dict(
+        cantidad=dict(validators=[max_allowed,min_allowed]), 
+        subtotal=dict(validators=[max_allowed,min_allowed]),
+        abastecimiento=dict(validators=[not_null])
+    )))]
     form_columns = ['usuario','proveedor','detalles_compra']  
-    create_template = 'crear_compra.html'
+    form_args = dict(
+        usuario=dict(validators=[not_null]), 
+        proveedor=dict(validators=[not_null])
+    )
+    def on_model_change(self, form, model, is_created):
+        if is_created: 
+            print(model.usuario)
+            total = 0
+            for detalles in model.detalles_compra:
+                cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
+                total += detalles.subtotal
+                insumo_id = detalles.abastecimiento.insumo_id
+                detalle_id = detalles.id
+                insumoInv = Insumo_Inventario(cantidad=cantidad,insumo_id = insumo_id,detalle_id = detalle_id)
+                db.session.add(insumoInv)
+            model.total = total
+            db.session.commit()

@@ -22,6 +22,28 @@ class Usuarios(db.Model):
     ventas_usuario = relationship("Venta", back_populates="usuario")
     compras_usuario = relationship("Compra", back_populates="usuario")
 
+    # Flask-Login integration
+    # NOTE: is_authenticated, is_active, and is_anonymous
+    # are methods in Flask-Login < 0.3.0
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.username
+
 class Insumo(db.Model):
     __tablename__='insumo'
     id=db.Column(db.Integer,primary_key=True)
@@ -109,6 +131,9 @@ class Detalle_Compra(db.Model):
     caducidad=db.Column(db.Date,default=date.today())
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
+    def __str__(self):
+        out = str(self.abastecimiento.descripcion)
+        return out
 
 class Merma_Inventario(db.Model):
     __tablename__='merma_inventario'
