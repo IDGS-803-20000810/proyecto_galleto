@@ -57,7 +57,7 @@
                             <th scope="col"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody tyle="height: 60vh; overflow:scroll;">
                         {% for pre in detalle %}
                         <tr>
                             <td>{{pre['presentacion']}}</td>
@@ -75,6 +75,10 @@
 
             <div class="card-footer text-muted">
                 <h2>Total: ${{total}}</h2>
+                
+                <a class="btn btn-success d-flex m-1" href="guardarCompra">Aceptar compra</a>
+                <a class="btn btn-danger d-flex m-1" href="..">Cancelar compra</a>
+                
             </div>
 
         </div>

@@ -183,7 +183,6 @@ class Producto(db.Model):
     presentacion = relationship("Presentacion", back_populates="producto")
     inventario = relationship("Producto_Inventario", back_populates="producto")  
     orden = relationship("Orden", back_populates="producto")  
-    detalle_venta = relationship("Detalle_Venta", back_populates="producto")
     peso =db.Column(db.Float)
     def __str__(self):
         return self.nombre
@@ -223,14 +222,17 @@ class Venta(db.Model):
     usuario_id = mapped_column(ForeignKey("usuarios.id"))
     usuario = relationship("Usuarios", back_populates="ventas_usuario")  
     total_venta =db.Column(db.Float)
+    detalle_venta = relationship("Detalle_Venta", back_populates="venta")
 
 class Detalle_Venta(db.Model):
     __tablename__='detalle_venta'
     id=db.Column(db.Integer,primary_key=True)
-    producto_id = mapped_column(ForeignKey("producto.id"))
-    producto = relationship("Producto", back_populates="detalle_venta")  
-    subtotal=db.Column(db.Float)
-    cantidad=db.Column(db.Float)
+    presentacion_id = mapped_column(ForeignKey("presentacion.id"))
+    presentacion = relationship("Presentacion", back_populates="detalle_venta")  
+    venta_id = mapped_column(ForeignKey("venta.id"))
+    venta = relationship("Venta", back_populates="detalle_venta")  
+    subtotal = db.Column(db.Float)
+    cantidad = db.Column(db.Float)
 
 class Medida(db.Model):
     __tablename__='medida'
@@ -248,6 +250,7 @@ class Presentacion(db.Model):
     producto = relationship("Producto", back_populates="presentacion")
     cantidad_producto=db.Column(db.Integer)  
     precio=db.Column(db.Float)
+    detalle_venta = relationship("Detalle_Venta", back_populates="presentacion")
     def __str__(self):
         return self.medida
 

@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Ingredientes_Receta, Insumo, Insumo_Inventario, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida
+from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
@@ -603,13 +603,43 @@ class VentaPrincipalView(BaseView):
         print(detalle)
 
         for det in detalle:
-            num += 1
-            detalle[num]["index"] = num
+            detalle[num]["index"] = num+1
             precio = detalle[num]['subtotal']
             total += precio
+            num += 1
+
 
         session['total'] = total
         session['detalle'] = detalle
+
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+    
+    @expose('/guardarCompra',methods=['GET'])
+    def guardarCompra(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        detalle = session["detalle"]
+
+        venta = Venta(total_venta=session['total'])
+
+        db.session.add(venta)
+        db.session.commit()
+
+        db.session.refresh(venta)
+        
+        for det in detalle:
+            print(det['cantidad'])
+            print(det['presentacion_id'])
+            print(det['subtotal'])
+            print(venta.id)
+            detVent = Detalle_Venta(cantidad=det['cantidad'],presentacion_id=det['presentacion_id'],subtotal=det['subtotal'],venta_id=venta.id)
+            db.session.add(detVent)
+            db.session.commit()
+
+        session['detalle'] = []
+        session['total'] = []
 
         presentaciones = Presentacion.query.all()
 
