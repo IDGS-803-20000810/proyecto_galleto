@@ -1,5 +1,6 @@
 import wtforms
 from wtforms import (
+    HiddenField,
     StringField,
     SelectField,
     RadioField,
@@ -129,4 +130,38 @@ class IngredientesRecetaForm(Form):
         ],
         default=1
     )
+
+class ProduccionForm(Form):
+    receta = SelectField(
+        "Receta",
+        [
+            validators.DataRequired(message="Este campo es requerido"),
+        ],
+    )
+    cantidad = IntegerField(
+        "Cantidad",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+            validators.length(min=1, message="ingresa un usuario valido"),
+        ],
+        default=1
+    )
+
+class DetalleVentaForm(Form):
+    cantidad = IntegerField(
+        "Cantidad",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+            validators.length(min=1, message="ingresa un usuario valido"),
+        ],
+        default=1
+    )
+    presentacion_id = HiddenField(
+        "presentacion_id",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+        ],
+        default=1
+    )
+
 

@@ -2,12 +2,13 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Ingredientes_Receta, Insumo, Insumo_Inventario, Producto, Proveedor, Receta, Medida
+from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from wtforms.validators import Length
 from flask_sqlalchemy import SQLAlchemy
-from forms import RecetaForm, IngredientesRecetaForm
+from sqlalchemy import desc, asc
+from forms import DetalleVentaForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
 from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
@@ -114,7 +115,12 @@ class ProductoView(ModelView):
         return login.current_user.is_authenticated
 
 
-
+class PresentacionView(ModelView):
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+    column_auto_select_related = True
+    form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
+    column_labels = dict(cantidad_producto='cantidad producto')
 
 class RecetaView(BaseView):
     def is_accessible(self):
@@ -264,8 +270,8 @@ class RecetaView(BaseView):
             medida = Medida.query.filter(Medida.id == i.medida_id).first()
             lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
         
-        lista_productos = [(i.id, i.nombre) for i in productos]
         ingsRecetaForm.insumo.choices = lista_insumos
+        lista_productos = [(i.id, i.nombre) for i in productos]
         recetaForm.producto.choices = lista_productos
         
         mensajes = []
@@ -312,7 +318,6 @@ class RecetaView(BaseView):
         insumos = Insumo.query.all()
         productos = Producto.query.all()
         
-        
         lista_productos = [(i.id, i.nombre) for i in productos]
         recetaForm.producto.choices = lista_productos
 
@@ -351,18 +356,203 @@ class RecetaView(BaseView):
         return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
 
 class ProduccionCocinaView(BaseView):
-    
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
     @expose('/')
     def viewReceta(self):
         if not login.current_user.is_authenticated:
             return redirect("/")
+    def viewProduccionesCocina(self):
+        produccionForm = ProduccionForm(request.form)
+        mensajes =[]
+        lista_prod = []
         
-        session["detalle"] = []
-        recetas = Receta.query.all()
-        
-        return self.render('recetas.html',recetas=recetas)
-    
 
+        producciones = Produccion.query.filter(Produccion.estatus==0).all()
+        for prod in producciones:
+            receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+            lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+        
+        recetas = Receta.query.all()
+        lista_recetas = [(i.id, i.nombre) for i in recetas]
+        produccionForm.receta.choices = lista_recetas
+        
+        ordenes = Orden.query.all()
+        
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes=mensajes)
+    
+    @expose('/addProduccion',methods=['POST'])
+    def addProduccionesCocina(self):
+        produccionForm = ProduccionForm(request.form)
+        cantidad = int(produccionForm.cantidad.data)
+        receta_id = int(produccionForm.receta.data)
+
+        mensajes = []
+        lista_prod = []
+
+        recetas = Receta.query.all()
+        lista_recetas = [(i.id, i.nombre) for i in recetas]
+        produccionForm.receta.choices = lista_recetas
+        ############################
+
+        ingredientes = Ingredientes_Receta.query.filter(Ingredientes_Receta.receta_id==receta_id).all()
+            
+        #Verificar si hay insumos suficientes
+        for item in ingredientes:
+            total = 0
+            #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+            # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
+            insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
+            
+            insumo = Insumo.query.filter(Insumo.id == item.insumo_id).first()
+
+            for ins in insumosInv:
+                total+=ins.cantidad
+            
+            print("***********************item.cantidad****************")
+            print(item.cantidad*cantidad)
+            
+            print("***********************insumosInv****************")
+            print(insumosInv)
+
+            print("***********************total****************")
+            print(total)
+                
+            if total < item.cantidad*cantidad:
+                mensajes.append("Los insumos en el inventario no son suficientes: "+insumo.nombre)
+                
+                producciones = Produccion.query.filter(Produccion.estatus==0).all()
+                for prod in producciones:
+                    receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+                    lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+                ordenes = Orden.query.all()
+                return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
+        #######################
+
+
+        produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0)
+        
+        
+
+        db.session.add(produccion)
+        db.session.commit()
+
+        producciones = Produccion.query.filter(Produccion.estatus==0).all()
+        for prod in producciones:
+            receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+            lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+        
+        ordenes = Orden.query.all()
+
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes=mensajes)
+    
+    @expose('/cambiarEstatus')
+    def changeProduccionesCocina(self):
+        produccionForm = ProduccionForm(request.form)
+        
+        recetas = Receta.query.all()
+        lista_recetas = [(i.id, i.nombre) for i in recetas]
+        produccionForm.receta.choices = lista_recetas
+        
+        estatus = int(request.args.get("estatus"))
+        id = int(request.args.get("id"))
+        mensajes = []
+        lista_prod = []
+
+        produccion = Produccion.query.filter(Produccion.id==id).first()
+        produccion.estatus = estatus
+        nombre = ""
+
+        if estatus == 1:
+            ingredientes = Ingredientes_Receta.query.filter(Ingredientes_Receta.receta_id==produccion.receta_id).all()
+            
+            #Verificar si hay insumos suficientes
+            for item in ingredientes:
+                total = 0
+                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+                # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
+                insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
+                
+                print("***********************item.cantidad****************")
+                print(item.cantidad*produccion.cantidad)
+                
+                print("***********************insumosInv****************")
+                print(insumosInv)
+                
+                insumo = Insumo.query.filter(Insumo.id == item.insumo_id).first()
+
+                for ins in insumosInv:
+                    total+=ins.cantidad
+
+                print("***********************total****************")
+                print(total)
+                    
+                if total < item.cantidad*produccion.cantidad:
+                    mensajes.append("Los insumos en el inventario no son suficientes: "+insumo.nombre)
+                    
+                    producciones = Produccion.query.filter(Produccion.estatus==0).all()
+                    for prod in producciones:
+                        receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+                        lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+                    ordenes = Orden.query.all()
+                    return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
+                    
+            #Restar los insumos del inventario
+            for item in ingredientes:
+                print("*******************for*************************")
+                
+                total = 0
+
+                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+                # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
+                insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
+                
+                insumo = Insumo.query.filter(Insumo.id == item.insumo_id)
+
+                item_cantidad = item.cantidad*produccion.cantidad
+
+                for ins in insumosInv:
+                    print("*******************ins Inicio*************************")
+                    print(ins)
+                    if ins.cantidad >= item_cantidad:
+                        ins.cantidad = ins.cantidad - item_cantidad
+                        db.session.add(ins)
+                        db.session.commit()
+
+                        print("*******************ins Fin*************************")
+                        print(ins)
+                        break
+                    else:
+                        item_cantidad = item_cantidad - ins.cantidad
+                        ins.cantidad = 0
+                        db.session.add(ins)
+                        db.session.commit()
+
+                        print("*******************ins Fin*************************")
+                        print(ins)
+
+        
+        receta_insertar = Receta.query.filter(Receta.id == produccion.receta_id).first()
+        cantidad_producto = receta_insertar.cantidad_producto*produccion.cantidad
+        producto_inventario = Producto_Inventario(producto_id=receta_insertar.producto_id,cantidad = cantidad_producto,produccion_id=produccion.id)
+
+        db.session.add(produccion)
+        db.session.commit()
+        
+        db.session.add(producto_inventario)
+        db.session.commit()
+
+        producciones = Produccion.query.filter(Produccion.estatus==0).all()
+        for prod in producciones:
+            receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+            lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+        
+        ordenes = Orden.query.all()
+
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =[])
+
+    
 class AbastecimientoView(ModelView):
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
@@ -471,3 +661,115 @@ class InsumoView(ModelView):
     column_editable_list = ['nombre','medida'] # Campos editables en la lista
     def is_accessible(self):
         return login.current_user.is_authenticated
+
+class VentaPrincipalView(BaseView):
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+    @expose('/')
+    def indexRecetas(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        session['total'] = 0
+        session['detalle'] = []
+        
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+    
+
+    @expose('/addDetalle',methods=['POST'])
+    def addDetalle(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        if request.method == "POST":
+        
+            presentacion_id = int(detalleVentaForm.presentacion_id.data)
+            cantidad = int(detalleVentaForm.cantidad.data)
+
+            #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
+
+            presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
+            precio = presentacion.precio*cantidad
+
+            total = session['total']
+            total+=precio
+            session['total'] = total
+
+            detalle = session['detalle']
+
+            detalle.append({
+                "index": len(detalle) + 1,
+                "presentacion_id":presentacion_id,
+                "presentacion":presentacion.nombre,
+                "cantidad":cantidad,
+                "subtotal":precio
+            })
+
+            session['detalle'] = detalle
+
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+
+    @expose('/deleteDetalle',methods=['GET'])
+    def deleteDetalle(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        index = int(request.args.get("index"))
+
+        #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
+
+        detalle = session["detalle"]
+
+        if detalle:
+            detalle.pop(index - 1)
+
+        num = 0
+        total = 0
+
+        print("**************detalle*****************")
+        print(detalle)
+
+        for det in detalle:
+            detalle[num]["index"] = num+1
+            precio = detalle[num]['subtotal']
+            total += precio
+            num += 1
+
+
+        session['total'] = total
+        session['detalle'] = detalle
+
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+    
+    @expose('/guardarCompra',methods=['GET'])
+    def guardarCompra(self):
+        detalleVentaForm = DetalleVentaForm(request.form)
+
+        detalle = session["detalle"]
+
+        venta = Venta(total_venta=session['total'])
+
+        db.session.add(venta)
+        db.session.commit()
+
+        db.session.refresh(venta)
+        
+        for det in detalle:
+            print(det['cantidad'])
+            print(det['presentacion_id'])
+            print(det['subtotal'])
+            print(venta.id)
+            detVent = Detalle_Venta(cantidad=det['cantidad'],presentacion_id=det['presentacion_id'],subtotal=det['subtotal'],venta_id=venta.id)
+            db.session.add(detVent)
+            db.session.commit()
+
+        session['detalle'] = []
+        session['total'] = 0
+
+        presentaciones = Presentacion.query.all()
+
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)

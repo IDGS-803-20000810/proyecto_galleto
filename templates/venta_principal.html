@@ -1,0 +1,89 @@
+{% extends 'admin/master.html' %}
+{% import "_macros.html" as macros %}
+{% from "_macros.html" import render_field %}
+
+{% block body %}
+<div class="container-flex" style="height: 80vh;">
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                {% for item in presentaciones %}
+                <div class="card col-3 m-3 justify-content-center">
+                    <div class="card-body justify-content-center text-center align-middle">
+                        <h1 style="margin-bottom: 0px;">🍪</h1>
+                    </div>
+                    <div class="card-footer justify-content-center text-center">
+                        <p class="text-center text-uppercase">{{item.nombre}}</p>
+                        <div class="row">
+                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregar"
+                                href="">AGREGAR</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade " id="modalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form action="{{url_for('ventas_frente.addDetalle')}}" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Cantidad</h5>
+                                </div>
+                                <div class="modal-body">
+                                    {{render_field(detalleVentaForm.cantidad, class="form-control")}}
+                                    {{detalleVentaForm.presentacion_id(value=item.id)}}
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                    <input type="submit" class="btn btn-success" value="Agregar">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card col-4" style="height: 80vh;">
+            <div class="card-body">
+                <table class="table">
+                    <thead class="thead">
+                        <tr>
+                            <th scope="col">Presentacion</th>
+                            <th scope="col">cantidad</th>
+                            <th scope="col">subtotal</th>
+
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody tyle="height: 60vh; overflow:scroll;">
+                        {% for pre in detalle %}
+                        <tr>
+                            <td>{{pre['presentacion']}}</td>
+                            <td>{{pre['cantidad']}}</td>
+                            <td>{{pre['subtotal']}}</td>
+                            <td>
+                                <a href="deleteDetalle?index={{pre['index']}}" class="btn btn-danger"></a>
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer text-muted">
+                <h2>Total: ${{total}}</h2>
+                
+                <a class="btn btn-success d-flex m-1" href="guardarCompra">Aceptar compra</a>
+                <a class="btn btn-danger d-flex m-1" href="..">Cancelar compra</a>
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

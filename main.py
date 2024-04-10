@@ -12,6 +12,8 @@ from flask_admin.contrib import sqla
 from flask_admin import helpers, expose
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.contrib.sqla import ModelView
+from wtforms.csrf.session import SessionCSRF
+from flask_admin.form import SecureForm
 
 import forms
 import bcrypt
@@ -19,16 +21,15 @@ import time
 import secrets
 import bcrypt
 
-
-from models import Producto, db, Medida
+from models import Presentacion, Producto, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView, RecetaView, MedidaView, ProductoView
-from models import  Insumo,  Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
+from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
-from config import DevelopmentConfig
+from config import DevelopmentConfig, Config
 
 # Create Flask application
 app = Flask(__name__)
@@ -41,16 +42,18 @@ cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 # load the extension
 principals = Principal(app)
 
-
+class MyBaseForm(form.Form):
+    class Meta:
+        csrf = True  # Enable CSRF
+        csrf_class = SessionCSRF  # Set the CSRF implementation
+        csrf_secret = Config.SECRET_KEY
 
 # Define login and registration forms (for flask-login)
-class LoginForm(form.Form):
+class LoginForm(MyBaseForm):
     login = fields.StringField(validators=[validators.InputRequired()])
     password = fields.PasswordField(validators=[validators.InputRequired()])
-
     def validate_login(self, field):
         user = self.get_user()
-
         if user is None:
             raise validators.ValidationError('Invalid user')
 
@@ -87,6 +90,7 @@ def init_login():
 
 # Create customized index view class that handles login & registration
 class MyAdminIndexView(admin.AdminIndexView):
+    form_base_class = SecureForm
 
     @expose('/')
     def index(self):
@@ -139,7 +143,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 # Flask views
 @app.route('/')
 def index():
-    form = LoginForm(request.form)
+    form = LoginForm(request.form, SessionCSRF.session)
     return redirect('/admin')
 
 
@@ -177,6 +181,9 @@ admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario 
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
 admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
+admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
+admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
+admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))
 # admin.add_view(ModelView(Receta, db.session))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
