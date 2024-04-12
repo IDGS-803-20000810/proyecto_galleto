@@ -21,11 +21,11 @@ import time
 import secrets
 import bcrypt
 
-from models import Presentacion, Producto, Venta, db, Medida
+from models import Presentacion, Producto, Producto_Inventario, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
 from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
@@ -42,9 +42,16 @@ cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 # load the extension
 principals = Principal(app)
 
+#Iniciar traduccion
+babel = Babel(app)
+
+@babel.localeselector
+def get_locale():
+        return 'es'
+
 class MyBaseForm(form.Form):
     class Meta:
-        csrf = True  # Enable CSRF
+        csrf = False  # Enable CSRF
         csrf_class = SessionCSRF  # Set the CSRF implementation
         csrf_secret = Config.SECRET_KEY
 
@@ -75,7 +82,6 @@ class RegistrationForm(form.Form):
     def validate_login(self, field):
         if db.session.query(User).filter_by(login=self.login.data).count() > 0:
             raise validators.ValidationError('Duplicate username')
-
 
 # Initialize flask-login
 def init_login():
@@ -177,6 +183,7 @@ admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(ProductoView(Producto, db.session))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
+admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos'))
 
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
@@ -191,7 +198,7 @@ secretkey=app.config['SECRET_KEY']
 
 
 if __name__ == "__main__":
-    csrf.init_app(app)
+    # csrf.init_app(app)
     db.init_app(app)
     with app.app_context():
         db.create_all()
