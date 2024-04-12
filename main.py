@@ -56,7 +56,7 @@ class MyBaseForm(form.Form):
         csrf_secret = Config.SECRET_KEY
 
 # Define login and registration forms (for flask-login)
-class LoginForm(MyBaseForm):
+class LoginForm(form.Form):
     login = fields.StringField(validators=[validators.InputRequired()])
     password = fields.PasswordField(validators=[validators.InputRequired()])
     def validate_login(self, field):
@@ -117,7 +117,7 @@ class MyAdminIndexView(admin.AdminIndexView):
         link = '<p>Don\'t have an account? <a href="' + url_for('.register_view') + '">Click here to register.</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
-        return super(MyAdminIndexView, self).index()
+        return super(MyAdminIndexView, self).render("login.html",form=form)
 
     @expose('/register/', methods=('GET', 'POST'))
     def register_view(self):
@@ -138,7 +138,7 @@ class MyAdminIndexView(admin.AdminIndexView):
         link = '<p>Already have an account? <a href="' + url_for('.login_view') + '">Click here to log in.</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
-        return super(MyAdminIndexView, self).index()
+        return self.render('login.html',form=form)
 
     @expose('/logout/')
     def logout_view(self):
@@ -149,7 +149,6 @@ class MyAdminIndexView(admin.AdminIndexView):
 # Flask views
 @app.route('/')
 def index():
-    form = LoginForm(request.form, SessionCSRF.session)
     return redirect('/admin')
 
 
