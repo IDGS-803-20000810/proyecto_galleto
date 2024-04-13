@@ -147,7 +147,7 @@ class ProduccionForm(Form):
         default=1
     )
 
-class DetalleVentaForm(Form):
+class MermaProductoForm(Form):
     cantidad = IntegerField(
         "Cantidad",
         [

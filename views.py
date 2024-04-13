@@ -8,7 +8,7 @@ from models import db
 from wtforms.validators import Length
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, asc
-from forms import DetalleVentaForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
+from forms import DetalleVentaForm, MermaProductoForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
 from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from flask_sqlalchemy import SQLAlchemy
@@ -98,7 +98,18 @@ class Producto_InventarioView(ModelView):
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
-        return True
+        idProdInv = request.form['row_id']
+        formMerma = MermaProductoForm(request.form)
+        
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        receta = Receta.query.filter(Producto)
+        ingsReceta = Ingredientes_Receta.query.filter()
+        
+        
+
+
+        return self.render('merma_producto.html',formMerma=formMerma ,mensajes=[])        
+        
     # def on_model_change(self, form, model, is_created):
     #     if is_created:
     #         if int(model.medida) == 0:

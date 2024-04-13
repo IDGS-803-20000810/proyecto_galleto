@@ -51,7 +51,7 @@ def get_locale():
 
 class MyBaseForm(form.Form):
     class Meta:
-        csrf = False  # Enable CSRF
+        csrf = True  # Enable CSRF
         csrf_class = SessionCSRF  # Set the CSRF implementation
         csrf_secret = Config.SECRET_KEY
 
@@ -197,7 +197,7 @@ secretkey=app.config['SECRET_KEY']
 
 
 if __name__ == "__main__":
-    # csrf.init_app(app)
+    csrf.init_app(app)
     db.init_app(app)
     with app.app_context():
         db.create_all()
