@@ -14,6 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.contrib.sqla import ModelView
 from wtforms.csrf.session import SessionCSRF
 from flask_admin.form import SecureForm
+from flask_socketio import SocketIO, emit
 
 import forms
 import bcrypt
