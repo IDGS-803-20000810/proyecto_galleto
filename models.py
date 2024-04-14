@@ -89,6 +89,19 @@ class Insumo_Inventario(db.Model):
     def __str__(self):
         out = str(self.insumo) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out
+    
+class Producto_Inventario(db.Model):
+    __tablename__='producto_inventario'
+    id=db.Column(db.Integer,primary_key=True)
+    producto_id = mapped_column(ForeignKey("producto.id"))
+    producto = relationship("Producto", back_populates="inventario")  
+    produccion_id = mapped_column(ForeignKey("produccion.id"))
+    produccion = relationship("Produccion", back_populates="producto_inventario")
+    cantidad = db.Column(db.Integer)
+    merma = relationship("Merma_Producto", back_populates="producto") 
+    def __str__(self):
+        out = str(self.producto) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
+        return out 
 
 
 class Abastecimiento(db.Model):
@@ -184,6 +197,8 @@ class Produccion(db.Model):
     mermas = relationship("Merma_Produccion", back_populates="produccion")  
     producto_inventario = relationship("Producto_Inventario", back_populates="produccion")
     estatus = db.Column(db.Integer)
+    def __str__(self):
+        return str(self.fecha_hora)
 
 # class Produccion_Detalle(db.Model):
 #     __tablename__='produccion_detalle'
@@ -218,15 +233,7 @@ class Producto(db.Model):
     def __str__(self):
         return self.nombre
 
-class Producto_Inventario(db.Model):
-    __tablename__='producto_inventario'
-    id=db.Column(db.Integer,primary_key=True)
-    producto_id = mapped_column(ForeignKey("producto.id"))
-    producto = relationship("Producto", back_populates="inventario")  
-    produccion_id = mapped_column(ForeignKey("produccion.id"))
-    produccion = relationship("Produccion", back_populates="producto_inventario")
-    cantidad = db.Column(db.Integer)
-    merma = relationship("Merma_Producto", back_populates="producto")  
+
 
 class Merma_Producto(db.Model):
     __tablename__='merma_producto'
@@ -284,3 +291,5 @@ class Presentacion(db.Model):
     detalle_venta = relationship("Detalle_Venta", back_populates="presentacion")
     def __str__(self):
         return self.medida
+    
+    #TODO:AÑADIR PRODUCTOS_DETALLE

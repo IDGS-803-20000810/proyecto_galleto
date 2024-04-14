@@ -19,6 +19,7 @@ from wtforms import validators
 from wtforms.validators import ValidationError, DataRequired, NumberRange
 import flask_login as login
 from datetime import date
+from flask_admin.model.template import TemplateLinkRowAction
 from flask_admin.model import typefmt
 
 # db=SQLAlchemy()
@@ -50,27 +51,18 @@ class MermaInventarioView(ModelView):
                 id=model.insumo_inventario.id).update({"cantidad": nCantidad})
                 db.session.commit()
 
-# class Pedidos_ProveedorView(ModelView):
-#     column_auto_select_related = True
-#     column_list = ['cantidad', 'precioActual', 'periodicidad', 'proveedor', 'insumo' ]  # Campos a mostrar en la lista
-#     column_editable_list = ['cantidad', 'precioActual', 'periodicidad']  # Campos editables en la lista
-#     form_columns = ['cantidad', 'medida', 'precioActual', 'periodicidad', 'proveedor', 'insumo' ]  # Campos a mostrar en el formulario de edición
-#     form_extra_fields = {
-#         'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
-#     }
-#     def on_model_change(self, form, model, is_created):
-#         if is_created:
-#             if int(model.medida) == 0:
-#                 model.cantidad = model.cantidad * 1000
-#                 Pedidos_Proveedor.query.filter_by(
-#                 id=model.id).update({"cantidad": model.cantidad})
-#                 db.session.commit()
-
 class Insumo_InventarioView(ModelView):
     column_auto_select_related = True
+    list_template = "lista_merma.html"  # Override the default template
+    column_extra_row_actions = [  # Add a new action button
+        TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
+    ]
+    column_formatters = {
+        'caducidad': lambda v, c, m, p: m.detalle.caducidad if m.detalle else None
+    }
     def is_accessible(self):
         return login.current_user.is_authenticated
-    column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista
+    column_list = ['cantidad', 'insumo' , 'caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad','medida',  'insumo']  # Campos a mostrar en el formulario de edición
     form_extra_fields = {
@@ -87,6 +79,39 @@ class Insumo_InventarioView(ModelView):
                 id=model.id).update({"cantidad": model.cantidad})
                 db.session.commit()
 
+    @expose("/mermar", methods=("POST",))
+    def merma(self):
+        
+        return True
+
+class Producto_InventarioView(ModelView):
+    column_auto_select_related = True
+    list_template = "lista_merma.html"  
+    column_list = ['producto', 'cantidad', 'produccion']  
+    column_editable_list = ['producto', 'cantidad', 'produccion'] # Campos editables en la lista
+    form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
+    
+    column_extra_row_actions = [  
+        TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
+    ]
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
+    @expose("/mermar", methods=("POST",))
+    def merma(self):
+        return True
+    # def on_model_change(self, form, model, is_created):
+    #     if is_created:
+    #         if int(model.medida) == 0:
+    #             print(model.medida)
+    #             print(model.medida)
+    #             print(model.medida)
+    #             model.cantidad = model.cantidad * 1000
+    #             Insumo_Inventario.query.filter_by(
+    #             id=model.id).update({"cantidad": model.cantidad})
+    #             db.session.commit()
+
 # class RecetaView(ModelView):
 #     column_auto_select_related = True
 #     form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición
@@ -101,9 +126,9 @@ class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
     form_args = dict(
-        nombre=dict( validators=[DataRequired(message="pon algo we"), Length(min=3, max=30)]),
-        direccion=dict(validators=[DataRequired(message="pon algo we"), Length(min=7, max=30)]),
-        telefono=dict(validators=[DataRequired(message="pon algo we"), phonelenght])
+        nombre=dict( validators=[DataRequired(message="puse algo we"), Length(min=3, max=30)]),
+        direccion=dict(validators=[DataRequired(message="puse algo we"), Length(min=7, max=30)]),
+        telefono=dict(validators=[DataRequired(message="puse algo we"), phonelenght])
     )
     def is_accessible(self):
         return login.current_user.is_authenticated
@@ -114,6 +139,12 @@ class ProductoView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated
 
+class PresentacionView(ModelView):
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+    column_auto_select_related = True
+    form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
+    column_labels = dict(cantidad_producto='cantidad producto')
 
 class PresentacionView(ModelView):
     def is_accessible(self):
@@ -359,10 +390,12 @@ class ProduccionCocinaView(BaseView):
 
     def is_accessible(self):
         return login.current_user.is_authenticated
-    @expose('/')
+    
     def viewReceta(self):
         if not login.current_user.is_authenticated:
             return redirect("/")
+    
+    @expose('/')
     def viewProduccionesCocina(self):
         produccionForm = ProduccionForm(request.form)
         mensajes =[]
@@ -409,15 +442,6 @@ class ProduccionCocinaView(BaseView):
 
             for ins in insumosInv:
                 total+=ins.cantidad
-            
-            print("***********************item.cantidad****************")
-            print(item.cantidad*cantidad)
-            
-            print("***********************insumosInv****************")
-            print(insumosInv)
-
-            print("***********************total****************")
-            print(total)
                 
             if total < item.cantidad*cantidad:
                 mensajes.append("Los insumos en el inventario no son suficientes: "+insumo.nombre)
@@ -532,7 +556,6 @@ class ProduccionCocinaView(BaseView):
                         print("*******************ins Fin*************************")
                         print(ins)
 
-        
         receta_insertar = Receta.query.filter(Receta.id == produccion.receta_id).first()
         cantidad_producto = receta_insertar.cantidad_producto*produccion.cantidad
         producto_inventario = Producto_Inventario(producto_id=receta_insertar.producto_id,cantidad = cantidad_producto,produccion_id=produccion.id)
@@ -552,23 +575,18 @@ class ProduccionCocinaView(BaseView):
 
         return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =[])
 
-    
-class AbastecimientoView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
-    def is_accessible(self):
-        return login.current_user.is_authenticated
-
-class InlineaCompraView(ModelView):
-    column_auto_select_related = True
-    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
-
 
 def max_allowed(form, field):
     if field.data == None:
         raise ValidationError('Debe introducir un número')    
     if field.data > 50:
         raise ValidationError('Max number of interfaces exceeded')
+    
+
+class InlineaCompraView(ModelView):
+    column_auto_select_related = True
+    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
+
     
 def not_null(form, field):
     print(field)
@@ -600,7 +618,7 @@ class CompraView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated
     column_formatters = dict(price=macro('render_price'))
-    column_list = [ 'user','proveedor', 'detalles_compra','total']
+    column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
     form_args = dict(
         cantidad=dict(validators=[ NumberRange(min=1, max=100)]), 
@@ -614,9 +632,10 @@ class CompraView(ModelView):
     )
     def on_model_change(self, form, model, is_created):
         if is_created: 
-            print(model.user)
             total = 0
             for detalles in model.detalles_compra:
+                print(str(detalles.abastecimiento.id))
+                print("second: " + str(detalles.cantidad))
                 cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
                 total += detalles.subtotal
                 insumo_id = detalles.abastecimiento.insumo_id
@@ -645,7 +664,8 @@ class AbastecimientoView(ModelView):
     form_columns = ['descripcion','insumo', 'cantidad_insumo']
     form_args = dict(
         insumo=dict(validators=[DataRequired("Por favor, llena este campo")]),
-        descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)])
+        descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)]),
+        cantidad_insumo=dict(validators=[DataRequired("Por favor, llena este campo"), NumberRange(min=0.001)])
     )
     def is_accessible(self):
         return login.current_user.is_authenticated
@@ -675,7 +695,7 @@ class VentaPrincipalView(BaseView):
         
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=[])
     
 
     @expose('/addDetalle',methods=['POST'])
@@ -683,13 +703,33 @@ class VentaPrincipalView(BaseView):
         detalleVentaForm = DetalleVentaForm(request.form)
 
         if request.method == "POST":
-        
+            mensaje = []
             presentacion_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
 
-            #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
 
             presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
+            producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
+
+            #Verificar si hay insumos suficientes
+
+            total = 0
+
+            # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
+            productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == presentacion.producto_id)      
+
+            for pInv in productosInv:
+                total+=pInv.cantidad
+
+            if total < presentacion.cantidad_producto*cantidad:
+                mensaje.append("Los productos en el inventario no son suficientes: "+producto.nombre)
+                
+                presentaciones = Presentacion.query.all()
+
+                return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=mensaje)
+        
+            ##AQUI VA
+
             precio = presentacion.precio*cantidad
 
             total = session['total']
@@ -710,15 +750,13 @@ class VentaPrincipalView(BaseView):
 
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=mensaje)
 
     @expose('/deleteDetalle',methods=['GET'])
     def deleteDetalle(self):
         detalleVentaForm = DetalleVentaForm(request.form)
 
         index = int(request.args.get("index"))
-
-        #TODO: VALIDACIONES PARA REVISAR SI HAY SUFICIENTES PRODUCTOS
 
         detalle = session["detalle"]
 
@@ -728,28 +766,57 @@ class VentaPrincipalView(BaseView):
         num = 0
         total = 0
 
-        print("**************detalle*****************")
-        print(detalle)
-
         for det in detalle:
             detalle[num]["index"] = num+1
             precio = detalle[num]['subtotal']
             total += precio
             num += 1
 
-
         session['total'] = total
         session['detalle'] = detalle
 
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=mensaje)
     
     @expose('/guardarCompra',methods=['GET'])
     def guardarCompra(self):
         detalleVentaForm = DetalleVentaForm(request.form)
 
         detalle = session["detalle"]
+
+        for item in detalle:
+
+            presentacion = Presentacion.query.filter(Presentacion.id == detalle['presentacion_id']).first()
+            producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
+
+            #Verificar si hay insumos suficientes
+
+            total = 0
+
+            # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
+            productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == presentacion.producto_id)      
+
+            item_cantidad = item['cantidad']*presentacion.cantidad
+
+            for pInv in productosInv:
+
+                if pInv.cantidad >= item_cantidad:
+                    pInv.cantidad = pInv.cantidad - item_cantidad
+                    db.session.add(pInv)
+                    db.session.commit()
+
+                    print("*******************p Fin*************************")
+                    print(pInv)
+                    break
+                else:
+                    item_cantidad = item_cantidad - pInv.cantidad
+                    pInv.cantidad = 0
+                    db.session.add(pInv)
+                    db.session.commit()
+
+                    print("*******************'p' Fin*************************")
+                    print(pInv)
 
         venta = Venta(total_venta=session['total'])
 
@@ -759,10 +826,6 @@ class VentaPrincipalView(BaseView):
         db.session.refresh(venta)
         
         for det in detalle:
-            print(det['cantidad'])
-            print(det['presentacion_id'])
-            print(det['subtotal'])
-            print(venta.id)
             detVent = Detalle_Venta(cantidad=det['cantidad'],presentacion_id=det['presentacion_id'],subtotal=det['subtotal'],venta_id=venta.id)
             db.session.add(detVent)
             db.session.commit()
@@ -772,4 +835,4 @@ class VentaPrincipalView(BaseView):
 
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm)
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=[])

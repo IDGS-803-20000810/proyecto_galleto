@@ -22,11 +22,11 @@ import time
 import secrets
 import bcrypt
 
-from models import Presentacion, Producto, Venta, db, Medida
+from models import Presentacion, Producto, Producto_Inventario, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
 from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
@@ -35,6 +35,7 @@ from config import DevelopmentConfig, Config
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+socketio = SocketIO(app)
 
 csrf=CSRFProtect()
 
@@ -43,11 +44,23 @@ cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 # load the extension
 principals = Principal(app)
 
-class MyBaseForm(form.Form):
-    class Meta:
-        csrf = True  # Enable CSRF
-        csrf_class = SessionCSRF  # Set the CSRF implementation
-        csrf_secret = Config.SECRET_KEY
+#Iniciar traduccion
+babel = Babel(app)
+
+@babel.localeselector
+def get_locale():
+        return 'es'
+
+
+
+@socketio.on('connect')
+def handle_connect():
+    print('Usuario conectado')
+
+@socketio.on('send_message')
+def handle_send_message(msg):
+    print('mensaje : ' + msg )
+
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
@@ -77,13 +90,12 @@ class RegistrationForm(form.Form):
         if db.session.query(User).filter_by(login=self.login.data).count() > 0:
             raise validators.ValidationError('Duplicate username')
 
-
 # Initialize flask-login
 def init_login():
     login_manager = login.LoginManager()
     login_manager.init_app(app)
 
-    # Create user loader function
+# Create user loader function
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.query(User).get(user_id)
@@ -133,7 +145,7 @@ class MyAdminIndexView(admin.AdminIndexView):
         link = '<p>Already have an account? <a href="' + url_for('.login_view') + '">Click here to log in.</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
-        return self.render('login.html',form=form)
+        return self.render('registroTemp.html',form=form)
 
     @expose('/logout/')
     def logout_view(self):
@@ -147,17 +159,6 @@ def index():
     return redirect('/admin')
 
 
-@app.route('/login/', methods=['POST'])
-def login_vista():
-    # handle user login
-    form = LoginForm(request.form)
-    if helpers.validate_form_on_submit(form):
-        user = form.get_user()
-        login.login_user(user)
-    if login.current_user.is_authenticated:
-        return redirect("/admin")
-    return render_template('index.html',form=form)
-    
 
     
 # Initialize flask-login
@@ -177,6 +178,7 @@ admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(ProductoView(Producto, db.session))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
+admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos'))
 
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
@@ -195,5 +197,6 @@ if __name__ == "__main__":
     db.init_app(app)
     with app.app_context():
         db.create_all()
+    socketio.run(app,host='0.0.0.0',debug=True)
     app.run(host='0.0.0.0',debug=True)
 
