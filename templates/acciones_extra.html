@@ -1,8 +1,9 @@
 {% macro mermar(action, row_id, row) %}
 <form class="icon" method="POST" action="{{ get_url('.merma') }}">
   <input type="hidden" name="row_id" value="{{ get_pk_value(row) }}"/>
+  <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
   <button type="submit" title="{{ _gettext('Mermar') }}">
-    <span class="fa fa-minus-square-o"></span>
+    <span class="fa fa-minus-square-o" style="color: red;"></span>
   </button>
 </form>
 {% endmacro %}

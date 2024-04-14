@@ -152,7 +152,35 @@ class MermaProductoForm(Form):
         "Cantidad",
         [
             validators.DataRequired(message="Se requiere este campo"),
-            validators.length(min=1, message="ingresa un usuario valido"),
+            validators.length(min=1, message="ingresa una cantidad valido"),
+        ],
+        default=1
+    )
+    descripcion = StringField(
+        "Descripción",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+            validators.length(min=1, ),
+        ],
+    )
+    producto_inventario = HiddenField(
+        "Presentacion",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+        ],
+        default=1
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(MermaProductoForm, self).__init__(*args, **kwargs)
+        self.cantidad.validators[1] = validators.length(min=1)
+
+class DetalleVentaForm(Form):
+    cantidad = IntegerField(
+        "Cantidad",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+            validators.length(min=1, message="ingresa una cantidad valido"),
         ],
         default=1
     )
@@ -163,5 +191,3 @@ class MermaProductoForm(Form):
         ],
         default=1
     )
-
-

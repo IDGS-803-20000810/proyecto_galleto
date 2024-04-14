@@ -1,8 +1,9 @@
+from itertools import count
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
+from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from wtforms.validators import Length
@@ -29,24 +30,24 @@ class MermaInventarioView(ModelView):
         return login.current_user.is_authenticated
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
-    form_columns = ['cantidad', 'medida', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
-    form_extra_fields = {
-        'medida': SelectField( choices=[(0, 'Gramos'), (1, 'KG')])
-    }
+    form_columns = ['cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
+    # form_extra_fields = {
+    #     'medida': SelectField( choices=[(0, 'Gramos'), (1, 'KG')])
+    # }
     def on_model_change(self, form, model, is_created):
-        if int(model.medida) == 1:
-            model.cantidad = model.cantidad * 1000
+        # if int(model.medida) == 1:
+        #     model.cantidad = model.cantidad * 1000
         if is_created:
-            print(model.medida)
-            print(model.medida)
-            print(model.medida)
+            # print(model.medida)
+            # print(model.medida)
+            # print(model.medida)
             insumo = Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).first()
             if insumo:
                 nCantidad = int(insumo.cantidad) - int(model.cantidad)
-                print(nCantidad)
-                print(nCantidad)
-                print(nCantidad)
+                # print(nCantidad)
+                # print(nCantidad)
+                # print(nCantidad)
                 Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).update({"cantidad": nCantidad})
                 db.session.commit()
@@ -54,32 +55,31 @@ class MermaInventarioView(ModelView):
 class Insumo_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  # Override the default template
-    column_extra_row_actions = [  # Add a new action button
-        TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
-    ]
+    # column_extra_row_actions = [  # Add a new action button
+    #     TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
+    # ]
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
-    form_columns = ['cantidad','medida',  'insumo']  # Campos a mostrar en el formulario de edición
-    form_extra_fields = {
-        'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
-    }
+    form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
+    # form_extra_fields = {
+    #     'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
+    # }
     def on_model_change(self, form, model, is_created):
         if is_created:
-            if int(model.medida) == 0:
-                print(model.medida)
-                print(model.medida)
-                print(model.medida)
-                model.cantidad = model.cantidad * 1000
+            # if int(model.medida) == 0:
+            #     print(model.medida)
+            #     print(model.medida)
+            #     print(model.medida)
+                # model.cantidad
                 Insumo_Inventario.query.filter_by(
                 id=model.id).update({"cantidad": model.cantidad})
                 db.session.commit()
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
-        
         return True
 
 class Producto_InventarioView(ModelView):
@@ -93,37 +93,45 @@ class Producto_InventarioView(ModelView):
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
 
+    def get_query(self):
+        return self.session.query(self.model).filter(self.model.cantidad!=0)
+
     def is_accessible(self):
         return login.current_user.is_authenticated
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
         idProdInv = request.form['row_id']
-        formMerma = MermaProductoForm(request.form)
         
         prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
-        receta = Receta.query.filter(Producto)
-        ingsReceta = Ingredientes_Receta.query.filter()
-        
-        
+        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+        formMerma = MermaProductoForm(request.form)
+        return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
+    
+    @expose("/addMerma", methods=("POST",))
+    def addMerma(self):
+        idProdInv = request.form['idProdInv']
+        formMerma = MermaProductoForm(request.form)
 
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
 
-        return self.render('merma_producto.html',formMerma=formMerma ,mensajes=[])        
+        if formMerma.cantidad.data > prodInv.cantidad:
+             return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=["No se puede mermar mas de lo contenido del inventario"])
+            
+        prodInv.cantidad = prodInv.cantidad - formMerma.cantidad.data
+
+        db.session.add(prodInv)
+        db.session.commit()
         
-    # def on_model_change(self, form, model, is_created):
-    #     if is_created:
-    #         if int(model.medida) == 0:
-    #             print(model.medida)
-    #             print(model.medida)
-    #             print(model.medida)
-    #             model.cantidad = model.cantidad * 1000
-    #             Insumo_Inventario.query.filter_by(
-    #             id=model.id).update({"cantidad": model.cantidad})
-    #             db.session.commit()
+        mermaP = Merma_Producto(cantidad=formMerma.cantidad.data,producto_id=prodInv.id,descripcion=formMerma.descripcion.data)
+        
+        db.session.add(mermaP)
+        db.session.commit()
 
-# class RecetaView(ModelView):
-#     column_auto_select_related = True
-#     form_columns = ['nombre','descripcion', 'insumo', 'proveedor' ]  # Campos a mostrar en el formulario de edición
+        return redirect('/admin/producto_inventario/') 
+    
+        
 def phonelenght(form, field):
     print(field)
     if len(str(field.data)) != 10:
