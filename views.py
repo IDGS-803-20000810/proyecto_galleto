@@ -55,13 +55,15 @@ class MermaInventarioView(ModelView):
 class Insumo_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  # Override the default template
-    # column_extra_row_actions = [  # Add a new action button
-    #     TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
-    # ]
+    column_extra_row_actions = [  # Add a new action button
+        TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
+    ]
+    column_formatters = {
+        'caducidad': lambda v, c, m, p: m.detalle.caducidad if m.detalle else None
+    }
     def is_accessible(self):
         return login.current_user.is_authenticated
-
-    column_list = ['cantidad', 'insumo' ]  # Campos a mostrar en la lista
+    column_list = ['cantidad', 'insumo' , 'caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
     # form_extra_fields = {
@@ -592,23 +594,18 @@ class ProduccionCocinaView(BaseView):
 
         return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =[])
 
-    
-class AbastecimientoView(ModelView):
-    column_auto_select_related = True
-    form_columns = ['descripcion','insumo', 'cantidad_insumo']  # Campos a mostrar en el formulario de edición
-    def is_accessible(self):
-        return login.current_user.is_authenticated
-
-class InlineaCompraView(ModelView):
-    column_auto_select_related = True
-    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
-
 
 def max_allowed(form, field):
     if field.data == None:
         raise ValidationError('Debe introducir un número')    
     if field.data > 50:
         raise ValidationError('Max number of interfaces exceeded')
+    
+
+class InlineaCompraView(ModelView):
+    column_auto_select_related = True
+    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
+
     
 def not_null(form, field):
     print(field)
@@ -640,7 +637,7 @@ class CompraView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated
     column_formatters = dict(price=macro('render_price'))
-    column_list = [ 'user','proveedor', 'detalles_compra','total']
+    column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
     form_args = dict(
         cantidad=dict(validators=[ NumberRange(min=1, max=100)]), 
@@ -654,9 +651,10 @@ class CompraView(ModelView):
     )
     def on_model_change(self, form, model, is_created):
         if is_created: 
-            print(model.user)
             total = 0
             for detalles in model.detalles_compra:
+                print(str(detalles.abastecimiento.id))
+                print("second: " + str(detalles.cantidad))
                 cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
                 total += detalles.subtotal
                 insumo_id = detalles.abastecimiento.insumo_id
@@ -685,7 +683,8 @@ class AbastecimientoView(ModelView):
     form_columns = ['descripcion','insumo', 'cantidad_insumo']
     form_args = dict(
         insumo=dict(validators=[DataRequired("Por favor, llena este campo")]),
-        descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)])
+        descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)]),
+        cantidad_insumo=dict(validators=[DataRequired("Por favor, llena este campo"), NumberRange(min=0.001)])
     )
     def is_accessible(self):
         return login.current_user.is_authenticated

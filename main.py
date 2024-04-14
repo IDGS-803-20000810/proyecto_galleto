@@ -14,6 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.contrib.sqla import ModelView
 from wtforms.csrf.session import SessionCSRF
 from flask_admin.form import SecureForm
+from flask_socketio import SocketIO, emit
 
 import forms
 import bcrypt
@@ -34,6 +35,7 @@ from config import DevelopmentConfig, Config
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+socketio = SocketIO(app)
 
 csrf=CSRFProtect()
 
@@ -54,6 +56,16 @@ class MyBaseForm(form.Form):
         csrf = True  # Enable CSRF
         csrf_class = SessionCSRF  # Set the CSRF implementation
         csrf_secret = Config.SECRET_KEY
+
+
+@socketio.on('connect')
+def handle_connect():
+    print('Usuario conectado')
+
+@socketio.on('send_message')
+def handle_send_message(msg):
+    print('mensaje : ' + msg )
+
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
@@ -88,7 +100,7 @@ def init_login():
     login_manager = login.LoginManager()
     login_manager.init_app(app)
 
-    # Create user loader function
+# Create user loader function
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.query(User).get(user_id)
@@ -138,7 +150,7 @@ class MyAdminIndexView(admin.AdminIndexView):
         link = '<p>Already have an account? <a href="' + url_for('.login_view') + '">Click here to log in.</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
-        return self.render('login.html',form=form)
+        return self.render('registroTemp.html',form=form)
 
     @expose('/logout/')
     def logout_view(self):
@@ -152,17 +164,6 @@ def index():
     return redirect('/admin')
 
 
-@app.route('/login/', methods=['POST'])
-def login_vista():
-    # handle user login
-    form = LoginForm(request.form)
-    if helpers.validate_form_on_submit(form):
-        user = form.get_user()
-        login.login_user(user)
-    if login.current_user.is_authenticated:
-        return redirect("/admin")
-    return render_template('index.html',form=form)
-    
 
     
 # Initialize flask-login
@@ -201,5 +202,6 @@ if __name__ == "__main__":
     db.init_app(app)
     with app.app_context():
         db.create_all()
+    socketio.run(app,host='0.0.0.0',debug=True)
     app.run(host='0.0.0.0',debug=True)
 

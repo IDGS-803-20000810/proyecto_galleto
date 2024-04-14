@@ -27,7 +27,7 @@
             {{render_field(recetaForm.cantidad, class="form-control")}}
         </div>
 
-        <input type="hidden" name="csrf_token" value="csrf_token()">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
         <input type="submit" class="btn btn-success col m-4" style="height: 50% !important;" name="" id="" value="Guardar Receta">
     </div>
 
@@ -52,7 +52,7 @@
             {{render_field(ingsRecetaForm.cantidad, class="form-control")}}
         </div>
         <div class="col">
-            <input type="hidden" name="csrf_token" value="csrf_token()">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
             <input type="submit" class="btn btn-success m-4" name="" id="" value="Agregar">
         </div>
     </div>

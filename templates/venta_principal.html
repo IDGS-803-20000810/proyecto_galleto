@@ -34,7 +34,7 @@
                                     {{detalleVentaForm.presentacion_id(value=item.id)}}
                                 </div>
                                 <div class="modal-footer">
-                                    <input type="hidden" name="csrf_token" value="csrf_token()">
+                                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                                     <input type="submit" class="btn btn-success" value="Agregar">
                                 </div>
@@ -85,4 +85,27 @@
 </div>
 
 
+{% endblock %}
+{% block tail %}
+{{ super() }}
+<script src="{{ url_for('static', filename='assets/js/socket.io.js') }}" type="text/javascript"></script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on('connect', function() {
+        console.log('Conectado al servidor');
+        console.log('http://' + document.domain + ':' + location.port);
+    });
+    
+    socket.on('receive_message', function(message) {
+        // Maneja el mensaje recibido
+        console.log('Mensaje recibido:', message);
+    });
+    socket.on('send_message', function(message) { 
+        // Maneja el mensaje recibido
+        console.log('Mensaje enviado:', message);
+    });
+
+        socket.emit('send_message', "message");
+</script>
 {% endblock %}

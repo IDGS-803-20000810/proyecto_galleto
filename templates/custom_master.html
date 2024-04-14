@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block page_body %}
-  <div class="wrapper ">
+  <div class="wrapper " data-barba="wrapper">
     <div class="sidebar" data-color="white" data-active-color="danger">
       <div class="logo">
         <a href="https://www.creative-tim.com" class="simple-text logo-mini">
@@ -80,7 +80,7 @@
         </div>
       </nav>
       <!-- End Navbar -->
-      <div class="content" style="padding-top:35px;">
+      <div class="content" style="padding-top:35px;" data-barba="container" data-barba-namespace="home">
         <div class="row">
           <div class="col-md-12">
             
@@ -117,4 +117,22 @@
   {% block tail %}
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{ url_for('static', filename='assets/js/paper-dashboard.min.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='assets/js/barba.umd.js') }}" type="text/javascript"></script>
+  <script>
+    barba.init({
+      transitions: [{
+        name: 'opacity-transition',
+        leave(data) {
+          return gsap.to(data.current.container, {
+            opacity: 0
+          });
+        },
+        enter(data) {
+          return gsap.from(data.next.container, {
+            opacity: 0
+          });
+        }
+      }],
+    });
+  </script>
   {% endblock %}
