@@ -73,7 +73,7 @@ class ProductoForm(Form):
         "precio",
         [
             validators.DataRequired(message="el campo es requerido"),
-            validators.number_range(min=0.1, max=99999999, message="valor no valido"),
+            validators.number_range(min=1, max=99999999, message="valor no valido"),
         ],
     )
     stock = IntegerField(

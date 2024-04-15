@@ -228,8 +228,10 @@ class Producto(db.Model):
     receta = relationship("Receta", back_populates="producto_receta")  
     presentacion = relationship("Presentacion", back_populates="producto")
     inventario = relationship("Producto_Inventario", back_populates="producto")  
+    detalle_venta = relationship("Detalle_Venta", back_populates="producto")
     orden = relationship("Orden", back_populates="producto")  
     peso =db.Column(db.Float)
+    precio =db.Column(db.Float)
     def __str__(self):
         return self.nombre
 
@@ -265,8 +267,10 @@ class Venta(db.Model):
 class Detalle_Venta(db.Model):
     __tablename__='detalle_venta'
     id=db.Column(db.Integer,primary_key=True)
-    presentacion_id = mapped_column(ForeignKey("presentacion.id"))
-    presentacion = relationship("Presentacion", back_populates="detalle_venta")  
+    presentacion_id = mapped_column(ForeignKey("presentacion.id"),nullable=True)
+    presentacion = relationship("Presentacion", back_populates="detalle_venta")
+    producto_id = mapped_column(ForeignKey("producto.id"))
+    producto = relationship("Producto", back_populates="detalle_venta")
     venta_id = mapped_column(ForeignKey("venta.id"))
     venta = relationship("Venta", back_populates="detalle_venta")  
     subtotal = db.Column(db.Float)
