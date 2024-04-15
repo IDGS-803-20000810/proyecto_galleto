@@ -39,7 +39,6 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 socketio = SocketIO(app)
 
-principals = Principal(app)
 
 
 admin_permission = Permission(RoleNeed('cuk'))
@@ -48,7 +47,6 @@ csrf=CSRFProtect()
 cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 
 # load the extension
-principals = Principal(app)
 
 #Iniciar traduccion
 babel = Babel(app)
@@ -63,6 +61,10 @@ class MyBaseForm(form.Form):
         csrf_class = SessionCSRF  # Set the CSRF implementation
         csrf_secret = Config.SECRET_KEY
 
+def agregarLog(texto):
+    archivo_texto=open('logs.txt','a')
+    archivo_texto.write('\n ' + texto)
+    archivo_texto.close()
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -73,13 +75,15 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return render_template('403.html'),403
 
-# @app.errorhandler(Exception)
-# def all_exception_handler(e):
-#     return render_template('500.html')
+@app.errorhandler(Exception)
+def all_exception_handler(e):
+   print(e)
+   return render_template('500.html')
 
-# @app.errorhandler(500)
-# def all_exception_handler(e):
-#     return render_template('500.html'),500
+
+@app.errorhandler(500)
+def all_exception_handler(e):
+   return render_template('500.html'),500
 
 @socketio.on('connect')
 def handle_connect():
@@ -105,13 +109,15 @@ class LoginForm(form.Form):
     def validate_login(self, field):
         user = self.get_user()
         if user is None:
-            raise validators.ValidationError('Usuario inválido')
+            agregarLog("Inicio de sesión no exitoso por usuario incorrecto, usuario: " + self.login.data + ". Contraseña : " + self.password.data)  
+            raise validators.StopValidation('Usuario inválido')
 
         # we're comparing the plaintext pw with the the hash from the db
         if not check_password_hash(user.password, self.password.data):
         # to compare plain text passwords use
         # if user.password != self.password.data:
-            raise validators.ValidationError('Contraseña inválida')
+            agregarLog("Inicio de sesión no exitoso por contraseña incorrecta, usuario: " + self.login.data + ". Contraseña : " + self.password.data)         
+            raise validators.StopValidation('Contraseña inválida')
 
     def get_user(self):
         return db.session.query(User).filter_by(login=self.login.data).first()
@@ -121,7 +127,11 @@ class RegistrationForm(form.Form):
     login = fields.StringField(validators=[validators.InputRequired()])
     email = fields.StringField()
     password = fields.PasswordField(validators=[validators.InputRequired()])
-
+    role = fields.SelectField(
+        "Selecciona el rol del usuario",
+        choices=[("cuck", "Cocinero"), ("admin", "Administrador"),("ventas", "Vendedor"),("almacen", "Almacenista")],
+    )
+    
     def validate_login(self, field):
         if db.session.query(User).filter_by(login=self.login.data).count() > 0:
             raise validators.ValidationError('Usuario duplicado')
@@ -205,8 +215,10 @@ class MyAdminIndexView(admin.AdminIndexView):
         form = LoginForm(request.form)
         if helpers.validate_form_on_submit(form):
             user = form.get_user()
-            login.login_user(user)
-
+            if login.login_user(user):
+                agregarLog("Inicio de sesión exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)         
+            else:
+                agregarLog("Inicio de sesión no exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)         
         if login.current_user.is_authenticated:
             return redirect(url_for('.index'))
         link = '<p>Don\'t have an account? <a href="' + url_for('.register_view') + '">Click here to register.</a></p>'

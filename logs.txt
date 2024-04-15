@@ -1,0 +1,8 @@
+
+ Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: administradorr. Contraseña : Passw$1
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador. Contraseña : dasdasdsad
+ Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: Javier. Contraseña : 123

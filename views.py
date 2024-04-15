@@ -29,7 +29,10 @@ admin_permission = Permission(RoleNeed('cuk'))
 
 class MermaInventarioView(ModelView):
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacen" or login.current_user.role == "admin"
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
@@ -65,7 +68,10 @@ class Insumo_InventarioView(ModelView):
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacen" or login.current_user.role == "admin" or login.current_user.role == "cuck"
     column_list = ['cantidad','detalle.abastecimiento', 'insumo' , 'detalle.caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
@@ -102,8 +108,11 @@ class Producto_InventarioView(ModelView):
         return self.session.query(self.model).filter(self.model.cantidad!=0)
 
     def is_accessible(self):
-        return login.current_user.is_authenticated
-
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "ventas" or login.current_user.role == "admin" or login.current_user.role == "cuck"
+    
     @expose("/mermar", methods=("POST",))
     def merma(self):
         idProdInv = request.form['row_id']
@@ -153,31 +162,38 @@ class ProveedorView(ModelView):
         telefono=dict(validators=[DataRequired(message="puse algo we"), phonelenght])
     )
     def is_accessible(self):
-        return login.current_user.is_authenticated
-
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacen" or login.current_user.role == "admin" 
+    
 class ProductoView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','peso','precio']  # Campos a mostrar en el formulario de edición
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "cuck" or login.current_user.role == "admin"  or login.current_user.role == "ventas" 
 
 class PresentacionView(ModelView):
     def is_accessible(self):
-        return login.current_user.is_authenticated
-    column_auto_select_related = True
-    form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
-    column_labels = dict(cantidad_producto='cantidad producto')
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "admin"  or login.current_user.role == "ventas" 
 
-class PresentacionView(ModelView):
-    def is_accessible(self):
-        return login.current_user.is_authenticated
     column_auto_select_related = True
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
 
 class RecetaView(BaseView):
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "admin"  or login.current_user.role == "ventas"   or login.current_user.role == "cuck" 
+
     
     @expose('/')
     def viewReceta(self):
@@ -411,8 +427,11 @@ class RecetaView(BaseView):
 class ProduccionCocinaView(BaseView):
 
     def is_accessible(self):
-        return login.current_user.is_authenticated
-    
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role == "admin" or login.current_user.role == "cuck" 
+
     def viewReceta(self):
         if not login.current_user.is_authenticated:
             return redirect("/")
@@ -651,8 +670,13 @@ class CompraView(ModelView):
                 db.session.add(insumoInv)
             model.total = total
             db.session.commit()
+    
     def is_accessible(self):
-        return login.current_user.is_authenticated
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role == "admin" or login.current_user.role == "almacen" 
+
     column_formatters = dict(price=macro('render_price'))
     column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
@@ -673,7 +697,7 @@ class MedidaView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "cuk"
+                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
     
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
@@ -689,6 +713,11 @@ class MedidaView(ModelView):
     
     
 class AbastecimientoView(ModelView):
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']
     form_args = dict(
@@ -700,6 +729,11 @@ class AbastecimientoView(ModelView):
         return login.current_user.is_authenticated
 
 class InsumoView(ModelView):
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
     column_auto_select_related = True
     form_columns = ['nombre','medida']  #
     form_args = dict(
@@ -712,9 +746,11 @@ class InsumoView(ModelView):
         return login.current_user.is_authenticated
 
 class VentaPrincipalView(BaseView):
-
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "ventas" or login.current_user.role == "admin"
     @expose('/')
     def indexVentas(self):
         detalleVentaForm = DetalleVentaForm(request.form)
@@ -733,14 +769,12 @@ class VentaPrincipalView(BaseView):
         detalleVentaForm = DetalleVentaForm(request.form)
         productos = Producto.query.all()
         print("detalle presentacion *******************++")
-        
         if request.method == "POST":
             mensaje = []
             presentacion_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
             print("cantidad "+str(cantidad))
             print("presentacion id "+str(presentacion_id))
-
             presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
             producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
 
@@ -798,26 +832,22 @@ class VentaPrincipalView(BaseView):
         detalleVentaForm = DetalleVentaForm(request.form)
         productos = Producto.query.all()
         print("detalle producto *******************++")
-        
         if request.method == "POST":
             mensaje = []
             producto_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
             producto = Producto.query.filter(Producto.id == producto_id).first()
-
             print("cantidad "+str(cantidad))
             print("producto id "+str(producto_id))
-
             #Verificar si hay insumos suficientes
 
             total = 0
             detalle = session['detalle']
-
             cantidad_total = cantidad
+
             for det in detalle:
                 if det['producto_id'] == producto.id:
                     cantidad_total+=det['cantidad']
-
             # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
             productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == producto.id)
             
