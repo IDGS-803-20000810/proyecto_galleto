@@ -39,8 +39,6 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 socketio = SocketIO(app)
 
-
-
 admin_permission = Permission(RoleNeed('cuk'))
 csrf=CSRFProtect()
 

@@ -955,7 +955,7 @@ class VentaPrincipalView(BaseView):
                     print("*******************'p' Fin*************************")
                     print(pInv)
 
-        venta = Venta(total_venta=session['total'])
+        venta = Venta(total_venta=session['total'],user_id=login.current_user.id)
 
         db.session.add(venta)
         db.session.commit()
