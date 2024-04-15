@@ -31,12 +31,17 @@ from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig, Config
+from functools import wraps  # Importa wraps del módulo functools
 
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 socketio = SocketIO(app)
 
+principals = Principal(app)
+
+# Create a permission with a single Need, in this case a RoleNeed.
+admin_permission = Permission(RoleNeed('cuk'))
 csrf=CSRFProtect()
 
 cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
@@ -60,6 +65,14 @@ def handle_connect():
 @socketio.on('send_message')
 def handle_send_message(msg):
     print('mensaje : ' + msg )
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+    # Agregar necesidades (Needs) al usuario actual
+    if hasattr(login.current_user, 'id'):
+        identity.user = login.current_user
+        identity.provides.add(UserNeed(login.current_user.id))
+        identity.provides.add(RoleNeed(login.current_user.role))
 
 
 # Define login and registration forms (for flask-login)
@@ -167,9 +180,8 @@ init_login()
 # Create admin
 admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
 
-# Create a permission with a single Need, in this case a RoleNeed.
-admin_permission = Permission(RoleNeed('admin'))
 # admin = Admin(app, name='pruebainsumos')
+
 admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
