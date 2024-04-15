@@ -15,6 +15,7 @@ from flask_admin.contrib.sqla import ModelView
 from wtforms.csrf.session import SessionCSRF
 from flask_admin.form import SecureForm
 from flask_socketio import SocketIO, emit
+from listas import Listas
 
 import forms
 import bcrypt
@@ -58,6 +59,19 @@ class MyBaseForm(form.Form):
         csrf_secret = Config.SECRET_KEY
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'),404
+
+@app.errorhandler(403)
+def page_not_found(e):
+    session['redirected_from'] = request.url
+    return render_template('403.html'),403
+
+@app.errorhandler(Exception)
+def all_exception_handler(error):
+    return render_template('500.html')
+
 @socketio.on('connect')
 def handle_connect():
     print('Usuario conectado')
@@ -93,7 +107,16 @@ class RegistrationForm(form.Form):
 
     def validate_login(self, field):
         if db.session.query(User).filter_by(login=self.login.data).count() > 0:
-            raise validators.ValidationError('Duplicate username')
+            raise validators.ValidationError('Usuario duplicado')
+
+        check = password_check(self.password.data)
+        if not check['valido']:
+            raise validators.ValidationError(check['mensaje'])
+
+        check = user_check(self.login.data)
+        if not check['valido']:
+            raise validators.ValidationError(check['mensaje'])
+
 
 # Initialize flask-login
 def init_login():
@@ -105,6 +128,49 @@ def init_login():
     def load_user(user_id):
         return db.session.query(User).get(user_id)
 
+def user_check(user):
+    val = True
+    mensaje = ""
+    
+    for usr in Listas.usuarios_comunes:
+        if usr == user:
+            mensaje = "Se detectó un usuario inseguro"
+            val = False
+            
+    return {'valido':val,'mensaje':mensaje}
+
+def password_check(passwd):
+
+    SpecialSym =['$', '@', '#', '%']
+    val = True
+    mensaje = ""
+
+    if len(passwd) < 9:
+        mensaje="la contraseña debe de tener una logitud minima de 9"
+        val = False
+
+    if not any(char.isdigit() for char in passwd):
+        mensaje = "La contraseña debe de tener al menos un numero"
+        val = False
+
+    if not any(char.isupper() for char in passwd):
+        mensaje = "La contraseña debe de tener al menos una mayuscula"
+        val = False
+
+    if not any(char.islower() for char in passwd):
+        mensaje = "La contraseña debe de tener al menos una minuscula"
+        val = False
+
+    if not any(char in SpecialSym for char in passwd):
+        mensaje = "La contraseña debe de tener al menos un caracter especial '$','@','#' "
+        val = False
+        
+    for psw in Listas.contraseñas_comunes:
+        if passwd == psw:
+            mensaje = "Se detectó una contraseña insegura"
+            val = False
+            
+    return {'valido':val,'mensaje':mensaje}
 
 # Create customized index view class that handles login & registration
 class MyAdminIndexView(admin.AdminIndexView):
@@ -131,6 +197,8 @@ class MyAdminIndexView(admin.AdminIndexView):
         self._template_args['link'] = link
         return super(MyAdminIndexView, self).render("login.html",form=form)
 
+
+
     @expose('/register/', methods=('GET', 'POST'))
     def register_view(self):
         form = RegistrationForm(request.form)
@@ -138,8 +206,8 @@ class MyAdminIndexView(admin.AdminIndexView):
             user = User()
 
             form.populate_obj(user)
-            # we hash the users password to avoid saving it as plaintext in the db,
-            # remove to use plain text:
+            
+            #Remover texto plano
             user.password = generate_password_hash(form.password.data)
 
             db.session.add(user)
@@ -147,7 +215,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 
             login.login_user(user)
             return redirect(url_for('.index'))
-        link = '<p>Already have an account? <a href="' + url_for('.login_view') + '">Click here to log in.</a></p>'
+        link = '<p><a href="' + url_for('.login_view') + '">Registrarse</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
         return self.render('registroTemp.html',form=form)

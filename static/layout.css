@@ -36,6 +36,20 @@ body {
 	margin: 0;
 }
 
+.fa{
+	font-size: 20px !important;
+}
+
+.danger{
+	color: #ff347f !important;
+}
+.sidebar[data-active-color="danger"] .nav li.active > a, .sidebar[data-active-color="danger"] .nav li.active > a i, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"], .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] i, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active .sidebar-mini-icon, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active > a, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a i, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"], .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] i, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active .sidebar-mini-icon, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active > a{
+	color: #ff347f !important;
+}
+
+.btn-danger{
+	background-color: #ff347f !important;
+}
 .btn,
 textarea,
 input[type],
@@ -65,6 +79,10 @@ button,
 	color: #c3195d;
 	box-shadow: 0px 16px 48px 0px rgba(0, 0, 0, 0.176);
 	border-radius: 10;
+}
+
+.active{
+	color: #ff347f !important;
 }
 
 a {
