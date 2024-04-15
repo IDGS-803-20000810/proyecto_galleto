@@ -22,7 +22,9 @@ import flask_login as login
 from datetime import date
 from flask_admin.model.template import TemplateLinkRowAction
 from flask_admin.model import typefmt
+from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
 
+admin_permission = Permission(RoleNeed('cuk'))
 # db=SQLAlchemy()
 
 class MermaInventarioView(ModelView):
@@ -53,17 +55,18 @@ class MermaInventarioView(ModelView):
                 db.session.commit()
 
 class Insumo_InventarioView(ModelView):
+    column_labels = {
+        'detalle.caducidad': 'Fecha de Caducidad',  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
+        'detalle.abastecimiento': 'Abastecimiento'  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
+    }
     column_auto_select_related = True
     list_template = "lista_merma.html"  # Override the default template
     column_extra_row_actions = [  # Add a new action button
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
-    column_formatters = {
-        'caducidad': lambda v, c, m, p: m.detalle.caducidad if m.detalle else None
-    }
     def is_accessible(self):
         return login.current_user.is_authenticated
-    column_list = ['cantidad', 'insumo' , 'caducidad']  # Campos a mostrar en la lista
+    column_list = ['cantidad','detalle.abastecimiento', 'insumo' , 'detalle.caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
     # form_extra_fields = {
@@ -633,7 +636,21 @@ MY_DEFAULT_FORMATTERS.update({
    
 
 class CompraView(ModelView):
-   
+    def after_model_change(self, form, model, is_created):
+        if is_created: 
+            total = 0
+            for detalles in model.detalles_compra:
+                print(str(detalles.abastecimiento.id))
+                print("second: " + str(detalles.cantidad))
+                cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
+                total += detalles.subtotal
+                insumo_id = detalles.abastecimiento.insumo_id
+                print("detalle id : " + str(detalles))
+                detalle_id = detalles.id
+                insumoInv = Insumo_Inventario(cantidad=cantidad,insumo_id = insumo_id,detalle_id = detalle_id)
+                db.session.add(insumoInv)
+            model.total = total
+            db.session.commit()
     def is_accessible(self):
         return login.current_user.is_authenticated
     column_formatters = dict(price=macro('render_price'))
@@ -649,25 +666,18 @@ class CompraView(ModelView):
         usuario=dict(validators=[not_null]), 
         proveedor=dict(validators=[not_null])
     )
-    def on_model_change(self, form, model, is_created):
-        if is_created: 
-            total = 0
-            for detalles in model.detalles_compra:
-                print(str(detalles.abastecimiento.id))
-                print("second: " + str(detalles.cantidad))
-                cantidad = float(detalles.abastecimiento.cantidad_insumo) * float(detalles.cantidad)
-                total += detalles.subtotal
-                insumo_id = detalles.abastecimiento.insumo_id
-                detalle_id = detalles.id
-                insumoInv = Insumo_Inventario(cantidad=cantidad,insumo_id = insumo_id,detalle_id = detalle_id)
-                db.session.add(insumoInv)
-            model.total = total
-            db.session.commit()
-    
+
 class MedidaView(ModelView):
    
     def is_accessible(self):
-        return login.current_user.is_authenticated
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "cuk"
+    
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return render_template('403.html'), 403
     column_auto_select_related = True
     column_list = [ 'medida']
     form_args = dict(

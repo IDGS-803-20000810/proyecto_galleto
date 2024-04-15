@@ -12,7 +12,7 @@ from datetime import date
 db=SQLAlchemy()
 
 # Create user model.
-class User(db.Model):
+class User(db.Model,UserMixin):
     __tablename__='user'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100))
@@ -151,7 +151,7 @@ class Detalle_Compra(db.Model):
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
     def __str__(self):
-        out = str(int(self.cantidad)) + " " + str(self.abastecimiento.descripcion) + " caduca el dia : " + str(self.caducidad) + ","
+        out = str(int(self.cantidad)) + " " + str(self.abastecimiento.descripcion) + " caduca el dia : " + str(self.caducidad) + "," + "id: " + str(self.id)
         return out
 
 class Merma_Inventario(db.Model):
