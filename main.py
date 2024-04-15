@@ -41,7 +41,7 @@ socketio = SocketIO(app)
 
 principals = Principal(app)
 
-# Create a permission with a single Need, in this case a RoleNeed.
+
 admin_permission = Permission(RoleNeed('cuk'))
 csrf=CSRFProtect()
 
@@ -74,8 +74,12 @@ def page_not_found(e):
     return render_template('403.html'),403
 
 @app.errorhandler(Exception)
-def all_exception_handler(error):
+def all_exception_handler(e):
     return render_template('500.html')
+
+@app.errorhandler(500)
+def all_exception_handler(e):
+    return render_template('500.html'),500
 
 @socketio.on('connect')
 def handle_connect():
@@ -101,13 +105,13 @@ class LoginForm(form.Form):
     def validate_login(self, field):
         user = self.get_user()
         if user is None:
-            raise validators.ValidationError('Invalid user')
+            raise validators.ValidationError('Usuario inválido')
 
         # we're comparing the plaintext pw with the the hash from the db
         if not check_password_hash(user.password, self.password.data):
         # to compare plain text passwords use
         # if user.password != self.password.data:
-            raise validators.ValidationError('Invalid password')
+            raise validators.ValidationError('Contraseña inválida')
 
     def get_user(self):
         return db.session.query(User).filter_by(login=self.login.data).first()
