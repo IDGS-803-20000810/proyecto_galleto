@@ -11,3 +11,9 @@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: Javier. Contraseña : Mrcsj09237960@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: Javier. Contraseña : Mrcsj09237960@
  Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: administrador2. Contraseña : Passw$111
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador. Contraseña : Passw$1
+ Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador2. Contraseña : Passsw$111
+ Inicio de sesión exitoso, usuario: administrador2. Contraseña : Passw$111
