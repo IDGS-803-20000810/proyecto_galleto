@@ -732,11 +732,14 @@ class VentaPrincipalView(BaseView):
     def addDetalle(self):
         detalleVentaForm = DetalleVentaForm(request.form)
         productos = Producto.query.all()
-
+        print("detalle presentacion *******************++")
+        
         if request.method == "POST":
             mensaje = []
             presentacion_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
+            print("cantidad "+str(cantidad))
+            print("presentacion id "+str(presentacion_id))
 
             presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
             producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
@@ -760,10 +763,11 @@ class VentaPrincipalView(BaseView):
 
             if total < cantidad_detalle:
                 mensaje.append("Los productos en el inventario no son suficientes: "+producto.nombre)
-                
+                print(mensaje[0])
+                productos = Producto.query.all()
                 presentaciones = Presentacion.query.all()
 
-                return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=mensaje)
+                return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=mensaje)
         
             ##AQUI VA
 
@@ -793,22 +797,26 @@ class VentaPrincipalView(BaseView):
     def addDetalleProd(self):
         detalleVentaForm = DetalleVentaForm(request.form)
         productos = Producto.query.all()
-
+        print("detalle producto *******************++")
+        
         if request.method == "POST":
             mensaje = []
             producto_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
             producto = Producto.query.filter(Producto.id == producto_id).first()
 
+            print("cantidad "+str(cantidad))
+            print("producto id "+str(producto_id))
+
             #Verificar si hay insumos suficientes
 
             total = 0
             detalle = session['detalle']
 
-
+            cantidad_total = cantidad
             for det in detalle:
                 if det['producto_id'] == producto.id:
-                    cantidad+=det['cantidad']
+                    cantidad_total+=det['cantidad']
 
             # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
             productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == producto.id)
@@ -816,16 +824,17 @@ class VentaPrincipalView(BaseView):
             for pInv in productosInv:
                 total+=pInv.cantidad
 
-            if total < cantidad:
+            if total < cantidad_total:
                 mensaje.append("Los productos en el inventario no son suficientes: "+producto.nombre)
                 presentaciones = Presentacion.query.all()
-                print(mensaje)
+                productos = Producto.query.all()
+                print(mensaje[0])
                 return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,productos=productos,mensaje=mensaje)
         
             precio = producto.precio*cantidad
 
             total = session['total']
-            total+=precio
+            total += precio
             session['total'] = total
 
 
