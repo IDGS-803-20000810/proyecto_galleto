@@ -1,32 +1,36 @@
 
- Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión no exitoso por usuario incorrecto, usuario: administradorr. Contraseña : Passw$1
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador. Contraseña : dasdasdsad
- Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: Javier. Contraseña : 123
- Inicio de sesión exitoso, usuario: javier. Contraseña : 123
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: javierAdmin. Contraseña : MRcsj09237960@
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: Javier. Contraseña : Mrcsj09237960@
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: Javier. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión no exitoso por usuario incorrecto, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: administrador2. Contraseña : Passw$111
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador. Contraseña : Passw$1
- Inicio de sesión exitoso, usuario: administrador. Contraseña : Passw$111
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: administrador2. Contraseña : Passsw$111
- Inicio de sesión exitoso, usuario: administrador2. Contraseña : Passw$111
- Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw$1
- Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
- Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
- Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
- Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n no exitoso por usuario incorrecto, usuario: administradorr. Contraseï¿½a : Passw$1
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: administrador. Contraseï¿½a : dasdasdsad
+ Inicio de sesiï¿½n exitoso, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: Javier. Contraseï¿½a : 123
+ Inicio de sesiï¿½n exitoso, usuario: javier. Contraseï¿½a : 123
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: javierAdmin. Contraseï¿½a : MRcsj09237960@
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: Javier. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: Javier. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n no exitoso por usuario incorrecto, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: administrador2. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: administrador. Contraseï¿½a : Passw$1
+ Inicio de sesiï¿½n exitoso, usuario: administrador. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: administrador2. Contraseï¿½a : Passsw$111
+ Inicio de sesiï¿½n exitoso, usuario: administrador2. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: fer. Contraseï¿½a : Passw$1
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n exitoso, usuario: JavierAdmin. Contraseï¿½a : Mrcsj09237960@
+ Inicio de sesiï¿½n no exitoso por contraseï¿½a incorrecta, usuario: fer. Contraseï¿½a : Passw
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111
+ Inicio de sesiï¿½n exitoso, usuario: fer. Contraseï¿½a : Passw$111

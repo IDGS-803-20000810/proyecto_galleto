@@ -198,7 +198,6 @@ class Produccion(db.Model):
     receta = relationship("Receta", back_populates="producciones") 
     mermas = relationship("Merma_Produccion", back_populates="produccion")  
     producto_inventario = relationship("Producto_Inventario", back_populates="produccion")
-    insumos_produccion = relationship("Insumos_Produccion", back_populates="produccion")  
     estatus = db.Column(db.Integer)
     def __str__(self):
         return str(self.fecha_hora)
