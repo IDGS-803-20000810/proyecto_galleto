@@ -86,7 +86,6 @@ class Insumo_Inventario(db.Model):
     detalle_id = mapped_column(ForeignKey("detalle_compra.id"))
     detalle = relationship("Detalle_Compra", back_populates="insumo_inventario")    
     merma_inventario = relationship("Merma_Inventario", back_populates="insumo_inventario")
-    insumos_produccion = relationship("Insumos_Produccion", back_populates="insumo_inventario") 
     def __str__(self):
         out = str(self.insumo) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out
@@ -197,19 +196,18 @@ class Produccion(db.Model):
     receta = relationship("Receta", back_populates="producciones") 
     mermas = relationship("Merma_Produccion", back_populates="produccion")  
     producto_inventario = relationship("Producto_Inventario", back_populates="produccion")
-    insumos_produccion = relationship("Insumos_Produccion", back_populates="produccion")  
     estatus = db.Column(db.Integer)
     def __str__(self):
         return str(self.fecha_hora)
 
-class Insumos_Produccion(db.Model):
-    __tablename__='produccion_detalle'
-    id=db.Column(db.Integer,primary_key=True)
-    cantidad=db.Column(db.Float)
-    insumo_inventario_id = mapped_column(ForeignKey("insumo_inventario.id"))
-    insumo_inventario = relationship("Insumo_Inventario", back_populates="insumos_produccion")  
-    produccion_id = mapped_column(ForeignKey("produccion.id"))
-    produccion = relationship("Produccion", back_populates="insumos_produccion")  
+# class Insumos_Produccion(db.Model):
+#     __tablename__='produccion_detalle'
+#     id=db.Column(db.Integer,primary_key=True)
+#     # cantidad=db.Column(db.Float)
+#     # receta_id = mapped_column(ForeignKey("receta.id"))
+#     # receta = relationship("Receta", back_populates="producciones")  
+#     # produccion_id = mapped_column(ForeignKey("produccion.id"))
+#     # produccion = relationship("Produccion", back_populates="detalles")  
 #     mermas = relationship("Merma_Produccion", back_populates="produccion")  
 #     produccion_detalle = relationship("Producto_Inventario", back_populates="produccion_detalle")
 

@@ -75,6 +75,9 @@ class Insumo_InventarioView(ModelView):
     column_list = ['cantidad','detalle.abastecimiento', 'insumo' , 'detalle.caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
+    can_create = False
+    can_edit = False
+    can_delete = False
     # form_extra_fields = {
     #     'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
     # }
@@ -92,6 +95,16 @@ class Insumo_InventarioView(ModelView):
     @expose("/mermar", methods=("POST",))
     def merma(self):
         return True
+    
+
+    @expose("/mermar", methods=("POST",))
+    def merma(self):
+        idProdInv = request.form['row_id']
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+        formMerma = MermaProductoForm(request.form)
+        return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
+    
 
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True

@@ -22,3 +22,7 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111
