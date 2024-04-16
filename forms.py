@@ -191,3 +191,19 @@ class DetalleVentaForm(Form):
         ],
         default=1
     )
+
+class SolicitudProduccionForm(Form):
+    cantidad_solicitada = IntegerField(
+        "Cantidad",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+            validators.length(min=1, message="ingresa una cantidad valido"),
+        ],
+        default=1)
+    producto_id = HiddenField(
+        "producto_id",
+        [
+            validators.DataRequired(message="Se requiere este campo"),
+        ],
+        default=1
+    )

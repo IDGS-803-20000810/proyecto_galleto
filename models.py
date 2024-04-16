@@ -232,6 +232,7 @@ class Producto(db.Model):
     orden = relationship("Orden", back_populates="producto")  
     peso =db.Column(db.Float)
     precio =db.Column(db.Float)
+    solicitudesProduccion = relationship("SolicitudesProduccion", back_populates="producto")
     def __str__(self):
         return self.nombre
 
@@ -297,3 +298,12 @@ class Presentacion(db.Model):
         return self.medida
     
     #TODO:AÑADIR PRODUCTOS_DETALLE
+
+class SolicitudesProduccion(db.Model):
+    __tablename__='solicitudes_produccion'
+    id=db.Column(db.Integer,primary_key=True)
+    producto_id = mapped_column(ForeignKey("producto.id"))
+    producto = relationship("Producto", back_populates="solicitudesProduccion")
+    cantidad_solicitada=db.Column(db.Integer)  
+    def __str__(self):
+        return self.id
