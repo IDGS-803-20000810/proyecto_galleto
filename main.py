@@ -73,15 +73,16 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return render_template('403.html'),403
 
-@app.errorhandler(Exception)
-def all_exception_handler(e):
-   print(e)
-   return render_template('500.html')
+# @app.errorhandler(Exception)
+# def all_exception_handler(e):
+#    print(e)
+#    return render_template('500.html')
 
 
-@app.errorhandler(500)
-def all_exception_handler(e):
-   return render_template('500.html'),500
+# @app.errorhandler(500)
+# def all_exception_handler(e):
+#    print(e)
+#    return render_template('500.html'),500
 
 @socketio.on('connect')
 def handle_connect():
