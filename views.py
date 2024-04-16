@@ -692,7 +692,6 @@ class CompraView(ModelView):
                 db.session.add(insumoInv)
             model.total = total
             db.session.commit()
-    
     def is_accessible(self):
         if not login.current_user.is_authenticated:
             return False
@@ -747,9 +746,18 @@ class AbastecimientoView(ModelView):
         descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)]),
         cantidad_insumo=dict(validators=[DataRequired("Por favor, llena este campo"), NumberRange(min=0.001)])
     )
+    #def cantidad_insumo_formatter(view, context, model, name):
+    #    if model.insumo:
+    #        insumo = model.insumo
+    #        return "Cantidad ("+insumo.medida+")"
+    #    return "Cantidad "
+    
     def is_accessible(self):
         return login.current_user.is_authenticated
-
+    #column_labels = {
+    #    'cantidad_insumo': str(cantidad_insumo_formatter)  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
+    #}
+    
 class InsumoView(ModelView):
     def is_accessible(self):
             if not login.current_user.is_authenticated:
@@ -782,6 +790,15 @@ class VentaPrincipalView(BaseView):
         
         presentaciones = Presentacion.query.all()
         productos = Producto.query.all()
+        for prod in productos:
+            stock = 0
+            productos_inventario=Producto_Inventario.query.filter(Producto_Inventario.producto_id == prod.id).all()
+            for producto_inv in productos_inventario:
+                stock+=producto_inv.cantidad
+            productos[productos.index(prod)].stock = stock
+        productos.sort(key=lambda x: x.stock, reverse=True)
+                
+
 
         return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=[])
     
