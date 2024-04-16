@@ -36,37 +36,49 @@ class MermaInventarioView(ModelView):
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
-    # form_extra_fields = {
-    #     'medida': SelectField( choices=[(0, 'Gramos'), (1, 'KG')])
-    # }
+    can_create = False
+    can_edit = False
+    can_delete = False
+    
     def on_model_change(self, form, model, is_created):
-        # if int(model.medida) == 1:
-        #     model.cantidad = model.cantidad * 1000
+        
         if is_created:
-            # print(model.medida)
-            # print(model.medida)
-            # print(model.medida)
+            
             insumo = Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).first()
             if insumo:
                 nCantidad = int(insumo.cantidad) - int(model.cantidad)
-                # print(nCantidad)
-                # print(nCantidad)
-                # print(nCantidad)
+                
                 Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).update({"cantidad": nCantidad})
                 db.session.commit()
+
+class MermaProductoView(ModelView):
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "almacen" or login.current_user.role == "admin"
+    column_list = [ 'cantidad', 'producto', 'descripcion','hora']  # Campos a mostrar en la lista
+    column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
+    form_columns = ['cantidad', 'producto', 'descripcion']  # Campos a mostrar en el formulario de edición
+    can_create = False
+    can_edit = False
+    can_delete = False
+
 
 class Insumo_InventarioView(ModelView):
     column_labels = {
         'detalle.caducidad': 'Fecha de Caducidad',  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
         'detalle.abastecimiento': 'Abastecimiento'  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
     }
+
     column_auto_select_related = True
     list_template = "lista_merma.html"  # Override the default template
     column_extra_row_actions = [  # Add a new action button
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
+
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -78,23 +90,12 @@ class Insumo_InventarioView(ModelView):
     can_create = False
     can_edit = False
     can_delete = False
-    # form_extra_fields = {
-    #     'medida': SelectField( choices=[(0, 'KG'), (1, 'Gramos')])
-    # }
+
     def on_model_change(self, form, model, is_created):
         if is_created:
-            # if int(model.medida) == 0:
-            #     print(model.medida)
-            #     print(model.medida)
-            #     print(model.medida)
-                # model.cantidad
                 Insumo_Inventario.query.filter_by(
                 id=model.id).update({"cantidad": model.cantidad})
                 db.session.commit()
-
-    @expose("/mermar", methods=("POST",))
-    def merma(self):
-        return True
     
 
     @expose("/mermar", methods=("POST",))
@@ -117,8 +118,9 @@ class Producto_InventarioView(ModelView):
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
 
-    # def get_query(self):
-    #     return self.session.query(self.model).filter(self.model.cantidad!=0)
+    can_create = False
+    can_edit = False
+    can_delete = False
 
     def is_accessible(self):
             if not login.current_user.is_authenticated:
@@ -166,6 +168,7 @@ def phonelenght(form, field):
         raise ValidationError('Debe introducir un número de teléfono con 10 dígitos')  
     else:
         print("ptm")  
+    
 class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
@@ -231,8 +234,10 @@ class RecetaView(BaseView):
     
     @expose('/addReceta', methods=['POST','GET'])
     def addReceta(self):
+
         if not login.current_user.is_authenticated:
             return redirect("/")
+        
         if 'detalle' not in session.keys():
             session['detalle'] = []
 
@@ -246,7 +251,6 @@ class RecetaView(BaseView):
         for i in insumos:
             medida = Medida.query.filter(Medida.id == i.medida_id).first()
             lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
-
         
         lista_productos = [(i.id, i.nombre) for i in productos]
         ingsRecetaForm.insumo.choices = lista_insumos
@@ -254,12 +258,8 @@ class RecetaView(BaseView):
 
         detalle = session["detalle"]
 
-        if len(detalle) == 0:
-            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=["Se debe tener al menos un ingrediente en la receta"])
         
         if request.method == "GET":
-            ingsRecetaForm = IngredientesRecetaForm(request.form)
-            recetaForm = RecetaForm(request.form)
 
             session['accion'] = request.args.get("accion")
 
@@ -296,9 +296,9 @@ class RecetaView(BaseView):
 
             return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=[])        
         if request.method == "POST":
-            ingsRecetaForm = IngredientesRecetaForm(request.form)
-            recetaForm = RecetaForm(request.form)
-
+            if len(detalle) == 0:
+                return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=["Se debe tener al menos un ingrediente en la receta"])
+        
             nombre = recetaForm.nombre.data
             descripcion = recetaForm.descripcion.data
             producto = int(recetaForm.producto.data)
@@ -365,11 +365,6 @@ class RecetaView(BaseView):
         
         mensajes = []
         
-        for i in insumos:
-            medida = Medida.query.filter(Medida.id == i.medida_id).first()
-            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
-            
-        ingsRecetaForm.insumo.choices = lista_insumos
         
         if request.method == "POST":
             cantidad_detalle = int(ingsRecetaForm.cantidad.data)

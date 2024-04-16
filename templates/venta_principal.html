@@ -37,17 +37,17 @@
                     <div class="card-footer justify-content-center text-center">
                         <p class="text-center text-uppercase">{{prod.nombre}}</p>
                         <div class="row">
-                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregar"
+                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregar{{prod.nombre}}"
                                 href="">AGREGAR</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade " id="modalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade " id="modalAgregar{{prod.nombre}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <form action="{{url_for('ventas_frente.addDetalleProd')}}" id="productos" method="post">
+                            <form action="{{url_for('ventas_frente.addDetalleProd')}}" id="productos{{prod.nombre}}" method="post">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Cantidad</h5>
                                 </div>
@@ -58,7 +58,7 @@
                                 <div class="modal-footer">
                                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                                    <input type="submit" class="btn btn-success" form="productos" value="Agregar">
+                                    <input type="submit" class="btn btn-success" form="productos{{prod.nombre}}" value="Agregar">
                                 </div>
                             </form>
                         </div>
@@ -77,17 +77,17 @@
                     <div class="card-footer justify-content-center text-center">
                         <p class="text-center text-uppercase">{{item.nombre}}</p>
                         <div class="row">
-                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregarPres"
+                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregarPres{{item.nombre}}"
                                 href="">AGREGAR</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade " id="modalAgregarPres" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade " id="modalAgregarPres{{item.nombre}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <form action="{{url_for('ventas_frente.addDetalle')}}" id="presentaciones" method="post">
+                            <form action="{{url_for('ventas_frente.addDetalle')}}" id="presentaciones{{item.nombre}}" method="post">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Cantidad</h5>
                                 </div>
@@ -98,7 +98,7 @@
                                 <div class="modal-footer">
                                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                                    <input type="submit" class="btn btn-success" form="presentaciones" value="Agregar">
+                                    <input type="submit" class="btn btn-success" form="presentaciones{{item.nombre}}" value="Agregar">
                                 </div>
                             </form>
                         </div>

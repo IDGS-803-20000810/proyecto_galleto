@@ -193,6 +193,7 @@ class Produccion(db.Model):
     user_id = mapped_column(ForeignKey("user.id"))
     user = relationship("User", back_populates="producciones_user")  
     #nuevos campos de detalle
+    insumos_produccion = relationship("Insumos_Produccion", back_populates="produccion")  
     cantidad=db.Column(db.Float)
     receta_id = mapped_column(ForeignKey("receta.id"))
     receta = relationship("Receta", back_populates="producciones") 
@@ -203,7 +204,7 @@ class Produccion(db.Model):
         return str(self.fecha_hora)
 
 class Insumos_Produccion(db.Model):
-    __tablename__='produccion_detalle'
+    __tablename__='Insumos_Produccion'
     id=db.Column(db.Integer,primary_key=True)
     cantidad=db.Column(db.Float)
     produccion_id = mapped_column(ForeignKey("produccion.id"))
@@ -234,8 +235,6 @@ class Producto(db.Model):
     precio =db.Column(db.Float)
     def __str__(self):
         return self.nombre
-
-
 
 class Merma_Producto(db.Model):
     __tablename__='merma_producto'
@@ -305,5 +304,3 @@ class Presentacion(db.Model):
     detalle_venta = relationship("Detalle_Venta", back_populates="presentacion")
     def __str__(self):
         return self.medida
-
-    #TODO:AÑADIR PRODUCTOS_DETALLE
