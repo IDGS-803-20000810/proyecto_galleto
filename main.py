@@ -55,8 +55,8 @@ def get_locale():
 
 class MyBaseForm(form.Form):
     class Meta:
-        csrf = True  # Enable CSRF
-        csrf_class = SessionCSRF  # Set the CSRF implementation
+        csrf = True 
+        csrf_class = SessionCSRF  
         csrf_secret = Config.SECRET_KEY
 
 def agregarLog(texto):
@@ -72,17 +72,6 @@ def page_not_found(e):
 def page_not_found(e):
     session['redirected_from'] = request.url
     return render_template('403.html'),403
-
-# @app.errorhandler(Exception)
-# def all_exception_handler(e):
-#    print(e)
-#    return render_template('500.html')
-
-
-# @app.errorhandler(500)
-# def all_exception_handler(e):
-#    print(e)
-#    return render_template('500.html'),500
 
 @socketio.on('connect')
 def handle_connect():
@@ -120,7 +109,6 @@ class LoginForm(form.Form):
 
     def get_user(self):
         return db.session.query(User).filter_by(login=self.login.data).first()
-
 
 class RegistrationForm(form.Form):
     login = fields.StringField(validators=[validators.InputRequired()])
@@ -224,8 +212,6 @@ class MyAdminIndexView(admin.AdminIndexView):
         self._template_args['form'] = form
         self._template_args['link'] = link
         return super(MyAdminIndexView, self).render("login.html",form=form)
-
-
 
     @expose('/register/', methods=('GET', 'POST'))
     def register_view(self):
