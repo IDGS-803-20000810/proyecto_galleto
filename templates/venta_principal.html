@@ -5,13 +5,22 @@
 {% block body %}
 
 {% for m in mensaje %}
-
+{% if m == 'Venta Completada' %}
+<div class="alert alert-success" role="alert">
+    {{m}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% else %}
 <div class="alert alert-danger" role="alert">
     {{m}}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
+{% endif %}
+
 
 {% endfor %}
 <div class="container-flex" style="height: 80vh;">
@@ -128,7 +137,7 @@
             <div class="card-footer text-muted">
                 <h2>Total: ${{total}}</h2>
 
-                <a class="btn btn-success d-flex m-1" href="guardarCompra">Aceptar compra</a>
+                <a class="btn btn-success d-flex m-1" href="guardarVenta">Aceptar compra</a>
                 <a class="btn btn-danger d-flex m-1" href="..">Cancelar compra</a>
 
             </div>

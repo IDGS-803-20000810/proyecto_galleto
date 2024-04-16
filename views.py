@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
+from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from wtforms.validators import Length
@@ -104,8 +104,8 @@ class Producto_InventarioView(ModelView):
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
 
-    def get_query(self):
-        return self.session.query(self.model).filter(self.model.cantidad!=0)
+    # def get_query(self):
+    #     return self.session.query(self.model).filter(self.model.cantidad!=0)
 
     def is_accessible(self):
             if not login.current_user.is_authenticated:
@@ -240,8 +240,13 @@ class RecetaView(BaseView):
         recetaForm.producto.choices = lista_productos
 
         detalle = session["detalle"]
+
+        if len(detalle) == 0:
+            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=["Se debe tener al menos un ingrediente en la receta"])
         
         if request.method == "GET":
+            ingsRecetaForm = IngredientesRecetaForm(request.form)
+            recetaForm = RecetaForm(request.form)
 
             session['accion'] = request.args.get("accion")
 
@@ -278,6 +283,8 @@ class RecetaView(BaseView):
 
             return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=[])        
         if request.method == "POST":
+            ingsRecetaForm = IngredientesRecetaForm(request.form)
+            recetaForm = RecetaForm(request.form)
 
             nombre = recetaForm.nombre.data
             descripcion = recetaForm.descripcion.data
@@ -531,6 +538,7 @@ class ProduccionCocinaView(BaseView):
 
         if estatus == 1:
             ingredientes = Ingredientes_Receta.query.filter(Ingredientes_Receta.receta_id==produccion.receta_id).all()
+            
             
             #Verificar si hay insumos suficientes
             for item in ingredientes:
@@ -917,12 +925,19 @@ class VentaPrincipalView(BaseView):
 
         return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],productos=productos,presentaciones=presentaciones,detalleVentaForm=detalleVentaForm,mensaje=[])
     
-    @expose('/guardarCompra',methods=['GET'])
+    @expose('/guardarVenta',methods=['GET'])
     def guardarCompra(self):
         detalleVentaForm = DetalleVentaForm(request.form)
         productos = Producto.query.all()
 
         detalle = session["detalle"]
+        
+        venta = Venta(total_venta=session['total'],user_id=login.current_user.id)
+
+        db.session.add(venta)
+        db.session.commit()
+
+        db.session.refresh(venta)
 
         for item in detalle:
 
@@ -936,10 +951,19 @@ class VentaPrincipalView(BaseView):
 
                 item_cantidad = item['cantidad']*presentacion.cantidad_producto
 
+                detVent = Detalle_Venta(cantidad=item['cantidad'],producto_id=item['producto_id'],presentacion_id=item['presentacion_id'],subtotal=item['subtotal'],venta_id=venta.id)
+                db.session.add(detVent)
+                db.session.commit()
+                db.session.refresh(detVent)
+
             else:
                 producto = Producto.query.filter(Producto.id == item['producto_id']).first()
                 productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == producto.id)
                 item_cantidad = item['cantidad']
+                detVent = Detalle_Venta(cantidad=item['cantidad'],producto_id=item['producto_id'],subtotal=item['subtotal'],venta_id=venta.id)
+                db.session.add(detVent)
+                db.session.commit()
+                db.session.refresh(detVent)
 
 
             for pInv in productosInv:
@@ -947,6 +971,10 @@ class VentaPrincipalView(BaseView):
                 if pInv.cantidad >= item_cantidad:
                     pInv.cantidad = pInv.cantidad - item_cantidad
                     db.session.add(pInv)
+                    db.session.commit()
+
+                    insInvDet = Producto_Inventario_Detalle(producto_inventario_id=pInv.id,detalle_venta_id=detVent.id,cantidad=item_cantidad)
+                    db.session.add(insInvDet)
                     db.session.commit()
 
                     print("*******************p Fin*************************")
@@ -958,27 +986,16 @@ class VentaPrincipalView(BaseView):
                     db.session.add(pInv)
                     db.session.commit()
 
+                    insInvDet = Producto_Inventario_Detalle(producto_inventario_id=pInv.id,detalle_venta_id=detVent.id,cantidad=pInv.cantidad)
+                    db.session.add(insInvDet)
+                    db.session.commit()
+
                     print("*******************'p' Fin*************************")
                     print(pInv)
-
-        venta = Venta(total_venta=session['total'],user_id=login.current_user.id)
-
-        db.session.add(venta)
-        db.session.commit()
-
-        db.session.refresh(venta)
-        
-        for det in detalle:
-            if det['presentacion_id'] == 0:
-                detVent = Detalle_Venta(cantidad=det['cantidad'],producto_id=det['producto_id'],subtotal=det['subtotal'],venta_id=venta.id)
-            else:
-                detVent = Detalle_Venta(cantidad=det['cantidad'],producto_id=det['producto_id'],presentacion_id=det['presentacion_id'],subtotal=det['subtotal'],venta_id=venta.id)
-            db.session.add(detVent)
-            db.session.commit()
 
         session['detalle'] = []
         session['total'] = 0
 
         presentaciones = Presentacion.query.all()
 
-        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=['Venta Completada : '])
+        return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=['Venta Completada'])
