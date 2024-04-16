@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
 from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
+from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Proveedor, Receta, Medida, Venta
 from models import db
 # from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
 from wtforms.validators import Length
@@ -539,12 +539,6 @@ class ProduccionCocinaView(BaseView):
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
                 
-                print("***********************item.cantidad****************")
-                print(item.cantidad*produccion.cantidad)
-                
-                print("***********************insumosInv****************")
-                print(insumosInv)
-                
                 insumo = Insumo.query.filter(Insumo.id == item.insumo_id).first()
 
                 for ins in insumosInv:
@@ -577,6 +571,10 @@ class ProduccionCocinaView(BaseView):
 
                 item_cantidad = item.cantidad*produccion.cantidad
 
+                db.session.add(produccion)
+                db.session.commit()
+                db.session.refresh(produccion)
+
                 for ins in insumosInv:
                     print("*******************ins Inicio*************************")
                     print(ins)
@@ -584,6 +582,11 @@ class ProduccionCocinaView(BaseView):
                         ins.cantidad = ins.cantidad - item_cantidad
                         db.session.add(ins)
                         db.session.commit()
+
+                        insProd = Insumos_Produccion(insumo_inventario_id=ins.id,produccion_id=produccion.id,cantidad=item_cantidad)
+                        db.session.add(insProd)
+                        db.session.commit()
+
 
                         print("*******************ins Fin*************************")
                         print(ins)
@@ -594,6 +597,10 @@ class ProduccionCocinaView(BaseView):
                         db.session.add(ins)
                         db.session.commit()
 
+                        insProd = Insumos_Produccion(insumo_inventario_id=ins.id,produccion_id=produccion.id,cantidad=ins.cantidad)
+                        db.session.add(insProd)
+                        db.session.commit()
+
                         print("*******************ins Fin*************************")
                         print(ins)
 
@@ -601,8 +608,7 @@ class ProduccionCocinaView(BaseView):
         cantidad_producto = receta_insertar.cantidad_producto*produccion.cantidad
         producto_inventario = Producto_Inventario(producto_id=receta_insertar.producto_id,cantidad = cantidad_producto,produccion_id=produccion.id)
 
-        db.session.add(produccion)
-        db.session.commit()
+        
         
         db.session.add(producto_inventario)
         db.session.commit()
