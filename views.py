@@ -922,13 +922,13 @@ class VentaPrincipalView(BaseView):
 
             if item['presentacion_id'] != 0:
 
-                presentacion = Presentacion.query.filter(Presentacion.id == detalle['presentacion_id']).first()
+                presentacion = Presentacion.query.filter(Presentacion.id == item['presentacion_id']).first()
                 producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
 
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 productosInv = Producto_Inventario.query.filter(Producto_Inventario.producto_id == presentacion.producto_id)      
 
-                item_cantidad = item['cantidad']*presentacion.cantidad
+                item_cantidad = item['cantidad']*presentacion.cantidad_producto
 
             else:
                 producto = Producto.query.filter(Producto.id == item['producto_id']).first()
