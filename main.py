@@ -95,10 +95,44 @@ class LoginForm(form.Form):
     login = fields.StringField(validators=[validators.InputRequired()])
     password = fields.PasswordField(validators=[validators.InputRequired()])
     def validate_login(self, field):
+
+        print("login")
+        if session.get('intentos') is None:
+            print("3 intentos")
+
+            session['intentos'] = 3
+                
+            
+        if session.get('intentos') is not None:
+            print("not none")
+            if session['intentos'] == 0:
+
+                print("session['intentos']")
+                print(session['intentos'])
+                
+                usrBloquear = db.session.query(User).filter_by(login=self.login.data).first()
+                
+                if usrBloquear:
+                    usrBloquear.bloqueado = 1
+                    db.session.add(usrBloquear)
+                    db.session.commit()
+                    session['intentos'] = 3
+
+                raise validators.StopValidation('Usuario inválido')
+            
+            else:
+                valor = session['intentos']
+                valor = valor - 1
+                session['intentos'] = valor
+            
         user = self.get_user()
+
         if user is None:
             agregarLog("Inicio de sesión no exitoso por usuario incorrecto, usuario: " + self.login.data + ". Contraseña : " + self.password.data)  
             raise validators.StopValidation('Usuario inválido')
+        
+        if user.bloqueado==1:
+            raise validators.StopValidation('Usuario bloqueado por exceso de intentos')
 
         # we're comparing the plaintext pw with the the hash from the db
         if not check_password_hash(user.password, self.password.data):
@@ -106,7 +140,7 @@ class LoginForm(form.Form):
         # if user.password != self.password.data:
             agregarLog("Inicio de sesión no exitoso por contraseña incorrecta, usuario: " + self.login.data + ". Contraseña : " + self.password.data)         
             raise validators.StopValidation('Contraseña inválida')
-
+        
     def get_user(self):
         return db.session.query(User).filter_by(login=self.login.data).first()
 
