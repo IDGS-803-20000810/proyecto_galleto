@@ -27,7 +27,7 @@ from models import Merma_Producto, Presentacion, Producto, Producto_Inventario, 
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
+from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView
 from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
@@ -102,8 +102,23 @@ class LoginForm(form.Form):
             print("3 intentos")
 
             session['intentos'] = 3
-                
-            
+
+        user = self.get_user()
+
+        if user is None:
+            agregarLog("Inicio de sesión no exitoso por usuario incorrecto, usuario: " + self.login.data + ". Contraseña : " + self.password.data)  
+            raise validators.StopValidation('Usuario inválido')
+
+        if user.bloqueado==1:
+            raise validators.StopValidation('Usuario bloqueado por exceso de intentos')
+
+        # we're comparing the plaintext pw with the the hash from the db
+        if not check_password_hash(user.password, self.password.data):
+        # to compare plain text passwords use
+        # if user.password != self.password.data:
+            agregarLog("Inicio de sesión no exitoso por contraseña incorrecta, usuario: " + self.login.data + ". Contraseña : " + self.password.data)         
+            raise validators.StopValidation('Contraseña inválida')
+        
         if session.get('intentos') is not None:
             print("not none")
             if session['intentos'] == 0:
@@ -125,22 +140,6 @@ class LoginForm(form.Form):
                 valor = session['intentos']
                 valor = valor - 1
                 session['intentos'] = valor
-            
-        user = self.get_user()
-
-        if user is None:
-            agregarLog("Inicio de sesión no exitoso por usuario incorrecto, usuario: " + self.login.data + ". Contraseña : " + self.password.data)  
-            raise validators.StopValidation('Usuario inválido')
-        
-        if user.bloqueado==1:
-            raise validators.StopValidation('Usuario bloqueado por exceso de intentos')
-
-        # we're comparing the plaintext pw with the the hash from the db
-        if not check_password_hash(user.password, self.password.data):
-        # to compare plain text passwords use
-        # if user.password != self.password.data:
-            agregarLog("Inicio de sesión no exitoso por contraseña incorrecta, usuario: " + self.login.data + ". Contraseña : " + self.password.data)         
-            raise validators.StopValidation('Contraseña inválida')
         
     def get_user(self):
         return db.session.query(User).filter_by(login=self.login.data).first()
@@ -302,6 +301,7 @@ admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
 admin.add_view(CompraView(Compra,  db.session))
+admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas"))
 admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(ProductoView(Producto, db.session))
@@ -311,7 +311,7 @@ admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventar
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
 admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos'))
-admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
+# admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
 admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
 admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
 admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))

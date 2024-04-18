@@ -170,6 +170,12 @@
  Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: JavierAdmin. Contraseña : 123
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: JavierAdmin. Contraseña : 321
+<<<<<<< HEAD
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj
+=======
 >>>>>>> bc519db7f9799e6d8c8bc20b7374553889ae0d18
 
  Inicio de sesión exitoso, usuario: Javier2. Contraseña : 09237960@Mrcsj. hora: 2024-04-17 20:16:17.995508
@@ -206,3 +212,9 @@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : 1234. hora: 2024-04-17 20:56:33.010837
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-17 20:58:25.995550
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-17 20:58:53.153572
+>>>>>>> 31fb60527b1b0225aff95c0f2d15bb97e7abc03a
+
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:15:03.058984
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:21:19.592631
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:25:31.021318
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:29:35.489408

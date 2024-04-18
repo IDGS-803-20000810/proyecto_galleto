@@ -12,5 +12,5 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG=True
     # SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:s4m3ts1s@localhost/galletosdelight'
-    SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@localhost/galletosdelight'
+    SQLALCHEMY_DATABASE_URI='mysql+pymysql://javier:root@localhost/galletosdelight'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
