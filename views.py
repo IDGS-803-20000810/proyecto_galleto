@@ -110,7 +110,7 @@ class Insumo_InventarioView(ModelView):
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  
-    column_list = ['producto', 'cantidad', 'produccion']  
+    column_list = ['producto', 'cantidad', 'produccion','responsable']  
     column_editable_list = ['producto', 'cantidad', 'produccion'] # Campos editables en la lista
     form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
     
@@ -142,7 +142,7 @@ class Producto_InventarioView(ModelView):
         idProdInv = request.form['idProdInv']
         formMerma = MermaProductoForm(request.form)
 
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv)
         prod = Producto.query.filter(Producto.id==prodInv.producto_id)
 
         if formMerma.cantidad.data > prodInv.cantidad:
@@ -746,6 +746,14 @@ class AbastecimientoView(ModelView):
         descripcion=dict(validators=[DataRequired("Por favor, llena este campo"), Length(min=5, max=50)]),
         cantidad_insumo=dict(validators=[DataRequired("Por favor, llena este campo"), NumberRange(min=0.001)])
     )
+
+class ProduccionView(ModelView):
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role == "cuck" or login.current_user.role == "admin"
+    column_auto_select_related = True
     #def cantidad_insumo_formatter(view, context, model, name):
     #    if model.insumo:
     #        insumo = model.insumo

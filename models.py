@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import text
 from flask_login import UserMixin
 import datetime
 from datetime import date
@@ -21,6 +22,7 @@ class User(db.Model,UserMixin):
     email = db.Column(db.String(120))
     password = db.Column(db.String(400))
     role =  db.Column(db.String(30))
+    bloqueado = db.Column(db.Integer,default=0)
     producciones_user = relationship("Produccion", back_populates="user")
     ventas_user = relationship("Venta", back_populates="user")
     compras_user = relationship("Compra", back_populates="user")
@@ -101,9 +103,24 @@ class Producto_Inventario(db.Model):
     cantidad = db.Column(db.Integer)
     producto_inventario_detalle = relationship("Producto_Inventario_Detalle", back_populates="producto_inventario")  
     merma = relationship("Merma_Producto", back_populates="producto") 
+    # responsable = None
     def __str__(self):
         out = str(self.producto) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out 
+    
+    # @property
+    # def responsable(self):
+    #     res = db.session.query(Producto_Inventario,text('responsable')).from_statement(text("""
+    #         SELECT
+    #         US.LOGIN AS Responsable
+    #         FROM PRODUCTO_INVENTARIO PINV
+    #         JOIN PRODUCCION PR ON PR.ID = PINV.PRODUCCION_ID
+    #         JOIN USER US ON US.ID = PR.USER_ID
+    #         WHERE PINV.ID = {}
+    #         """.format(self.id))
+            
+    #     ).first()
+    #     return res.Responsable
 
 
 class Abastecimiento(db.Model):
@@ -277,6 +294,7 @@ class Detalle_Venta(db.Model):
     subtotal = db.Column(db.Float)
     cantidad = db.Column(db.Float)
 
+# Que producto del inventatio se utilizo en el detalle
 class Producto_Inventario_Detalle(db.Model):
     __tablename__='producto_inventario_detalle'
     id=db.Column(db.Integer,primary_key=True)
