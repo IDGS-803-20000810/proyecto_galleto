@@ -107,3 +107,7 @@
  Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: JavierAdmin. Contraseña : 123
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: JavierAdmin. Contraseña : 321
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj

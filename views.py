@@ -26,6 +26,30 @@ from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Perm
 
 admin_permission = Permission(RoleNeed('cuk'))
 # db=SQLAlchemy()
+    
+def not_null(form, field):
+    print(field)
+    if field.data == None:
+        print("igual ptm")
+        raise ValidationError('Debe seleccionar un elemento')  
+    else:
+        print("ptm")  
+
+def min_allowed(form, field):
+    if field.data == None:
+        raise ValidationError('Debe seleccionar un elemento')    
+    if len(str(field.data)) < 0:
+        raise ValidationError('Debe introducir un valor')    
+    
+
+def date_format(view, value):
+    return value.strftime('%d.%m.%Y')
+
+MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
+MY_DEFAULT_FORMATTERS.update({
+        type(None): typefmt.null_formatter,
+        date: date_format
+    })
 
 class MermaInventarioView(ModelView):
     def is_accessible(self):
@@ -106,6 +130,26 @@ class Insumo_InventarioView(ModelView):
         formMerma = MermaProductoForm(request.form)
         return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
     
+class AdminRecetaView(ModelView):
+    column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
+    inline_models = [(Ingredientes_Receta, dict(form_columns=['id','cantidad','insumo'],                    
+    form_args = dict(
+        cantidad=dict(validators=[ NumberRange(min=1)]), 
+        insumo=dict(validators=[not_null])
+    )))]
+    form_columns = ['nombre','descripcion','producto_receta','cantidad_producto']  
+    form_args = dict(
+        producto_receta=dict(validators=[not_null]), 
+        cantidad_producto=dict(validators=[not_null]),
+        nombre=dict(validators=[not_null]),
+        descripcion=dict(validators=[not_null])
+    )
+    def is_accessible(self):
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role == "admin" or login.current_user.role == "cuck" 
+
 
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
@@ -649,31 +693,6 @@ def max_allowed(form, field):
 class InlineaCompraView(ModelView):
     column_auto_select_related = True
     form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
-
-    
-def not_null(form, field):
-    print(field)
-    if field.data == None:
-        print("igual ptm")
-        raise ValidationError('Debe seleccionar un elemento')  
-    else:
-        print("ptm")  
-
-def min_allowed(form, field):
-    if field.data == None:
-        raise ValidationError('Debe seleccionar un elemento')    
-    if len(str(field.data)) < 0:
-        raise ValidationError('Debe introducir un valor')    
-    
-
-def date_format(view, value):
-    return value.strftime('%d.%m.%Y')
-
-MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
-MY_DEFAULT_FORMATTERS.update({
-        type(None): typefmt.null_formatter,
-        date: date_format
-    })
    
 
 class CompraView(ModelView):
