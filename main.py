@@ -33,6 +33,7 @@ from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig, Config
 from functools import wraps  # Importa wraps del módulo functools
+from datetime import datetime
 
 # Create Flask application
 app = Flask(__name__)
@@ -61,7 +62,7 @@ class MyBaseForm(form.Form):
 
 def agregarLog(texto):
     archivo_texto=open('logs.txt','a')
-    archivo_texto.write('\n ' + texto)
+    archivo_texto.write('\n ' + texto + ". hora: " + str(datetime.now()))
     archivo_texto.close()
 
 @app.errorhandler(404)
