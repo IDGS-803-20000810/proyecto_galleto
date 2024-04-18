@@ -33,6 +33,7 @@ from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig, Config
 from functools import wraps  # Importa wraps del módulo functools
+from datetime import datetime
 
 # Create Flask application
 app = Flask(__name__)
@@ -61,7 +62,7 @@ class MyBaseForm(form.Form):
 
 def agregarLog(texto):
     archivo_texto=open('logs.txt','a')
-    archivo_texto.write('\n ' + texto)
+    archivo_texto.write('\n ' + texto + ". hora: " + str(datetime.now()))
     archivo_texto.close()
 
 @app.errorhandler(404)
@@ -92,8 +93,8 @@ def on_identity_loaded(sender, identity):
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
-    login = fields.StringField(validators=[validators.InputRequired()])
-    password = fields.PasswordField(validators=[validators.InputRequired()])
+    login = fields.StringField(validators=[validators.InputRequired(),validators.Length(1,255)])
+    password = fields.PasswordField(validators=[validators.InputRequired(),validators.Length(1,255)])
     def validate_login(self, field):
 
         print("login")
@@ -237,16 +238,22 @@ class MyAdminIndexView(admin.AdminIndexView):
         if helpers.validate_form_on_submit(form):
             user = form.get_user()
             if login.login_user(user):
-                agregarLog("Inicio de sesión exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)         
+                agregarLog("Inicio de sesión exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)   
             else:
                 agregarLog("Inicio de sesión no exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)         
         if login.current_user.is_authenticated:
+            print("fuckkkkkkkk")
+            userToUpdate = User.query.filter_by(id = user.id).first()
+            userToUpdate.prevLogin = userToUpdate.lastLogin
+            userToUpdate.lastLogin = datetime.now()
+            db.session.add(userToUpdate)
+            db.session.commit()
             return redirect(url_for('.index'))
         link = '<p>Don\'t have an account? <a href="' + url_for('.register_view') + '">Click here to register.</a></p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
         return super(MyAdminIndexView, self).render("login.html",form=form)
-
+    
     @expose('/register/', methods=('GET', 'POST'))
     def register_view(self):
         form = RegistrationForm(request.form)
@@ -272,6 +279,8 @@ class MyAdminIndexView(admin.AdminIndexView):
     def logout_view(self):
         login.logout_user()
         return redirect(url_for('.index'))
+    form_base_class = SecureForm
+
 
 
 # Flask views

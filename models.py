@@ -21,6 +21,8 @@ class User(db.Model,UserMixin):
     login = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120))
     password = db.Column(db.String(400))
+    prevLogin=db.Column(db.DateTime)
+    lastLogin=db.Column(db.DateTime,default=datetime.datetime.now)
     role =  db.Column(db.String(30))
     bloqueado = db.Column(db.Integer,default=0)
     producciones_user = relationship("Produccion", back_populates="user")
