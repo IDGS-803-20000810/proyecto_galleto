@@ -242,7 +242,6 @@ class MyAdminIndexView(admin.AdminIndexView):
             else:
                 agregarLog("Inicio de sesión no exitoso, usuario: " + form.login.data + ". Contraseña : " + form.password.data)         
         if login.current_user.is_authenticated:
-            print("fuckkkkkkkk")
             userToUpdate = User.query.filter_by(id = user.id).first()
             userToUpdate.prevLogin = userToUpdate.lastLogin
             userToUpdate.lastLogin = datetime.now()
