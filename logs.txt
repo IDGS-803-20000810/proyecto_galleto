@@ -213,3 +213,7 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-17 20:58:25.995550
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-17 20:58:53.153572
 >>>>>>> 31fb60527b1b0225aff95c0f2d15bb97e7abc03a
+
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:15:03.058984
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:21:19.592631
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:25:31.021318
