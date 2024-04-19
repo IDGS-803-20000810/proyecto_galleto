@@ -23,11 +23,11 @@ import time
 import secrets
 import bcrypt
 
-from models import Merma_Producto, Presentacion, Producto, Producto_Inventario, Venta, db, Medida
+from models import Merma_Producto, Presentacion, Produccion, Producto, Producto_Inventario, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
+from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, ProduccionesView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
 from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, UserView
@@ -205,26 +205,21 @@ class MyAdminIndexView(admin.AdminIndexView):
         return redirect(url_for('.index'))
     form_base_class = SecureForm
 
-
-
-
 # Flask views
 @app.route('/')
 def index():
     return redirect('/admin')
 
-
 init_login()
 
-
 admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
-
 
 admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
 admin.add_view(CompraView(Compra,  db.session))
 admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas"))
+admin.add_view(ProduccionesView(Produccion,  db.session,"Historial de Producciones"))
 admin.add_view(VentaView(Venta, db.session,"Historial de ventas"))
 admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))

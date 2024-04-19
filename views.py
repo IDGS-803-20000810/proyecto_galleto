@@ -220,6 +220,17 @@ class RecetaView(BaseView):
             else:
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
+class ProduccionesView(ModelView):
+    column_list = [ 'fecha_hora','user','receta','cantidad']
+    can_create = False
+    can_edit = False
+    can_delete = False
+    def is_accessible(self):
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
+
 
 class ProduccionCocinaView(BaseView):
 
@@ -292,11 +303,8 @@ class ProduccionCocinaView(BaseView):
                 return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
         #######################
 
-
-        produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0)
+        produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0,user_id=login.current_user.id)
         
-        
-
         db.session.add(produccion)
         db.session.commit()
 

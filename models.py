@@ -115,19 +115,10 @@ class Producto_Inventario(db.Model):
         out = str(self.producto) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out 
     
-    # @property
-    # def responsable(self):
-    #     res = db.session.query(Producto_Inventario,text('responsable')).from_statement(text("""
-    #         SELECT
-    #         US.LOGIN AS Responsable
-    #         FROM PRODUCTO_INVENTARIO PINV
-    #         JOIN PRODUCCION PR ON PR.ID = PINV.PRODUCCION_ID
-    #         JOIN USER US ON US.ID = PR.USER_ID
-    #         WHERE PINV.ID = {}
-    #         """.format(self.id))
-            
-    #     ).first()
-    #     return res.Responsable
+    @property
+    def responsable(self):
+        res = db.session.query(User).filter(User.id==self.produccion.user_id).first()
+        return res.first_name+" "+res.last_name
 
 
 class Abastecimiento(db.Model):
