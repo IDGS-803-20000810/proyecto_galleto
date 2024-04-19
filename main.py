@@ -32,17 +32,14 @@ from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
 from config import DevelopmentConfig, Config
-from functools import wraps  # Importa wraps del módulo functools
 from datetime import datetime
+from customValidators import  agregarLog, password_check, user_check
 
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 socketio = SocketIO(app)
-
-admin_permission = Permission(RoleNeed('cuk'))
 csrf=CSRFProtect()
-
 cors = CORS(app, resources={r"/*": {"origins": ["*"]}})
 
 # load the extension
@@ -59,11 +56,6 @@ class MyBaseForm(form.Form):
         csrf = True 
         csrf_class = SessionCSRF  
         csrf_secret = Config.SECRET_KEY
-
-def agregarLog(texto):
-    archivo_texto=open('logs.txt','a')
-    archivo_texto.write('\n ' + texto + ". hora: " + str(datetime.now()))
-    archivo_texto.close()
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -148,10 +140,10 @@ class RegistrationForm(form.Form):
     login = fields.StringField(validators=[validators.InputRequired()])
     email = fields.StringField()
     password = fields.PasswordField(validators=[validators.InputRequired()])
-    role = fields.SelectField(
-        "Selecciona el rol del usuario",
-        choices=[("cuck", "Cocinero"), ("admin", "Administrador"),("ventas", "Vendedor"),("almacen", "Almacenista")],
-    )
+    #role = fields.SelectField(
+    #    "Selecciona el rol del usuario",
+    #    choices=[("cuck", "Cocinero"), ("admin", "Administrador"),("ventas", "Vendedor"),("almacen", "Almacenista")],
+    #)
     
     def validate_login(self, field):
         if db.session.query(User).filter_by(login=self.login.data).count() > 0:
@@ -175,50 +167,6 @@ def init_login():
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.query(User).get(user_id)
-
-def user_check(user):
-    val = True
-    mensaje = ""
-    
-    for usr in Listas.usuarios_comunes:
-        if usr == user:
-            mensaje = "Se detectó un usuario inseguro"
-            val = False
-            
-    return {'valido':val,'mensaje':mensaje}
-
-def password_check(passwd):
-
-    SpecialSym =['$', '@', '#', '%']
-    val = True
-    mensaje = ""
-
-    if len(passwd) < 9:
-        mensaje="la contraseña debe de tener una logitud minima de 9"
-        val = False
-
-    if not any(char.isdigit() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos un numero"
-        val = False
-
-    if not any(char.isupper() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos una mayuscula"
-        val = False
-
-    if not any(char.islower() for char in passwd):
-        mensaje = "La contraseña debe de tener al menos una minuscula"
-        val = False
-
-    if not any(char in SpecialSym for char in passwd):
-        mensaje = "La contraseña debe de tener al menos un caracter especial '$','@','#' "
-        val = False
-        
-    for psw in Listas.contraseñas_comunes:
-        if passwd == psw:
-            mensaje = "Se detectó una contraseña insegura"
-            val = False
-            
-    return {'valido':val,'mensaje':mensaje}
 
 # Create customized index view class that handles login & registration
 class MyAdminIndexView(admin.AdminIndexView):
@@ -247,37 +195,16 @@ class MyAdminIndexView(admin.AdminIndexView):
             db.session.add(userToUpdate)
             db.session.commit()
             return redirect(url_for('.index'))
-        link = '<p>Don\'t have an account? <a href="' + url_for('.register_view') + '">Click here to register.</a></p>'
+        link = '<p>Don\'t have an account? Bad for you</p>'
         self._template_args['form'] = form
         self._template_args['link'] = link
         return super(MyAdminIndexView, self).render("login.html",form=form)
-    
-    @expose('/register/', methods=('GET', 'POST'))
-    def register_view(self):
-        form = RegistrationForm(request.form)
-        if helpers.validate_form_on_submit(form):
-            user = User()
-
-            form.populate_obj(user)
-            
-            #Remover texto plano
-            user.password = generate_password_hash(form.password.data)
-
-            db.session.add(user)
-            db.session.commit()
-
-            login.login_user(user)
-            return redirect(url_for('.index'))
-        link = '<p><a href="' + url_for('.login_view') + '">Registrarse</a></p>'
-        self._template_args['form'] = form
-        self._template_args['link'] = link
-        return self.render('registroTemp.html',form=form)
-
     @expose('/logout/')
     def logout_view(self):
         login.logout_user()
         return redirect(url_for('.index'))
     form_base_class = SecureForm
+
 
 
 
@@ -287,15 +214,11 @@ def index():
     return redirect('/admin')
 
 
-
-    
-# Initialize flask-login
 init_login()
 
-# Create admin
+
 admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
 
-# admin = Admin(app, name='pruebainsumos')
 
 admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(InsumoView(Insumo, db.session))
@@ -315,6 +238,7 @@ admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos'))
 admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
 admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
 admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))
+admin.add_view(UserView(User,db.session,'Usuarios'))
 # admin.add_view(ModelView(Receta, db.session))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)

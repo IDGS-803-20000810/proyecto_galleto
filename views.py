@@ -1,78 +1,37 @@
-from itertools import count
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
-from flask import Flask, render_template, request, Response, flash, g, redirect, session, url_for, jsonify
-from models import Detalle_Venta, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
-from models import db
-# from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
+from flask import render_template, request, redirect, session
+from models import Detalle_Venta,User, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
+from models import db, Roles
 from wtforms.validators import Length
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc, asc
 from forms import DetalleVentaForm, MermaProductoForm, ProduccionForm, RecetaForm, IngredientesRecetaForm
-from models import Proveedor, Insumo, Insumo_Inventario,Abastecimiento, Compra,Detalle_Compra
-# from models import Proveedor, Insumo, Insumo_Inventario, Pedidos_Proveedor
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import mapped_column
-from wtforms import StringField, SelectField, RadioField, EmailField, IntegerField, PasswordField, DecimalField
+from models import Insumo, Insumo_Inventario,Detalle_Compra
 from wtforms import validators
-from wtforms.validators import ValidationError, DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange
 import flask_login as login
-from datetime import date
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.model.template import TemplateLinkRowAction
-from flask_admin.model import typefmt
-from flask_principal import Principal, identity_loaded, UserNeed, RoleNeed, Permission
-
-admin_permission = Permission(RoleNeed('cuk'))
-# db=SQLAlchemy()
-    
-def not_null(form, field):
-    print(field)
-    if field.data == None:
-        print("igual ptm")
-        raise ValidationError('Debe seleccionar un elemento')  
-    else:
-        print("ptm")  
-
-def min_allowed(form, field):
-    if field.data == None:
-        raise ValidationError('Debe seleccionar un elemento')    
-    if len(str(field.data)) < 0:
-        raise ValidationError('Debe introducir un valor')    
-    
-
-def date_format(view, value):
-    return value.strftime('%d.%m.%Y')
-
-MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
-MY_DEFAULT_FORMATTERS.update({
-        type(None): typefmt.null_formatter,
-        date: date_format
-    })
+from customValidators import  not_null, phonelenght
 
 class MermaInventarioView(ModelView):
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacen" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin"
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
     can_create = False
     can_edit = False
     can_delete = False
-    
     def on_model_change(self, form, model, is_created):
-        
         if is_created:
-            
             insumo = Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).first()
             if insumo:
                 nCantidad = int(insumo.cantidad) - int(model.cantidad)
-                
                 Insumo_Inventario.query.filter_by(
                 id=model.insumo_inventario.id).update({"cantidad": nCantidad})
                 db.session.commit()
@@ -82,7 +41,7 @@ class MermaProductoView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacen" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin"
     column_list = [ 'cantidad', 'producto', 'descripcion','hora']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'producto', 'descripcion']  # Campos a mostrar en el formulario de edición
@@ -107,7 +66,7 @@ class Insumo_InventarioView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacen" or login.current_user.role == "admin" or login.current_user.role == "cuck"
+                return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
     column_list = ['cantidad','detalle.abastecimiento', 'insumo' , 'detalle.caducidad']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad',  'insumo'] # Campos editables en la lista
     form_columns = ['cantidad',  'insumo']  # Campos a mostrar en el formulario de edición
@@ -177,16 +136,14 @@ class Producto_InventarioView(ModelView):
     column_extra_row_actions = [  
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
-
     can_create = False
     can_edit = False
     can_delete = False
-
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "ventas" or login.current_user.role == "admin" or login.current_user.role == "cuck"
+                return login.current_user.role.nombre== "ventas" or login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
     
     @expose("/mermar", methods=("POST",))
     def merma(self):
@@ -220,14 +177,7 @@ class Producto_InventarioView(ModelView):
 
         return redirect('/admin/producto_inventario/') 
     
-        
-def phonelenght(form, field):
-    print(field)
-    if len(str(field.data)) != 10:
-        print("igual ptm")
-        raise ValidationError('Debe introducir un número de teléfono con 10 dígitos')  
-    else:
-        print("ptm")  
+      
     
 class ProveedorView(ModelView):
     column_auto_select_related = True
@@ -241,7 +191,7 @@ class ProveedorView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacen" or login.current_user.role == "admin" 
+                return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin" 
     
 class ProductoView(ModelView):
     column_auto_select_related = True
@@ -250,14 +200,14 @@ class ProductoView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "cuck" or login.current_user.role == "admin"  or login.current_user.role == "ventas" 
+                return login.current_user.role.nombre== "cuck" or login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
 
 class PresentacionView(ModelView):
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "admin"  or login.current_user.role == "ventas" 
+                return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
 
     column_auto_select_related = True
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
@@ -271,7 +221,7 @@ class ProduccionCocinaView(BaseView):
         if not login.current_user.is_authenticated:
             return False
         else:
-            return login.current_user.role == "admin" or login.current_user.role == "cuck" 
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
 
     def viewReceta(self):
         if not login.current_user.is_authenticated:
@@ -465,17 +415,6 @@ class ProduccionCocinaView(BaseView):
         return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =[])
 
 
-def max_allowed(form, field):
-    if field.data == None:
-        raise ValidationError('Debe introducir un número')    
-    if field.data > 50:
-        raise ValidationError('Max number of interfaces exceeded')
-    
-
-class InlineaCompraView(ModelView):
-    column_auto_select_related = True
-    form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal']
-   
 
 class CompraView(ModelView):
     def after_model_change(self, form, model, is_created):
@@ -497,7 +436,7 @@ class CompraView(ModelView):
         if not login.current_user.is_authenticated:
             return False
         else:
-            return login.current_user.role == "admin" or login.current_user.role == "almacen" 
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "almacen" 
 
     column_formatters = dict(price=macro('render_price'))
     column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
@@ -514,12 +453,11 @@ class CompraView(ModelView):
     )
 
 class MedidaView(ModelView):
-   
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "almacenista" or login.current_user.role.nombre == "admin"
     
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
@@ -539,7 +477,7 @@ class AbastecimientoView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "almacenista" or login.current_user.role.nombre== "admin"
     column_auto_select_related = True
     form_columns = ['descripcion','insumo', 'cantidad_insumo']
     form_args = dict(
@@ -553,7 +491,7 @@ class ProduccionView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "cuck" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "cuck" or login.current_user.role.nombre== "admin"
     column_auto_select_related = True
     #def cantidad_insumo_formatter(view, context, model, name):
     #    if model.insumo:
@@ -572,15 +510,15 @@ class InsumoView(ModelView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "almacenista" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "almacenista" or login.current_user.role.nombre== "admin"
     column_auto_select_related = True
-    form_columns = ['nombre','medida']  #
+    form_columns = ['nombre','medida']  
     form_args = dict(
         nombre=dict( validators=[DataRequired(message="pon algo we"), Length(min=2, max=30)]  ),
         medida=dict(validators=[DataRequired(message="pon algo we")])
     )
-    column_list = ['nombre','medida']  # Campos a mostrar en la lista
-    column_editable_list = ['nombre','medida'] # Campos editables en la lista
+    column_list = ['nombre','medida'] 
+    column_editable_list = ['nombre','medida'] 
     def is_accessible(self):
         return login.current_user.is_authenticated
 
@@ -589,7 +527,7 @@ class VentaPrincipalView(BaseView):
             if not login.current_user.is_authenticated:
                 return False
             else:
-                return login.current_user.role == "ventas" or login.current_user.role == "admin"
+                return login.current_user.role.nombre== "ventas" or login.current_user.role.nombre== "admin"
     @expose('/')
     def indexVentas(self):
         detalleVentaForm = DetalleVentaForm(request.form)
@@ -833,3 +771,19 @@ class VentaPrincipalView(BaseView):
         presentaciones = Presentacion.query.all()
 
         return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=['Venta Completada'])
+
+
+class UserView(ModelView):
+    column_list = [ 'first_name', 'last_name', 'login','prevLogin', 'role']  
+    column_auto_select_related = True
+    form_columns = ['first_name','last_name', 'login', 'role', 'password']  
+    def after_model_change(self, form, model, is_created):
+        model.password = generate_password_hash(model.password)
+        user = model
+        db.session.add(user)
+        db.session.commit()
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role.nombre== "admin"
