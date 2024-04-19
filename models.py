@@ -12,7 +12,18 @@ from datetime import date
 
 db=SQLAlchemy()
 
-# Create user model.
+class Roles(db.Model):
+    __tablename__='roles'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100))
+    usuarios = relationship("User", back_populates="role")  
+    def get_id(self):
+        return self.id
+    def __unicode__(self):
+        return self.nombre
+    def __str__(self):
+        return self.nombre
+    
 class User(db.Model,UserMixin):
     __tablename__='user'
     id = db.Column(db.Integer, primary_key=True)
@@ -23,19 +34,15 @@ class User(db.Model,UserMixin):
     password = db.Column(db.String(400))
     prevLogin=db.Column(db.DateTime)
     lastLogin=db.Column(db.DateTime,default=datetime.datetime.now)
-    role =  db.Column(db.String(30))
+    role_id = mapped_column(ForeignKey("roles.id"))
+    role = relationship("Roles", back_populates="usuarios")  
     bloqueado = db.Column(db.Integer,default=0)
     producciones_user = relationship("Produccion", back_populates="user")
     ventas_user = relationship("Venta", back_populates="user")
     compras_user = relationship("Compra", back_populates="user")
-
-    # Flask-Login integration
-    # NOTE: is_authenticated, is_active, and is_anonymous
-    # are methods in Flask-Login < 0.3.0
     @property
     def is_authenticated(self):
         return True
-
     @property
     def is_active(self):
         return True
@@ -46,13 +53,11 @@ class User(db.Model,UserMixin):
 
     def get_id(self):
         return self.id
-
-    # Required for administrative interface
     def __unicode__(self):
         return self.login
     def __str__(self):
         return self.login
-
+    
 
 class Insumo(db.Model):
     __tablename__='insumo'
