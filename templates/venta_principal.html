@@ -41,10 +41,34 @@
                             <a class="btn btn-success col" data-toggle="modal" data-target="#modalAgregar{{prod.id}}"
                                 href="">AGREGAR</a>
                         </div>
+                        <div class="row">
+                            <a class="btn btn-success col" data-toggle="modal" data-target="#modalSolicitar{{prod.id}}"
+                                href="">AGREGAR</a>
+                        </div>
                     </div>
                 </div>
-
                 <div class="modal fade " id="modalAgregar{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form action="{{url_for('ventas_frente.addDetalleProd')}}" id="productos{{prod.id}}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Cantidad</h5>
+                            </div>
+                            <div class="modal-body">
+                                {{render_field(detalleVentaForm.cantidad, class="form-control")}}
+                                {{detalleVentaForm.presentacion_id(value=prod.id)}}
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                <input type="submit" class="btn btn-success" form="productos{{prod.id}}" value="Agregar">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                <div class="modal fade " id="modalSolicitar{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -53,13 +77,12 @@
                                     <h5 class="modal-title" id="exampleModalLabel">Cantidad</h5>
                                 </div>
                                 <div class="modal-body">
-                                    {{render_field(detalleVentaForm.cantidad, class="form-control")}}
-                                    {{detalleVentaForm.presentacion_id(value=prod.id)}}
+                                    <input type="number" name="cantidad{{prod.id}}" id="cantidad{{prod.id}}" required min="1" max="1000" />
                                 </div>
                                 <div class="modal-footer">
                                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                                    <input type="submit" class="btn btn-success" form="productos{{prod.id}}" value="Agregar">
+                                    <input type="button" class="btn btn-success" onclick="enviarAlerta('{{prod.id}}')" value="Agregar">
                                 </div>
                             </form>
                         </div>
@@ -168,7 +191,11 @@
         // Maneja el mensaje recibido
         console.log('Mensaje enviado:', message);
     });
-
-    socket.emit('send_message', "message");
+    function enviarAlerta(id){
+        console.log("ya adentro de la funcion")
+        query = "#cantidad" + id;
+        mensaje = id + "|" + $(query).val();
+        socket.emit('send_message',  mensaje);
+    }
 </script>
 {% endblock %}
