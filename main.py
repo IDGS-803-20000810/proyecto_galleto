@@ -27,10 +27,10 @@ from models import Merma_Producto, Presentacion, Producto, Producto_Inventario, 
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, RecetaView, MedidaView, ProductoView, VentaPrincipalView, UserView
-from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,Detalle_Compra
+from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
+from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, UserView
 from config import DevelopmentConfig, Config
 from datetime import datetime
 from customValidators import  agregarLog, password_check, user_check
@@ -225,6 +225,7 @@ admin.add_view(InsumoView(Insumo, db.session))
 admin.add_view(AbastecimientoView(Abastecimiento, db.session))
 admin.add_view(CompraView(Compra,  db.session))
 admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas"))
+admin.add_view(VentaView(Venta, db.session,"Historial de ventas"))
 admin.add_view(ProveedorView(Proveedor, db.session))
 # admin.add_view(MedidaView(Medida, db.session))
 admin.add_view(ProductoView(Producto, db.session))
@@ -234,7 +235,6 @@ admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventar
 # admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
 admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos'))
-# admin.add_view(RecetaView(name='Recetas', endpoint='recetas'))
 admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
 admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
 admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))

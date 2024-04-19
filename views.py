@@ -109,6 +109,21 @@ class AdminRecetaView(ModelView):
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
 
+class VentaView(ModelView):
+    column_list = [ 'hora','user','total_venta','detalle_venta']
+    inline_models = [(Detalle_Venta, dict(form_columns=['id','presentacion','producto','cantidad','subtotal'],                    
+    ))]
+    form_columns = ['hora','user','total_venta','detalle_venta']
+    can_create = False
+    can_edit = False
+    can_delete = False
+    def is_accessible(self):
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
+        
+
 
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
@@ -116,6 +131,7 @@ class Producto_InventarioView(ModelView):
     column_list = ['producto', 'cantidad', 'produccion','responsable']  
     column_editable_list = ['producto', 'cantidad', 'produccion'] # Campos editables en la lista
     form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
+    
     
     column_extra_row_actions = [  
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
@@ -204,234 +220,6 @@ class RecetaView(BaseView):
             else:
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
-    
-    @expose('/')
-    def viewReceta(self):
-        session["detalle"] = []
-        recetas = Receta.query.all()
-        
-        return self.render('recetas.html',recetas=recetas)
-    
-    @expose('/eliminarReceta',methods=['GET'])
-    def deleteReceta(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        session["detalle"] = []
-
-        id = request.args.get("id")
-        receta = db.session.query(Receta).filter(Receta.id == id).first()
-        db.session.delete(receta)
-        db.session.commit()
-        
-        recetas = Receta.query.all()
-        return self.render('recetas.html',recetas=recetas)
-    
-    @expose('/addReceta', methods=['POST','GET'])
-    def addReceta(self):
-
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        
-        if 'detalle' not in session.keys():
-            session['detalle'] = []
-
-        ingsRecetaForm = IngredientesRecetaForm(request.form)
-        recetaForm = RecetaForm(request.form)
-        insumos = Insumo.query.all()
-        productos = Producto.query.all()
-        
-        lista_insumos = []
-
-        for i in insumos:
-            medida = Medida.query.filter(Medida.id == i.medida_id).first()
-            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
-        
-        lista_productos = [(i.id, i.nombre) for i in productos]
-        ingsRecetaForm.insumo.choices = lista_insumos
-        recetaForm.producto.choices = lista_productos
-
-        detalle = session["detalle"]
-
-        
-        if request.method == "GET":
-
-            session['accion'] = request.args.get("accion")
-
-            if session['accion'] == 'modificar':
-
-                #MODIFICAR
-
-                id = request.args.get("id")
-                session['id'] = id
-                receta = db.session.query(Receta).filter(Receta.id == id).first()
-
-                recetaForm.nombre.data = receta.nombre
-                recetaForm.descripcion.data = receta.descripcion
-                recetaForm.producto.data = receta.producto_id
-                recetaForm.cantidad.data = receta.cantidad_producto
-
-                ingsReceta = db.session.query(Ingredientes_Receta).filter(Ingredientes_Receta.receta_id == id).all()
-
-                detalle = []
-
-                for item in ingsReceta:
-
-                    insumo = Insumo.query.filter(Insumo.id == item.insumo_id).first()
-
-                    detalle.append({
-                    "id": item.insumo_id,
-                    "nombre": insumo.nombre,
-                    "cantidad": item.cantidad,
-                    })
-
-                session['detalle'] = detalle
-
-                #MODIFICAR
-
-            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=[])        
-        if request.method == "POST":
-            if len(detalle) == 0:
-                return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = detalle,mensajes=["Se debe tener al menos un ingrediente en la receta"])
-        
-            nombre = recetaForm.nombre.data
-            descripcion = recetaForm.descripcion.data
-            producto = int(recetaForm.producto.data)
-            cantidad = int(recetaForm.cantidad.data)
-
-            if session['accion'] == 'crear':
-            # CREAR
-
-                receta = Receta(nombre=nombre,descripcion=descripcion,producto_id=producto,cantidad_producto=cantidad)
-
-                db.session.add(receta)
-                db.session.commit()
-
-                db.session.refresh(receta)
-                
-                for det in detalle:
-                    ings = Ingredientes_Receta(cantidad=det['cantidad'],insumo_id=det['id'],receta_id=receta.id)
-                    db.session.add(ings)
-                    db.session.commit()
-
-            else:
-
-                # MODIFICAR
-
-                receta = Receta.query.filter(Receta.id == session['id']).first()
-
-                receta.nombre = nombre
-                receta.descripcion = descripcion
-                receta.producto_id = producto
-                receta.cantidad = cantidad
-
-                #Eliminar ingredientes para insertar los nuevos 
-                Ingredientes_Receta.query.filter(Ingredientes_Receta.receta_id == session['id']).delete()
-                
-                db.session.add(receta)
-                db.session.commit()
-                
-                for det in detalle:
-                    ings = Ingredientes_Receta(cantidad=det['cantidad'],insumo_id=det['id'],receta_id=receta.id)
-                    db.session.add(ings)
-                    db.session.commit()
-                
-        recetas = Receta.query.all()
-        return self.render('recetas.html',recetas=recetas)  
-    
-    @expose('/añadirDetalle', methods=['POST'])
-    def addDetalle(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        ingsRecetaForm = IngredientesRecetaForm(request.form)
-        recetaForm = RecetaForm(request.form)
-        insumos = Insumo.query.all()
-        productos = Producto.query.all()
-
-        lista_insumos = []
-
-        for i in insumos:
-            medida = Medida.query.filter(Medida.id == i.medida_id).first()
-            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
-        
-        ingsRecetaForm.insumo.choices = lista_insumos
-        lista_productos = [(i.id, i.nombre) for i in productos]
-        recetaForm.producto.choices = lista_productos
-        
-        mensajes = []
-        
-        
-        if request.method == "POST":
-            cantidad_detalle = int(ingsRecetaForm.cantidad.data)
-            id_insumo = int(ingsRecetaForm.insumo.data)
-            insumo = Insumo.query.filter(Insumo.id == id_insumo).first()
-            
-            detalle = session["detalle"]
-            
-            if detalle:
-                for det in detalle:
-                    if det['id'] == insumo.id:
-                        mensajes.append("Este articulo ya está agregado")
-                        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)    
-
-            detalle.append({
-            "id": insumo.id,
-            "nombre": insumo.nombre,
-            "cantidad": cantidad_detalle,
-            })
-              
-            session['detalle'] = detalle
-            
-            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
-        
-        session['detalle'] = []
-        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
-
-        
-    @expose('/eliminarDetalle', methods=['GET'])
-    def deleteDetalle(self):
-        if not login.current_user.is_authenticated:
-            return redirect("/")
-        ingsRecetaForm = IngredientesRecetaForm(request.form)
-        recetaForm = RecetaForm(request.form)
-        insumos = Insumo.query.all()
-        productos = Producto.query.all()
-        
-        lista_productos = [(i.id, i.nombre) for i in productos]
-        recetaForm.producto.choices = lista_productos
-
-        insumos = Insumo.query.all()
-        
-        lista_insumos = []
-        mensajes = []
-        
-        for i in insumos:
-            medida = Medida.query.filter(Medida.id == i.medida_id).first()
-            lista_insumos.append((i.id, i.nombre+" - "+medida.medida))
-            
-        ingsRecetaForm.insumo.choices = lista_insumos
-        
-        if request.method == "GET":
-            id = int(request.args.get("id"))
-            if session["detalle"]:
-                detalle = session["detalle"]
-
-            print("Detalle :")
-            print(detalle)
-
-            if detalle:
-                for item in detalle:
-                    if item['id'] == id:
-                        detalle.remove({
-                        "id": item['id'],
-                        "nombre": item['nombre'],
-                        "cantidad": item['cantidad'],
-                        })
-              
-            session['detalle'] = detalle
-            
-            return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
-
-        return self.render('recetas_detalle.html',recetaForm=recetaForm,ingsRecetaForm=ingsRecetaForm,detalle = session['detalle'],mensajes=mensajes)
 
 class ProduccionCocinaView(BaseView):
 

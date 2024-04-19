@@ -303,6 +303,11 @@ class Detalle_Venta(db.Model):
     producto_inventario_detalle = relationship("Producto_Inventario_Detalle", back_populates="detalle_venta")  
     subtotal = db.Column(db.Float)
     cantidad = db.Column(db.Float)
+    def __str__(self):
+        if not self.presentacion_id:
+            return self.producto.nombre+" ("+str(int(self.cantidad))+")"
+        else:
+            return self.presentacion.nombre+" ("+str(int(self.cantidad))+")"
 
 # Que producto del inventatio se utilizo en el detalle
 class Producto_Inventario_Detalle(db.Model):
