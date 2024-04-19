@@ -107,7 +107,7 @@ class AdminRecetaView(ModelView):
         if not login.current_user.is_authenticated:
             return False
         else:
-            return login.current_user.role == "admin" or login.current_user.role == "cuck"
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
 
 class VentaView(ModelView):
     column_list = [ 'hora','user','total_venta','detalle_venta']
@@ -121,7 +121,7 @@ class VentaView(ModelView):
         if not login.current_user.is_authenticated:
             return False
         else:
-            return login.current_user.role == "admin" or login.current_user.role == "cuck"
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
         
 
 
@@ -213,6 +213,12 @@ class PresentacionView(ModelView):
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
 
+class RecetaView(BaseView):
+    def is_accessible(self):
+            if not login.current_user.is_authenticated:
+                return False
+            else:
+                return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
 
 class ProduccionCocinaView(BaseView):

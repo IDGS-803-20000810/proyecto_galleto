@@ -27,10 +27,10 @@ from models import Merma_Producto, Presentacion, Producto, Producto_Inventario, 
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, UserView, VentaPrincipalView, VentaView
+from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
 from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView
+from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, UserView
 from config import DevelopmentConfig, Config
 from datetime import datetime
 from customValidators import  agregarLog, password_check, user_check

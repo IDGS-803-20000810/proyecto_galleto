@@ -219,11 +219,14 @@
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:25:31.021318
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:29:35.489408
 <<<<<<< HEAD
+<<<<<<< HEAD
  Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:43:06.215830
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:51:58.762064
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:53:03.321230
  Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:54:18.498123
 =======
+=======
+>>>>>>> b05ec7aabd381008f1f8f5027fc28d91c825bc85
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 17:27:39.606070
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 17:50:53.193260
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 19:06:55.249780
@@ -235,4 +238,15 @@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 19:36:04.158961
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 19:36:08.491919
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:12:53.785659
+<<<<<<< HEAD
 >>>>>>> f5a3d119df687e2a5325b856bf696b1e5e5009dc
+=======
+=======
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:43:06.215830
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:51:58.762064
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:53:03.321230
+ Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:54:18.498123
+>>>>>>> 06d09446997673689f4b32d1882e93cbadae84d1
+
+ Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:19:48.593376
+>>>>>>> b05ec7aabd381008f1f8f5027fc28d91c825bc85
