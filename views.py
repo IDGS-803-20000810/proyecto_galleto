@@ -128,7 +128,7 @@ class VentaView(ModelView):
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  
-    column_list = ['producto', 'cantidad', 'produccion','responsable']  
+    column_list = ['producto', 'cantidad', 'produccion','responsable','proveedores']  
     column_editable_list = ['producto', 'cantidad', 'produccion'] # Campos editables en la lista
     form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
     
@@ -221,15 +221,18 @@ class RecetaView(BaseView):
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
 class ProduccionesView(ModelView):
-    column_list = [ 'fecha_hora','user','receta','cantidad']
+    column_list = [ 'fecha_hora','user','receta','cantidad',"estatus_string"]
     can_create = False
     can_edit = False
     can_delete = False
+
     def is_accessible(self):
         if not login.current_user.is_authenticated:
             return False
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
+    
+    
 
 
 class ProduccionCocinaView(BaseView):
@@ -283,7 +286,7 @@ class ProduccionCocinaView(BaseView):
         #Verificar si hay insumos suficientes
         for item in ingredientes:
             total = 0
-            #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+            
             # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
             insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
             
@@ -341,7 +344,7 @@ class ProduccionCocinaView(BaseView):
             #Verificar si hay insumos suficientes
             for item in ingredientes:
                 total = 0
-                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+            
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
                 
@@ -369,7 +372,7 @@ class ProduccionCocinaView(BaseView):
                 
                 total = 0
 
-                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
                 

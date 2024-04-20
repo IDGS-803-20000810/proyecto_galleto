@@ -119,6 +119,11 @@ class Producto_Inventario(db.Model):
     def responsable(self):
         res = db.session.query(User).filter(User.id==self.produccion.user_id).first()
         return res.first_name+" "+res.last_name
+    
+    @property
+    def proveedores(self):
+        provs = db.session.query(Proveedor).join(Proveedor.proveedor_compras).join(Compra.detalles_compra).join(Detalle_Compra.insumo_inventario).join(Insumo_Inventario.insumos_produccion).join(Insumos_Produccion.produccion).filter(Produccion.id==self.produccion_id).all()
+        return provs
 
 
 class Abastecimiento(db.Model):
@@ -220,6 +225,13 @@ class Produccion(db.Model):
     estatus = db.Column(db.Integer)
     def __str__(self):
         return str(self.fecha_hora)
+    @property
+    def estatus_string(self):
+        if self.estatus==1:
+            return "Completado"
+        if self.estatus==2:
+            return "Cancelado"
+        
 
 class Insumos_Produccion(db.Model):
     __tablename__='Insumos_Produccion'
