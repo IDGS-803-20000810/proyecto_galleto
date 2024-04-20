@@ -37,6 +37,7 @@ class User(db.Model,UserMixin):
     role_id = mapped_column(ForeignKey("roles.id"))
     role = relationship("Roles", back_populates="usuarios")  
     bloqueado = db.Column(db.Integer,default=0)
+    estatus = db.Column(db.Boolean, default=True)
     producciones_user = relationship("Produccion", back_populates="user")
     ventas_user = relationship("Venta", back_populates="user")
     compras_user = relationship("Compra", back_populates="user")
@@ -68,6 +69,7 @@ class Insumo(db.Model):
     # compras = relationship("Detalle_Compra", back_populates="insumo")
     medida_id = mapped_column(ForeignKey("medida.id"))
     medida = relationship("Medida", back_populates="insumo_medida")  
+    estatus = db.Column(db.Boolean, default=True)
     insumo_merma_produccion = relationship("Merma_Produccion", back_populates="insumo")
     abastecimiento = relationship("Abastecimiento", back_populates="insumo")  
     def __str__(self):
@@ -79,6 +81,7 @@ class Proveedor(db.Model):
     nombre=db.Column(db.String(80))
     direccion=db.Column(db.String(90))
     telefono=db.Column(db.BigInteger)
+    estatus = db.Column(db.Boolean, default=True)
     proveedor_compras = relationship("Compra", back_populates="proveedor")
     # proveedor_inventario = relationship("Insumo_Inventario", back_populates="proveedor")
     # proveedor = db.relationship("Pedidos_Proveedor", back_populates="proveedor")
@@ -131,6 +134,7 @@ class Abastecimiento(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     descripcion=db.Column(db.String(255))
     insumo_id = mapped_column(ForeignKey("insumo.id"))
+    estatus = db.Column(db.Boolean, default=True)
     insumo = relationship("Insumo", back_populates="abastecimiento")  
     cantidad_insumo=db.Column(db.Float)
     detalle_compra = relationship("Detalle_Compra", back_populates="abastecimiento")
@@ -187,6 +191,7 @@ class Merma_Inventario(db.Model):
 class Receta(db.Model):
     __tablename__='receta'
     id=db.Column(db.Integer,primary_key=True)
+    estatus = db.Column(db.Boolean, default=True)
     nombre=db.Column(db.String(50))
     descripcion=db.Column(db.String(300))
     ingredientes_receta = relationship("Ingredientes_Receta", back_populates="receta")
@@ -261,6 +266,7 @@ class Producto(db.Model):
     inventario = relationship("Producto_Inventario", back_populates="producto")  
     detalle_venta = relationship("Detalle_Venta", back_populates="producto")
     orden = relationship("Orden", back_populates="producto")  
+    estatus = db.Column(db.Boolean, default=True)
     peso =db.Column(db.Float)
     precio =db.Column(db.Float)
     solicitudesProduccion = relationship("SolicitudesProduccion", back_populates="producto")
@@ -325,6 +331,7 @@ class Producto_Inventario_Detalle(db.Model):
 class Medida(db.Model):
     __tablename__='medida'
     id=db.Column(db.Integer,primary_key=True)
+    estatus = db.Column(db.Boolean, default=True)
     medida=db.Column(db.String(100))
     insumo_medida = relationship("Insumo", back_populates="medida")  
     def __str__(self):
@@ -335,6 +342,7 @@ class Presentacion(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     nombre=db.Column(db.String(100))
     producto_id = mapped_column(ForeignKey("producto.id"))
+    estatus = db.Column(db.Boolean, default=True)
     producto = relationship("Producto", back_populates="presentacion")
     cantidad_producto=db.Column(db.Integer)  
     precio=db.Column(db.Float)

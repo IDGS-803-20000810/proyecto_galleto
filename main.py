@@ -224,9 +224,9 @@ admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(),
 
 admin.add_view(MedidaView(Medida, db.session,category="Insumos"))
 admin.add_view(InsumoView(Insumo, db.session, category="Insumos"))
-admin.add_view(AbastecimientoView(Abastecimiento, db.session, category="Almacen"))
-admin.add_view(ProveedorView(Proveedor, db.session, category="Almacen"))
-admin.add_view(CompraView(Compra,  db.session, category="Almacen"))
+admin.add_view(AbastecimientoView(Abastecimiento, db.session, category="Almacén"))
+admin.add_view(ProveedorView(Proveedor, db.session, category="Almacén"))
+admin.add_view(CompraView(Compra,  db.session, category="Almacén"))
 admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas", category="Cocina"))
 admin.add_view(ProductoView(Producto, db.session, category="Productos"))
 admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos', category="Productos"))
