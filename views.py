@@ -631,7 +631,9 @@ class CompraView(ModelView):
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "almacen" 
 
-    column_formatters = dict(price=macro('render_price'))
+    column_formatters = {
+        'total': lambda view, context, model, name: f"{model.total} pesos"
+    }
     column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
     form_args = dict(
