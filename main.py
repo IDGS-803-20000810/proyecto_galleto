@@ -23,7 +23,7 @@ import time
 import secrets
 import bcrypt
 
-from models import Merma_Producto, Presentacion, Produccion, Producto, Producto_Inventario, Venta, db, Medida
+from models import Detalle_Venta, Merma_Producto, Presentacion, Produccion, Producto, Producto_Inventario, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
@@ -32,7 +32,7 @@ from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, UserView
 from config import DevelopmentConfig, Config
-from datetime import datetime
+from datetime import datetime, timedelta
 from customValidators import  agregarLog, password_check, user_check
 
 # Create Flask application
@@ -183,7 +183,86 @@ class MyAdminIndexView(admin.AdminIndexView):
     def index(self):
         if not login.current_user.is_authenticated:
             return redirect(url_for('.login_view'))
-        return super(MyAdminIndexView, self).index()
+        
+        totalVentasDosSem = 0
+        totalVentasHoy = 0
+        
+        totalComprasDosSem = 0
+        totalComprasHoy = 0
+
+        haceDosSem = datetime.today() - timedelta(weeks=2);
+        hoy = datetime.today() - timedelta(hours=datetime.today().hour);
+
+        ventasDosSem = Venta.query.filter(Venta.hora >= haceDosSem)
+        ventasHoy = Venta.query.filter(Venta.hora >= hoy)
+
+        comprasDosSem = Compra.query.filter(Compra.fecha >= haceDosSem)
+        comprasHoy = Compra.query.filter(Compra.fecha >= hoy)
+
+        galletas = Producto.query.join(Producto.detalle_venta).join(Detalle_Venta.venta).filter(Venta.hora>= haceDosSem).all()
+        galletasMerma = Producto.query.join(Producto.inventario).join(Producto_Inventario.merma).filter(Merma_Producto.hora >= haceDosSem).all()
+        presentaiones = Presentacion.query.join(Presentacion.detalle_venta).join(Detalle_Venta.venta).filter(Venta.hora>= haceDosSem).all()
+
+        labelProdsPie = []
+        cantProdsPie = []
+        
+        labelMermasPie = []
+        cantMermasPie = []
+        
+        labelPresPie = []
+        cantPresPie = []
+
+        for gal in galletas:
+            labelProdsPie.append(gal.nombre)
+            suma = 0
+            
+            for det in gal.detalle_venta:
+                suma += det.cantidad
+            
+            cantProdsPie.append(suma)
+
+        for gal in galletasMerma:
+            labelMermasPie.append(gal.nombre)
+            suma = 0
+
+            for inv in gal.inventario:
+                for mer in inv.merma:
+                    suma+=mer.cantidad
+            
+            cantMermasPie.append(suma)
+
+        for pres in presentaiones:
+            labelPresPie.append(pres.nombre)
+            suma = 0
+
+            for det in pres.detalle_venta:
+                suma += det.cantidad
+
+            cantPresPie.append(suma)
+                
+        for item in ventasDosSem:
+            totalVentasDosSem += item.total_venta
+
+        for item in ventasHoy:
+            totalVentasHoy += item.total_venta
+
+        for item in comprasDosSem:
+            totalComprasDosSem += item.total
+
+        for item in comprasHoy:
+            totalComprasHoy += item.total
+
+        return super(MyAdminIndexView, self).render("index.html",
+                                                    totalVentasDosSem=totalVentasDosSem,
+                                                    totalVentasHoy=totalVentasHoy,
+                                                    totalComprasDosSem=totalComprasDosSem,
+                                                    totalComprasHoy=totalComprasHoy,
+                                                    labelProdsPie=labelProdsPie,
+                                                    cantProdsPie=cantProdsPie,
+                                                    labelMermasPie=labelMermasPie,
+                                                    cantMermasPie=cantMermasPie,
+                                                    labelPresPie=labelPresPie,
+                                                    cantPresPie=cantPresPie)
 
     @expose('/login/', methods=('GET', 'POST'))
     def login_view(self):
