@@ -89,6 +89,29 @@ class Insumo_InventarioView(ModelView):
         formMerma = MermaProductoForm(request.form)
         return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
     
+    @expose("/addMerma", methods=("POST",))
+    def addMerma(self):
+        idProdInv = request.form['idProdInv']
+        formMerma = MermaProductoForm(request.form)
+
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+
+        if formMerma.cantidad.data > prodInv.cantidad:
+            return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=["No se puede mermar mas de lo contenido del inventario"])
+            
+        prodInv.cantidad = prodInv.cantidad - formMerma.cantidad.data
+
+        db.session.add(prodInv)
+        db.session.commit()
+        
+        mermaP = Merma_Producto(cantidad=formMerma.cantidad.data,producto_id=prodInv.id,descripcion=formMerma.descripcion.data)
+        
+        db.session.add(mermaP)
+        db.session.commit()
+
+        return redirect('/admin/producto_inventario/') 
+
 class AdminRecetaView(ModelView):
     column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
     inline_models = [(Ingredientes_Receta, dict(form_columns=['id','cantidad','insumo'],                    
