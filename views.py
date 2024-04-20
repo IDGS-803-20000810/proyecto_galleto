@@ -251,12 +251,12 @@ class PresentacionView(ModelView):
                 return False
             else:
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
-    form_args = dict(
-        nombre=dict( validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
-        producto=dict(validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
-        cantidad=dict(validators=[DataRequired(message="Campo requerido")])
-        precio=dict(validators=[DataRequired(message="Campo requerido")])
-    )
+    # form_args = dict(
+    #     nombre=dict( validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
+    #     producto=dict(validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
+    #     cantidad=dict(validators=[DataRequired(message="Campo requerido")]),
+    #     precio=dict(validators=[DataRequired(message="Campo requerido")])
+    # )
     column_auto_select_related = True
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
