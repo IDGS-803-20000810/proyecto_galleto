@@ -24,6 +24,9 @@ class MermaInventarioView(ModelView):
             else:
                 return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin"
     column_list = [ 'cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en la lista
+    column_formatters = {
+        'cantidad': lambda view, context, model, name: f"{model.cantidad} {model.insumo_inventario.insumo.medida.medida}"
+    }
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'insumo_inventario', 'descripcion']  # Campos a mostrar en el formulario de edición
     can_create = False
@@ -49,7 +52,7 @@ class MermaProductoView(ModelView):
                 return False
             else:
                 return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin"
-    column_list = [ 'cantidad', 'producto', 'descripcion','hora']  # Campos a mostrar en la lista
+    column_list = [ 'producto', 'cantidad', 'descripcion','hora']  # Campos a mostrar en la lista
     column_editable_list = ['cantidad', 'descripcion']  # Campos editables en la lista
     form_columns = ['cantidad', 'producto', 'descripcion']  # Campos a mostrar en el formulario de edición
     can_create = False
@@ -169,6 +172,10 @@ class VentaView(ModelView):
     column_list = [ 'hora','user','total_venta','detalle_venta']
     inline_models = [(Detalle_Venta, dict(form_columns=['id','presentacion','producto','cantidad','subtotal'],                    
     ))]
+    column_formatters = {
+        'total_venta': lambda view, context, model, name: f"{model.total_venta} pesos"
+    }
+    column_labels = dict(user='usuario')
     form_columns = ['hora','user','total_venta','detalle_venta']
     can_create = False
     can_edit = False
@@ -324,6 +331,10 @@ class PresentacionView(ModelView):
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
 
     column_auto_select_related = True
+    column_formatters = {
+        'cantidad_producto': lambda view, context, model, name: f"{model.cantidad_producto} piezas",
+        'precio': lambda view, context, model, name: f"{model.precio} pesos"
+    }
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
 

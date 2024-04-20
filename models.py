@@ -173,7 +173,7 @@ class Detalle_Compra(db.Model):
     subtotal=db.Column(db.Float)
     cantidad=db.Column(db.Float)
     def __str__(self):
-        out = str(self.abastecimiento.descripcion) +  " (Cantidad:" + str(int(self.cantidad)) + ") " + " Caduca el Día : " + str(self.caducidad) + "."
+        out = str(self.abastecimiento.descripcion) +  " (Cantidad:" + str(int(self.cantidad)) + ") " + " Caduca el Día : " + str(self.caducidad) + ". subtotal: " + str(self.subtotal)
         return out
 
 class Merma_Inventario(db.Model):
