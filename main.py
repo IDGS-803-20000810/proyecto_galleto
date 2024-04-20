@@ -72,9 +72,9 @@ def handle_connect():
 
 @socketio.on('send_message')
 def handle_send_message(msg):
-    splitedmsg = msg.split(", ")
+    splitedmsg = msg.split("|")
     id = splitedmsg[0]
-    cantidad = splitedmsg[0]
+    cantidad = splitedmsg[1]
     solicitud = SolicitudesProduccion(producto_id=id,cantidad_solicitada=cantidad)
     db.session.add(solicitud)
     db.session.commit()
@@ -236,7 +236,7 @@ admin.add_view(ProductoView(Producto, db.session, category="Productos"))
 admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos', category="Ventas"))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos', category="Cocina"))
 admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos', category="Productos"))
-admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos', category="Ventas"))
+admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos', category="Cocina"))
 admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina', category="Cocina"))
 admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones', category="Ventas"))
 admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente', category="Ventas"))
