@@ -159,7 +159,7 @@ class Producto_InventarioView(ModelView):
         idProdInv = request.form['idProdInv']
         formMerma = MermaProductoForm(request.form)
 
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv)
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
         prod = Producto.query.filter(Producto.id==prodInv.producto_id)
 
         if formMerma.cantidad.data > prodInv.cantidad:
