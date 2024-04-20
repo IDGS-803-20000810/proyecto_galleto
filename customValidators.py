@@ -109,7 +109,165 @@ def format_date(view, context, model, name):
         formatted_date = formatted_date.replace(english_month, spanish_month)
     
     return formatted_date
+def format_date2(view, context, model, name):
+    date_obj = model.detalle.caducidad
+    
+    # Diccionario para traducir meses de inglés a español
+    months_translation = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    
+    # Comprobamos si date_obj es una cadena
+    if isinstance(date_obj, str):
+        date_obj = datetime.strptime(date_obj, '%Y-%m-%d')
+    
+    # Ahora date_obj debería ser un objeto datetime
+    formatted_date = date_obj.strftime('%d-%B-%Y')
+    
+    # Traducimos el nombre del mes
+    for english_month, spanish_month in months_translation.items():
+        formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+    return formatted_date
 
+def format_date3(view, context, model, name):
+    date_obj = model.hora
+    
+    # Diccionario para traducir meses de inglés a español
+    months_translation = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    # Comprobamos si date_obj es una cadena
+    if isinstance(date_obj, str):
+        date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')  # Agregamos el formato de hora
+    
+    # Ahora date_obj debería ser un objeto datetime
+    formatted_date = date_obj.strftime('%d-%B-%Y %H:%M:%S')  # Agregamos el formato de hora
+    
+    
+    # Traducimos el nombre del mes
+    for english_month, spanish_month in months_translation.items():
+        formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+    return formatted_date
+
+def format_date4(view, context, model, name):
+    date_obj = model.produccion.fecha_hora
+    
+    # Diccionario para traducir meses de inglés a español
+    months_translation = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    # Comprobamos si date_obj es una cadena
+    if isinstance(date_obj, str):
+        date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')  # Agregamos el formato de hora
+    
+    # Ahora date_obj debería ser un objeto datetime
+    formatted_date = date_obj.strftime('%d-%B-%Y %H:%M:%S')  # Agregamos el formato de hora
+    
+    
+    # Traducimos el nombre del mes
+    for english_month, spanish_month in months_translation.items():
+        formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+    return formatted_date
+
+def format_date5(view, context, model, name):
+    date_obj = model.hora
+    
+    # Diccionario para traducir meses de inglés a español
+    months_translation = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    # Comprobamos si date_obj es una cadena
+    if isinstance(date_obj, str):
+        date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')  # Agregamos el formato de hora
+    
+    # Ahora date_obj debería ser un objeto datetime
+    formatted_date = date_obj.strftime('%d-%B-%Y %H:%M:%S')  # Agregamos el formato de hora
+    
+    
+    # Traducimos el nombre del mes
+    for english_month, spanish_month in months_translation.items():
+        formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+    return formatted_date
+
+def format_date6(view, context, model, name):
+    date_obj = model.prevLogin
+    
+    # Diccionario para traducir meses de inglés a español
+    months_translation = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    # Comprobamos si date_obj es una cadena
+    if isinstance(date_obj, str):
+        date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')  # Agregamos el formato de hora
+    
+    # Ahora date_obj debería ser un objeto datetime
+    formatted_date = date_obj.strftime('%d-%B-%Y %H:%M:%S')  # Agregamos el formato de hora
+    
+    
+    # Traducimos el nombre del mes
+    for english_month, spanish_month in months_translation.items():
+        formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+    return formatted_date
 
 class EstatusModelView(ModelView):
 

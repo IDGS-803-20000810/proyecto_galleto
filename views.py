@@ -12,7 +12,7 @@ from wtforms.validators import DataRequired, NumberRange
 import flask_login as login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.model.template import TemplateLinkRowAction
-from customValidators import  EstatusModelView, not_null, phonelenght
+from customValidators import  EstatusModelView, not_null, phonelenght, format_date, format_date2,format_date3, format_date4, format_date5, format_date6
 from flask_admin.model.template import EndpointLinkRowAction
 from flask_admin.actions import action
 
@@ -50,6 +50,9 @@ class MermaProductoView(ModelView):
     can_create = False
     can_edit = False
     can_delete = False
+    
+    column_formatters = {
+        'hora': format_date3}
 
 
 class Insumo_InventarioView(ModelView):
@@ -81,7 +84,8 @@ class Insumo_InventarioView(ModelView):
                 Insumo_Inventario.query.filter_by(
                 id=model.id).update({"cantidad": model.cantidad})
                 db.session.commit()
-    
+    column_formatters = {
+        'detalle.caducidad': format_date2}
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
@@ -144,6 +148,8 @@ class VentaView(ModelView):
     inline_models = [(Detalle_Venta, dict(form_columns=['id','presentacion','producto','cantidad','subtotal'],                    
     ))]
     form_columns = ['hora','user','total_venta','detalle_venta']
+    column_formatters = {
+        'hora': format_date5}
     can_create = False
     can_edit = False
     can_delete = False
@@ -173,6 +179,8 @@ class Producto_InventarioView(ModelView):
     form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
     
     
+    column_formatters = {
+        'produccion': format_date4}
     column_extra_row_actions = [  
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
@@ -559,7 +567,6 @@ class CompraView(ModelView):
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "almacen" 
 
-    column_formatters = dict(price=macro('render_price'))
     column_list = [ 'user','proveedor', 'detalles_compra','fecha','total']
     inline_models = [(Detalle_Compra, dict(form_columns=['id','abastecimiento','caducidad','cantidad', 'subtotal'],                    
     form_args = dict(
@@ -572,6 +579,8 @@ class CompraView(ModelView):
         usuario=dict(validators=[not_null]), 
         proveedor=dict(validators=[not_null])
     )
+    column_formatters = {
+        'fecha': format_date}
 
 class MedidaView(EstatusModelView):
     column_exclude_list = ['estatus' ,]
@@ -947,6 +956,10 @@ class UserView(EstatusModelView):
     column_list = [ 'first_name', 'last_name', 'login','prevLogin', 'role']  
     column_auto_select_related = True
     form_columns = ['first_name','last_name', 'login', 'role', 'password']  
+    can_delete = False
+    can_edit = False
+    column_formatters = {
+        'prevLogin': format_date6}
     def after_model_change(self, form, model, is_created):
         model.password = generate_password_hash(model.password)
         user = model

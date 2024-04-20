@@ -252,7 +252,38 @@ class MyAdminIndexView(admin.AdminIndexView):
         for item in comprasHoy:
             totalComprasHoy += item.total
 
-        return super(MyAdminIndexView, self).render("index.html",
+        date_obj = login.current_user.prevLogin
+    
+        # Diccionario para traducir meses de inglés a español
+        months_translation = {
+            'January': 'Enero',
+            'February': 'Febrero',
+            'March': 'Marzo',
+            'April': 'Abril',
+            'May': 'Mayo',
+            'June': 'Junio',
+            'July': 'Julio',
+            'August': 'Agosto',
+            'September': 'Septiembre',
+            'October': 'Octubre',
+            'November': 'Noviembre',
+            'December': 'Diciembre'
+        }
+        # Comprobamos si date_obj es una cadena
+        if isinstance(date_obj, str):
+            date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')  # Agregamos el formato de hora
+    
+        # Ahora date_obj debería ser un objeto datetime
+        formatted_date = date_obj.strftime('%d-%B-%Y %H:%M:%S')  # Agregamos el formato de hora
+    
+    
+        # Traducimos el nombre del mes
+        for english_month, spanish_month in months_translation.items():
+            formatted_date = formatted_date.replace(english_month, spanish_month)
+    
+
+
+        return super(MyAdminIndexView, self).render("index.html", fecha=formatted_date,
                                                     totalVentasDosSem=totalVentasDosSem,
                                                     totalVentasHoy=totalVentasHoy,
                                                     totalComprasDosSem=totalComprasDosSem,
