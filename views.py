@@ -149,6 +149,7 @@ class Insumo_InventarioView(ModelView):
         return redirect('/admin/insumo_inventario/') 
 
 class AdminRecetaView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
     inline_models = [(Ingredientes_Receta, dict(form_columns=['id','cantidad','insumo'],                    
     form_args = dict(
@@ -305,6 +306,7 @@ class Producto_InventarioView(ModelView):
       
     
 class ProveedorView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
@@ -320,6 +322,7 @@ class ProveedorView(EstatusModelView):
                 return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin" 
     
 class ProductoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_auto_select_related = True
     column_formatters = {
         'peso': lambda view, context, model, name: f"{model.peso} gr",
@@ -333,6 +336,7 @@ class ProductoView(EstatusModelView):
                 return login.current_user.role.nombre== "cuck" or login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
 
 class PresentacionView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -665,6 +669,7 @@ class CompraView(ModelView):
     )
 
 class MedidaView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     def action_delete(self, ids):
         try:
             for model_id in ids:
@@ -698,6 +703,7 @@ class MedidaView(EstatusModelView):
     
     
 class AbastecimientoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_formatters = {
         'cantidad_insumo': lambda view, context, model, name: f"{model.cantidad_insumo} {model.insumo.medida.medida}"
     }
@@ -734,6 +740,7 @@ class ProduccionView(ModelView):
     #}
     
 class InsumoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -1031,6 +1038,7 @@ class VentaPrincipalView(BaseView):
 
 
 class UserView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_list = [ 'first_name', 'last_name', 'login','prevLogin', 'role']  
     column_auto_select_related = True
     form_columns = ['first_name','last_name', 'login', 'role', 'password']  
