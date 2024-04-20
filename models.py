@@ -71,7 +71,7 @@ class Insumo(db.Model):
     insumo_merma_produccion = relationship("Merma_Produccion", back_populates="insumo")
     abastecimiento = relationship("Abastecimiento", back_populates="insumo")  
     def __str__(self):
-        return self.nombre+" ("+self.medida.medida+")"
+        return self.nombre
 
 class Proveedor(db.Model):
     __tablename__='proveedor'
@@ -115,19 +115,15 @@ class Producto_Inventario(db.Model):
         out = str(self.producto) #+ ' ' + str(self.proveedor) #+ ' '  + str(self.anaquel)
         return out 
     
-    # @property
-    # def responsable(self):
-    #     res = db.session.query(Producto_Inventario,text('responsable')).from_statement(text("""
-    #         SELECT
-    #         US.LOGIN AS Responsable
-    #         FROM PRODUCTO_INVENTARIO PINV
-    #         JOIN PRODUCCION PR ON PR.ID = PINV.PRODUCCION_ID
-    #         JOIN USER US ON US.ID = PR.USER_ID
-    #         WHERE PINV.ID = {}
-    #         """.format(self.id))
-            
-    #     ).first()
-    #     return res.Responsable
+    @property
+    def responsable(self):
+        res = db.session.query(User).filter(User.id==self.produccion.user_id).first()
+        return res.first_name+" "+res.last_name
+    
+    @property
+    def proveedores(self):
+        provs = db.session.query(Proveedor).join(Proveedor.proveedor_compras).join(Compra.detalles_compra).join(Detalle_Compra.insumo_inventario).join(Insumo_Inventario.insumos_produccion).join(Insumos_Produccion.produccion).filter(Produccion.id==self.produccion_id).all()
+        return provs
 
 
 class Abastecimiento(db.Model):
@@ -229,6 +225,13 @@ class Produccion(db.Model):
     estatus = db.Column(db.Integer)
     def __str__(self):
         return str(self.fecha_hora)
+    @property
+    def completado(self):
+        if self.estatus==1:
+            return "Completado"
+        if self.estatus==2:
+            return "Cancelado"
+        
 
 class Insumos_Produccion(db.Model):
     __tablename__='Insumos_Produccion'
@@ -337,7 +340,7 @@ class Presentacion(db.Model):
     precio=db.Column(db.Float)
     detalle_venta = relationship("Detalle_Venta", back_populates="presentacion")
     def __str__(self):
-        return self.medida
+        return self.nombre
     
     #TODO:AÑADIR PRODUCTOS_DETALLE
 

@@ -23,7 +23,7 @@ import time
 import secrets
 import bcrypt
 
-from models import Merma_Producto, Presentacion, Producto, Producto_Inventario, Venta, db, Medida
+from models import Merma_Producto, Presentacion, Produccion, Producto, Producto_Inventario, Venta, db, Medida
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
@@ -211,17 +211,12 @@ class MyAdminIndexView(admin.AdminIndexView):
         return redirect(url_for('.index'))
     form_base_class = SecureForm
 
-
-
-
 # Flask views
 @app.route('/')
 def index():
     return redirect('/admin')
 
-
 init_login()
-
 
 admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
 
@@ -233,7 +228,7 @@ admin.add_view(ProveedorView(Proveedor, db.session, category="Almacen"))
 admin.add_view(CompraView(Compra,  db.session, category="Almacen"))
 admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas", category="Cocina"))
 admin.add_view(ProductoView(Producto, db.session, category="Productos"))
-admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos', category="Ventas"))
+admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos', category="Productos"))
 admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos', category="Cocina"))
 admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos', category="Productos"))
 admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos', category="Cocina"))

@@ -219,6 +219,14 @@
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:25:31.021318
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 01:29:35.489408
 <<<<<<< HEAD
+<<<<<<< HEAD
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:43:06.215830
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:51:58.762064
+ Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:53:03.321230
+ Inicio de sesión exitoso, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:54:18.498123
+=======
+=======
+>>>>>>> b05ec7aabd381008f1f8f5027fc28d91c825bc85
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 17:27:39.606070
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 17:50:53.193260
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 19:06:55.249780
@@ -230,6 +238,9 @@
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 19:36:04.158961
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 19:36:08.491919
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:12:53.785659
+<<<<<<< HEAD
+>>>>>>> f5a3d119df687e2a5325b856bf696b1e5e5009dc
+=======
 =======
  Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 19:43:06.215830
  Inicio de sesión exitoso, usuario: javier. Contraseña : 09237960@Mrcsj. hora: 2024-04-18 19:51:58.762064
@@ -238,6 +249,19 @@
 >>>>>>> 06d09446997673689f4b32d1882e93cbadae84d1
 
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:19:48.593376
+<<<<<<< HEAD
+>>>>>>> b05ec7aabd381008f1f8f5027fc28d91c825bc85
+
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 21:16:54.436031
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: JavierAdmin. Contraseña : Mrcsj09237960@. hora: 2024-04-18 21:17:09.131949
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 21:38:22.686718
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 21:41:06.263443
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 00:27:31.121076
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 00:39:29.138889
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 00:46:39.329350
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 00:48:41.006658
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 00:57:12.144177
+=======
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:32:13.384118
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fe. Contraseña : Pasww$111. hora: 2024-04-18 20:36:27.945332
  Inicio de sesión exitoso, usuario: fe. Contraseña : Passw$111. hora: 2024-04-18 20:36:31.931205
@@ -267,6 +291,31 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 21:47:08.039525
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-18 22:22:38.974524
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 17:11:07.127707
+<<<<<<< HEAD
+>>>>>>> ce613f7d222c7d71d5f64af6467969259918e482
+
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 18:40:18.449151
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:23:48.002310
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:24:34.376791
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:24:59.550700
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:25:50.653923
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:26:51.567913
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:27:27.777418
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:35:33.162408
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:40:30.202309
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:46:13.632312
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 19:52:50.334062
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 20:06:28.634982
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 20:19:45.016197
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 20:23:16.065693
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 20:24:43.114967
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 20:27:11.212391
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:48:32.141299
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:50:11.650395
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:53:55.263873
+ Inicio de sesión no exitoso por usuario incorrecto, usuario: Javier. Contraseña : Mrcsj09237960@. hora: 2024-04-19 21:54:43.151071
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:54:45.932964
+=======
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 17:43:49.076284
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 17:43:52.710630
  Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 17:49:32.569865
@@ -288,6 +337,7 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:49:15.591047
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:49:37.294423
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:50:33.850497
+<<<<<<< HEAD
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:01:00.282459
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:02:40.695399
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:03:38.265544
@@ -309,3 +359,21 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:48:16.450999
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:48:58.886857
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 22:55:40.142879
+=======
+>>>>>>> 5592af0dbe45e4f11ed45fa0e0340438c01bb986
+>>>>>>> f07a5c81cc823166c547099c18f1e452bb1103d4
+
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 23:00:22.175383
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:00:27.007128
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 23:04:20.264074
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : POassw$111. hora: 2024-04-19 23:04:23.730074
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:04:29.223519
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 23:11:56.365590
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:12:00.143067
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:51:33.323309
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 23:52:03.401197
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:52:07.070295
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:54:24.003452
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:58:13.109872
+ Inicio de sesión no exitoso por contraseña incorrecta, usuario: fer. Contraseña : PAssw$111. hora: 2024-04-19 23:59:05.277444
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:59:09.075397

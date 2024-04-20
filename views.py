@@ -76,6 +76,9 @@ class Insumo_InventarioView(ModelView):
         'detalle.abastecimiento': 'Abastecimiento'  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
     }
 
+    column_formatters = {
+        'cantidad': lambda view, context, model, name: f"{model.cantidad} {model.insumo.medida.medida}"
+    }
     column_auto_select_related = True
     list_template = "lista_merma.html"  # Override the default template
     column_extra_row_actions = [  # Add a new action button
@@ -103,12 +106,35 @@ class Insumo_InventarioView(ModelView):
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
-        idProdInv = request.form['row_id']
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
-        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+        idInsInv = request.form['row_id']
+        insuInv = Insumo_Inventario.query.filter(Insumo_Inventario.id == idInsInv).first()
+        insu = Insumo.query.filter(Insumo.id==insuInv.insumo_id)
         formMerma = MermaProductoForm(request.form)
         return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
     
+    @expose("/addMerma", methods=("POST",))
+    def addMerma(self):
+        idProdInv = request.form['idProdInv']
+        formMerma = MermaProductoForm(request.form)
+
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
+        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+
+        if formMerma.cantidad.data > prodInv.cantidad:
+            return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=["No se puede mermar mas de lo contenido del inventario"])
+            
+        prodInv.cantidad = prodInv.cantidad - formMerma.cantidad.data
+
+        db.session.add(prodInv)
+        db.session.commit()
+        
+        mermaP = Merma_Producto(cantidad=formMerma.cantidad.data,producto_id=prodInv.id,descripcion=formMerma.descripcion.data)
+        
+        db.session.add(mermaP)
+        db.session.commit()
+
+        return redirect('/admin/producto_inventario/') 
+
 class AdminRecetaView(ModelView):
     column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
     inline_models = [(Ingredientes_Receta, dict(form_columns=['id','cantidad','insumo'],                    
@@ -199,7 +225,7 @@ limit 1;
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  
-    column_list = ['producto', 'cantidad', 'produccion','responsable']  
+    column_list = ['producto', 'cantidad', 'produccion','responsable','proveedores']  
     column_editable_list = ['producto', 'cantidad', 'produccion'] # Campos editables en la lista
     form_columns = ['producto', 'cantidad', 'produccion']  # Campos a mostrar en el formulario de edición
     
@@ -230,7 +256,7 @@ class Producto_InventarioView(ModelView):
         idProdInv = request.form['idProdInv']
         formMerma = MermaProductoForm(request.form)
 
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv)
+        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
         prod = Producto.query.filter(Producto.id==prodInv.producto_id)
 
         if formMerma.cantidad.data > prodInv.cantidad:
@@ -288,6 +314,20 @@ class PresentacionView(ModelView):
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
 
+class ProduccionesView(ModelView):
+    column_list = [ 'fecha_hora','user','receta','cantidad',"completado"]
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+    def is_accessible(self):
+        if not login.current_user.is_authenticated:
+            return False
+        else:
+            return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck" 
+    
+    
+
 
 class ProduccionCocinaView(BaseView):
 
@@ -340,7 +380,7 @@ class ProduccionCocinaView(BaseView):
         #Verificar si hay insumos suficientes
         for item in ingredientes:
             total = 0
-            #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+            
             # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
             insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
             
@@ -360,11 +400,8 @@ class ProduccionCocinaView(BaseView):
                 return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
         #######################
 
-
-        produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0)
+        produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0,user_id=login.current_user.id)
         
-        
-
         db.session.add(produccion)
         db.session.commit()
 
@@ -401,7 +438,7 @@ class ProduccionCocinaView(BaseView):
             #Verificar si hay insumos suficientes
             for item in ingredientes:
                 total = 0
-                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+            
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
                 
@@ -429,7 +466,7 @@ class ProduccionCocinaView(BaseView):
                 
                 total = 0
 
-                #TODO: CAMBIAR EL QUERY PROVISIONAL POR ESTE CUANDO ESTEN LAS COMPRAS
+
                 # insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).join(Detalle_Compra).join(Compra).order_by(asc(Compra.fecha)).all()
                 insumosInv = Insumo_Inventario.query.filter(Insumo_Inventario.insumo_id == item.insumo_id, Insumo_Inventario.cantidad != 0).all()
                 
@@ -547,6 +584,9 @@ class MedidaView(ModelView):
     
     
 class AbastecimientoView(ModelView):
+    column_formatters = {
+        'cantidad_insumo': lambda view, context, model, name: f"{model.cantidad_insumo} {model.insumo.medida.medida}"
+    }
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -637,11 +677,8 @@ class VentaPrincipalView(BaseView):
             mensaje = []
             presentacion_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
-            print("cantidad "+str(cantidad))
-            print("presentacion id "+str(presentacion_id))
             presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
             producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
-
             #Verificar si hay insumos suficientes
 
             total = 0
@@ -684,6 +721,9 @@ class VentaPrincipalView(BaseView):
                 "cantidad":cantidad,
                 "subtotal":precio
             })
+
+            print("DETALLE")
+            print(detalle)
 
             for det in detalle:
                 for prod in productos:
@@ -747,7 +787,7 @@ class VentaPrincipalView(BaseView):
                 "index": len(detalle) + 1,
                 "presentacion_id":0,
                 "producto_id":producto_id,
-                "presentacion":producto.nombre,
+                "nombre":producto.nombre,
                 "cantidad":cantidad,
                 "subtotal":precio
             })

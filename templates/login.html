@@ -94,7 +94,6 @@
 
           {% block body %}
 
-
           <h1>Login</h1>
 
           <form action="/admin/login" method="post" id="form">
@@ -105,7 +104,7 @@
               {{render_field(form.password, class="form-control")}}
             </div>
             <input type="submit" class="btn btn-primary" name="btn1" id="btn1" value="Iniciar sesion">
-            <a href="../register">Registro</a>
+            <!-- <a href="../register">Registro</a> -->
             <input type="hidden" name="csrf_token" id="csrf" value="{{csrf_token()}}" />
             {{ recaptcha }}
           </form>
