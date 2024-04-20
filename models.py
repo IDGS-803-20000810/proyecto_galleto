@@ -340,7 +340,7 @@ class Presentacion(db.Model):
     precio=db.Column(db.Float)
     detalle_venta = relationship("Detalle_Venta", back_populates="presentacion")
     def __str__(self):
-        return self.medida
+        return self.nombre
     
     #TODO:AÑADIR PRODUCTOS_DETALLE
 

@@ -580,11 +580,8 @@ class VentaPrincipalView(BaseView):
             mensaje = []
             presentacion_id = int(detalleVentaForm.presentacion_id.data)
             cantidad = int(detalleVentaForm.cantidad.data)
-            print("cantidad "+str(cantidad))
-            print("presentacion id "+str(presentacion_id))
             presentacion = Presentacion.query.filter(Presentacion.id == presentacion_id).first()
             producto = Producto.query.filter(Producto.id == presentacion.producto_id).first()
-
             #Verificar si hay insumos suficientes
 
             total = 0
@@ -627,6 +624,9 @@ class VentaPrincipalView(BaseView):
                 "cantidad":cantidad,
                 "subtotal":precio
             })
+
+            print("DETALLE")
+            print(detalle)
 
             for det in detalle:
                 for prod in productos:
@@ -690,7 +690,7 @@ class VentaPrincipalView(BaseView):
                 "index": len(detalle) + 1,
                 "presentacion_id":0,
                 "producto_id":producto_id,
-                "presentacion":producto.nombre,
+                "nombre":producto.nombre,
                 "cantidad":cantidad,
                 "subtotal":precio
             })
