@@ -222,9 +222,9 @@ class ProveedorView(ModelView):
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
     form_args = dict(
-        nombre=dict( validators=[DataRequired(message="puse algo we"), Length(min=3, max=30)]),
-        direccion=dict(validators=[DataRequired(message="puse algo we"), Length(min=7, max=30)]),
-        telefono=dict(validators=[DataRequired(message="puse algo we"), phonelenght])
+        nombre=dict( validators=[DataRequired(message="Campo requerido"), Length(min=3, max=30)]),
+        direccion=dict(validators=[DataRequired(message="Campo requerido"), Length(min=7, max=30)]),
+        telefono=dict(validators=[DataRequired(message="Campo requerido"), phonelenght])
     )
     def is_accessible(self):
             if not login.current_user.is_authenticated:
@@ -251,7 +251,12 @@ class PresentacionView(ModelView):
                 return False
             else:
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
-
+    form_args = dict(
+        nombre=dict( validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
+        producto=dict(validators=[DataRequired(message="Campo requerido"), Length(min=1, max=100)]),
+        cantidad=dict(validators=[DataRequired(message="Campo requerido")])
+        precio=dict(validators=[DataRequired(message="Campo requerido")])
+    )
     column_auto_select_related = True
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
