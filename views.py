@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, flash
 from models import Detalle_Venta,User, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
 from models import db, Roles
 from wtforms.validators import Length
@@ -13,6 +13,8 @@ import flask_login as login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.model.template import TemplateLinkRowAction
 from customValidators import  not_null, phonelenght
+from flask_admin.model.template import EndpointLinkRowAction
+from flask_admin.actions import action
 
 class MermaInventarioView(ModelView):
     def is_accessible(self):
@@ -145,9 +147,19 @@ class VentaView(ModelView):
             return False
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
-        
+    @action('most_selling', 'Most Selling', 'Are you sure you want to get the most selling product?')
+    def action_most_selling(self, ids):
+        flash("oli")
+        return redirect(url_for('.mostSelling'))
 
-
+    @expose("/mostSelling", methods=("GET",))
+    def mostSelling(self):
+        flash("Llamada a mostSelling")
+        # Aquí puedes calcular el producto más vendido y pasarlo al método flash
+        most_sold_product = "Producto más vendido"  # Reemplaza esto con la lógica para obtener el producto más vendido
+        flash(most_sold_product)
+        return super(VentaView, self).render()
+    
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
     list_template = "lista_merma.html"  
@@ -218,6 +230,10 @@ class ProveedorView(ModelView):
     
 class ProductoView(ModelView):
     column_auto_select_related = True
+    column_formatters = {
+        'peso': lambda view, context, model, name: f"{model.peso} gr",
+        'precio': lambda view, context, model, name: f"{model.precio} pesos"
+    }
     form_columns = ['nombre','peso','precio']  # Campos a mostrar en el formulario de edición
     def is_accessible(self):
             if not login.current_user.is_authenticated:
@@ -235,13 +251,6 @@ class PresentacionView(ModelView):
     column_auto_select_related = True
     form_columns = ["nombre","producto","cantidad_producto","precio"]  # Campos a mostrar en el formulario de edición
     column_labels = dict(cantidad_producto='cantidad producto')
-
-class RecetaView(BaseView):
-    def is_accessible(self):
-            if not login.current_user.is_authenticated:
-                return False
-            else:
-                return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
 class ProduccionesView(ModelView):
     column_list = [ 'fecha_hora','user','receta','cantidad',"completado"]

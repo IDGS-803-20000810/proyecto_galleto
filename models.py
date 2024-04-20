@@ -206,7 +206,7 @@ class Ingredientes_Receta(db.Model):
     receta_id = mapped_column(ForeignKey("receta.id"))
     receta = relationship("Receta", back_populates="ingredientes_receta")
     def __str__(self):
-        out = str(self.insumo.nombre) +  " (Cantidad:" + str(int(self.cantidad)) + ")" 
+        out = str(self.insumo.nombre) +  " (Cantidad:" + str(int(self.cantidad)) + " " + self.insumo.medida.medida +")" 
         return out
 
 class Produccion(db.Model):
