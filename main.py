@@ -78,6 +78,7 @@ def handle_send_message(msg):
     solicitud = SolicitudesProduccion(producto_id=id,cantidad_solicitada=cantidad)
     db.session.add(solicitud)
     db.session.commit()
+    emit('receive_message', "Nueva Solicitud", broadcast=True)
     print('mensaje : ' + msg )
 
 @identity_loaded.connect_via(app)
