@@ -72,7 +72,7 @@ def handle_connect():
 
 @socketio.on('send_message')
 def handle_send_message(msg):
-    splitedmsg = msg.split(", ")
+    splitedmsg = msg.split("|")
     id = splitedmsg[0]
     cantidad = splitedmsg[0]
     solicitud = SolicitudesProduccion(producto_id=id,cantidad_solicitada=cantidad)
