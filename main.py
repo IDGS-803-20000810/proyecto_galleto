@@ -27,8 +27,8 @@ from models import Merma_Producto, Presentacion, Produccion, Producto, Producto_
 # from models import Usuarios, Insumo, Users, Proveedor, Insumo_Inventario, Pedidos_Proveedor, Merma_Inventario, Receta
 from models import User, Insumo, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
-from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, ProduccionesView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
-from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra
+from views import AdminRecetaView, MermaInventarioView, Insumo_InventarioView, InsumoView, MermaProductoView, PresentacionView, ProduccionCocinaView, Producto_InventarioView, ProveedorView, MedidaView, ProductoView, VentaPrincipalView, VentaView
+from models import  Insumo, User, Proveedor, Insumo_Inventario, Merma_Inventario, Receta, Medida,Abastecimiento,Compra,SolicitudesProduccion
 # from views import MermaInventarioView, Pedidos_ProveedorView, Insumo_InventarioView
 from views import MermaInventarioView, Insumo_InventarioView, InsumoView, ProveedorView,AbastecimientoView,CompraView, UserView
 from config import DevelopmentConfig, Config
@@ -72,6 +72,12 @@ def handle_connect():
 
 @socketio.on('send_message')
 def handle_send_message(msg):
+    splitedmsg = msg.split(", ")
+    id = splitedmsg[0]
+    cantidad = splitedmsg[0]
+    solicitud = SolicitudesProduccion(producto_id=id,cantidad_solicitada=cantidad)
+    db.session.add(solicitud)
+    db.session.commit()
     print('mensaje : ' + msg )
 
 @identity_loaded.connect_via(app)
@@ -214,27 +220,23 @@ init_login()
 
 admin = admin.Admin(app, name='Galletos Delight', index_view=MyAdminIndexView(), base_template='my_master.html', template_mode='bootstrap4')
 
-admin.add_view(MedidaView(Medida, db.session))
-admin.add_view(InsumoView(Insumo, db.session))
-admin.add_view(AbastecimientoView(Abastecimiento, db.session))
-admin.add_view(CompraView(Compra,  db.session))
-admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas"))
-admin.add_view(ProduccionesView(Produccion,  db.session,"Historial de Producciones"))
-admin.add_view(VentaView(Venta, db.session,"Historial de ventas"))
-admin.add_view(ProveedorView(Proveedor, db.session))
-# admin.add_view(MedidaView(Medida, db.session))
-admin.add_view(ProductoView(Producto, db.session))
-admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos'))
-admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos'))
 
-# admin.add_view(Pedidos_ProveedorView(Pedidos_Proveedor, db.session))
-admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos'))
-admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos'))
-admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente'))
-admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina'))
-admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones'))
-admin.add_view(UserView(User,db.session,'Usuarios'))
-# admin.add_view(ModelView(Receta, db.session))
+admin.add_view(MedidaView(Medida, db.session,category="Insumos"))
+admin.add_view(InsumoView(Insumo, db.session, category="Insumos"))
+admin.add_view(AbastecimientoView(Abastecimiento, db.session, category="Almacen"))
+admin.add_view(ProveedorView(Proveedor, db.session, category="Almacen"))
+admin.add_view(CompraView(Compra,  db.session, category="Almacen"))
+admin.add_view(AdminRecetaView(Receta,  db.session,"Recetas", category="Cocina"))
+admin.add_view(ProductoView(Producto, db.session, category="Productos"))
+admin.add_view(MermaProductoView(Merma_Producto, db.session, 'Merma Productos', category="Ventas"))
+admin.add_view(Insumo_InventarioView(Insumo_Inventario, db.session, 'Inventario Insumos', category="Cocina"))
+admin.add_view(Producto_InventarioView(Producto_Inventario, db.session,'Inventario de Productos', category="Productos"))
+admin.add_view(MermaInventarioView(Merma_Inventario, db.session, 'Merma Insumos', category="Ventas"))
+admin.add_view(ProduccionCocinaView(name='Produccion', endpoint='produccion_cocina', category="Cocina"))
+admin.add_view(PresentacionView(Presentacion,db.session,'Presentaciones', category="Ventas"))
+admin.add_view(VentaPrincipalView(name='Ventas - Frente', endpoint='ventas_frente', category="Ventas"))
+admin.add_view(VentaView(Venta, db.session,"Historial de ventas", category="Ventas"))
+admin.add_view(UserView(User,db.session,'Usuarios', category="Amdministración del sistema"))
 
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 secretkey=app.config['SECRET_KEY']
