@@ -2,7 +2,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
 from flask import render_template, request, redirect, session, flash
-from models import Detalle_Venta,User, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
+from models import Detalle_Venta, Merma_Inventario, SolicitudesProduccion,User, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
 from models import db, Roles
 from wtforms.validators import Length
 from forms import DetalleVentaForm, MermaProductoForm, ProduccionForm, RecetaForm, IngredientesRecetaForm,SolicitudProduccionForm
@@ -85,34 +85,38 @@ class Insumo_InventarioView(ModelView):
 
     @expose("/mermar", methods=("POST",))
     def merma(self):
-        idProdInv = request.form['row_id']
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
-        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+        idInsInv= request.form['row_id']
+        insInv = Insumo_Inventario.query.filter(Insumo_Inventario.id == idInsInv).first()
+        print("insInv")
+        print(insInv)
+        ins = Insumo.query.filter(Insumo.id==insInv.insumo_id).first()
+        print("ins")
+        print(ins)
         formMerma = MermaProductoForm(request.form)
-        return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=[])        
+        return self.render('merma_insumo.html',formMerma=formMerma, insInv=insInv, ins = ins, idInsInv=idInsInv, mensajes=[])        
     
     @expose("/addMerma", methods=("POST",))
     def addMerma(self):
-        idProdInv = request.form['idProdInv']
+        idInsInv = request.form['idInsInv']
         formMerma = MermaProductoForm(request.form)
 
-        prodInv = Producto_Inventario.query.filter(Producto_Inventario.id == idProdInv).first()
-        prod = Producto.query.filter(Producto.id==prodInv.producto_id)
+        insInv = Insumo_Inventario.query.filter(Insumo_Inventario.id == idInsInv).first()
+        ins = Insumo.query.filter(Insumo.id==insInv.insumo_id).first()
 
-        if formMerma.cantidad.data > prodInv.cantidad:
-            return self.render('merma_producto.html',formMerma=formMerma, prodInv=prodInv, prod = prod, idProdInv=idProdInv, mensajes=["No se puede mermar mas de lo contenido del inventario"])
+        if formMerma.cantidad.data > insInv.cantidad:
+            return self.render('merma_insumo.html',formMerma=formMerma, insInv=insInv, ins = ins, idInsInv=idInsInv, mensajes=["No se puede mermar mas de lo contenido del inventario"])
             
-        prodInv.cantidad = prodInv.cantidad - formMerma.cantidad.data
+        insInv.cantidad = insInv.cantidad - formMerma.cantidad.data
 
-        db.session.add(prodInv)
+        db.session.add(insInv)
         db.session.commit()
         
-        mermaP = Merma_Producto(cantidad=formMerma.cantidad.data,producto_id=prodInv.id,descripcion=formMerma.descripcion.data)
+        mermaP = Merma_Inventario(cantidad=formMerma.cantidad.data,insumo_inventario_id=insInv.id,descripcion=formMerma.descripcion.data)
         
         db.session.add(mermaP)
         db.session.commit()
 
-        return redirect('/admin/producto_inventario/') 
+        return redirect('/admin/insumo_inventario/') 
 
 class AdminRecetaView(ModelView):
     column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
@@ -284,21 +288,56 @@ class ProduccionCocinaView(BaseView):
         produccionForm = ProduccionForm(request.form)
         mensajes =[]
         lista_prod = []
+        lista_soli = []
         
-
         producciones = Produccion.query.filter(Produccion.estatus==0).all()
         for prod in producciones:
             receta = Receta.query.filter(Receta.id == prod.receta_id).first()
             lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+
+        solicitudes = SolicitudesProduccion.query.all()
+        for sol in solicitudes:
+            producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+            lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
+
         
         recetas = Receta.query.all()
         lista_recetas = [(i.id, i.nombre) for i in recetas]
         produccionForm.receta.choices = lista_recetas
         
-        ordenes = Orden.query.all()
-        
-        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes=mensajes)
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes=mensajes)
     
+    @expose('/eliminarSolicitud')
+    def eliminarSolicitud(self):
+        produccionForm = ProduccionForm(request.form)
+        id = int(request.args.get("id"))
+        mensajes =[]
+        lista_prod = []
+        lista_soli = []
+
+        sol = SolicitudesProduccion.query.filter(SolicitudesProduccion.id==id).first()
+
+        db.session.delete(sol)
+        db.session.commit()
+        
+        producciones = Produccion.query.filter(Produccion.estatus==0).all()
+        for prod in producciones:
+            receta = Receta.query.filter(Receta.id == prod.receta_id).first()
+            lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
+
+        solicitudes = SolicitudesProduccion.query.all()
+        for sol in solicitudes:
+            producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+            lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
+
+        
+        recetas = Receta.query.all()
+        lista_recetas = [(i.id, i.nombre) for i in recetas]
+        produccionForm.receta.choices = lista_recetas
+        
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes=mensajes)
+    
+
     @expose('/addProduccion',methods=['POST'])
     def addProduccionesCocina(self):
         produccionForm = ProduccionForm(request.form)
@@ -307,6 +346,7 @@ class ProduccionCocinaView(BaseView):
 
         mensajes = []
         lista_prod = []
+        lista_soli = []
 
         recetas = Receta.query.all()
         lista_recetas = [(i.id, i.nombre) for i in recetas]
@@ -334,8 +374,14 @@ class ProduccionCocinaView(BaseView):
                 for prod in producciones:
                     receta = Receta.query.filter(Receta.id == prod.receta_id).first()
                     lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
-                ordenes = Orden.query.all()
-                return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
+
+                solicitudes = SolicitudesProduccion.query.all()
+                
+                for sol in solicitudes:
+                    producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+                    lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
+
+                return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes =mensajes)
         #######################
 
         produccion = Produccion(cantidad=cantidad,receta_id=receta_id,estatus=0,user_id=login.current_user.id)
@@ -347,10 +393,15 @@ class ProduccionCocinaView(BaseView):
         for prod in producciones:
             receta = Receta.query.filter(Receta.id == prod.receta_id).first()
             lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
-        
-        ordenes = Orden.query.all()
 
-        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes=mensajes)
+        solicitudes = SolicitudesProduccion.query.all()
+        
+        for sol in solicitudes:
+                    producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+                    lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
+
+
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes=mensajes)
     
     @expose('/cambiarEstatus')
     def changeProduccionesCocina(self):
@@ -364,6 +415,7 @@ class ProduccionCocinaView(BaseView):
         id = int(request.args.get("id"))
         mensajes = []
         lista_prod = []
+        lista_soli = []
 
         produccion = Produccion.query.filter(Produccion.id==id).first()
         produccion.estatus = estatus
@@ -395,8 +447,14 @@ class ProduccionCocinaView(BaseView):
                     for prod in producciones:
                         receta = Receta.query.filter(Receta.id == prod.receta_id).first()
                         lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
-                    ordenes = Orden.query.all()
-                    return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =mensajes)
+
+                    solicitudes = SolicitudesProduccion.query.all()
+                
+                    for sol in solicitudes:
+                        producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+                        lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
+
+                    return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes =mensajes)
                     
             #Restar los insumos del inventario
             for item in ingredientes:
@@ -459,9 +517,13 @@ class ProduccionCocinaView(BaseView):
             receta = Receta.query.filter(Receta.id == prod.receta_id).first()
             lista_prod.append({"id":prod.id,"receta":receta.nombre,"cantidad":prod.cantidad})
         
-        ordenes = Orden.query.all()
+        solicitudes = SolicitudesProduccion.query.all()
+                
+        for sol in solicitudes:
+            producto = Producto.query.filter(Producto.id == sol.producto_id).first()
+            lista_soli.append({"id":sol.id,"producto":producto.nombre,"cantidad":sol.cantidad_solicitada})
 
-        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=ordenes,mensajes =[])
+        return self.render('produccion_cocina.html',produccionForm=produccionForm,producciones=lista_prod,ordenes=lista_soli,mensajes =[])
 
 
 

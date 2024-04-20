@@ -338,3 +338,18 @@
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:49:37.294423
  Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 21:50:33.850497
 >>>>>>> 5592af0dbe45e4f11ed45fa0e0340438c01bb986
+
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:02:12.751200
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:04:03.825489
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:04:58.693018
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:08:35.238564
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:33:41.771256
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:39:24.238975
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-19 23:49:43.224768
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:02:18.381211
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:04:11.477926
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:15:05.494293
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:16:15.562583
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:17:20.203923
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:18:51.249808
+ Inicio de sesión exitoso, usuario: fer. Contraseña : Passw$111. hora: 2024-04-20 00:19:57.409226

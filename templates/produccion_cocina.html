@@ -3,6 +3,33 @@
 {% from "_macros.html" import render_field %}
 
 {% block body %}
+
+<div class="container" style="height: 200px !important; overflow:scroll !important;">
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in ordenes %}
+            <tr>
+                <td>{{item['producto']}}</td>
+                <td>{{item['cantidad']}}</td>
+                <td>
+                    <a class="btn btn-danger" href="eliminarSolicitud?id={{item['id']}}&estatus=1">OK</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
 <form action="{{url_for('produccion_cocina.addProduccionesCocina')}}" method="POST">
     <div class="row">
         <div class="col">
@@ -13,9 +40,10 @@
         </div>
     </div>
     <div class="row">
-        
-        <input type="hidden" name="csrf_token" value="{{csrf_token()}}"> 
-        <input type="submit" class="btn btn-success col m-4" style="height: 50% !important;" name="" id="" value="Iniciar produccion">
+
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <input type="submit" class="btn btn-success col m-4" style="height: 50% !important;" name="" id=""
+            value="Iniciar produccion">
     </div>
 </form>
 {% for m in mensajes %}
@@ -28,6 +56,7 @@
 </div>
 
 {% endfor %}
+
 <table class="table">
     <thead class="thead-light">
         <tr>
@@ -52,4 +81,22 @@
 </table>
 
 
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<script src="{{ url_for('static', filename='assets/js/socket.io.js') }}" type="text/javascript"></script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on('connect', function () {
+        console.log('Conectado al servidor');
+        console.log('http://' + document.domain + ':' + location.port);
+    });
+        
+    socket.on('receive_message', function (message) {
+        window.location.reload();
+    });
+
+</script>
 {% endblock %}
