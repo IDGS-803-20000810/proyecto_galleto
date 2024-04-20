@@ -41,6 +41,9 @@ class MermaInventarioView(ModelView):
 
 class MermaProductoView(ModelView):
     list_template = "merma_prod.html"  # Override the default template
+    column_formatters = {
+        'cantidad': lambda view, context, model, name: f"{model.cantidad} Piezas"
+    }
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -142,6 +145,9 @@ class AdminRecetaView(ModelView):
         cantidad=dict(validators=[ NumberRange(min=1)]), 
         insumo=dict(validators=[not_null])
     )))]
+    column_formatters = {
+        'cantidad_producto': lambda view, context, model, name: f"{model.cantidad_producto} piezas"
+    }
     form_columns = ['nombre','descripcion','producto_receta','cantidad_producto']  
     form_args = dict(
         producto_receta=dict(validators=[not_null]), 
@@ -233,6 +239,9 @@ class Producto_InventarioView(ModelView):
     column_extra_row_actions = [  
         TemplateLinkRowAction("acciones_extra.mermar", "Reportar merma"),
     ]
+    column_formatters = {
+        'cantidad': lambda view, context, model, name: f"{model.cantidad} piezas"
+    }
     can_create = False
     can_edit = False
     can_delete = False
