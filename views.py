@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_admin.model.template import macro
-from flask import render_template, request, redirect, session, flash
+from flask import render_template, request, redirect, session, flash, url_for, jsonify
 from models import Detalle_Venta,User, Ingredientes_Receta, Insumo, Insumo_Inventario, Insumos_Produccion, Merma_Producto, Orden, Presentacion, Produccion, Producto, Producto_Inventario, Producto_Inventario_Detalle, Proveedor, Receta, Medida, Venta
 from models import db, Roles
 from wtforms.validators import Length
@@ -15,6 +15,7 @@ from flask_admin.model.template import TemplateLinkRowAction
 from customValidators import  not_null, phonelenght
 from flask_admin.model.template import EndpointLinkRowAction
 from flask_admin.actions import action
+from sqlalchemy import text
 
 class MermaInventarioView(ModelView):
     def is_accessible(self):
@@ -39,6 +40,7 @@ class MermaInventarioView(ModelView):
                 db.session.commit()
 
 class MermaProductoView(ModelView):
+    list_template = "merma_prod.html"  # Override the default template
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -50,6 +52,22 @@ class MermaProductoView(ModelView):
     can_create = False
     can_edit = False
     can_delete = False
+    @expose('/showMostMerma/', methods=('GET',))
+    def showMostMerma(self):
+        query = text("""
+           SELECT p.nombre, sum(mp.cantidad) as cantidad FROM merma_producto mp left join producto p on mp.producto_id= p.id group by p.nombre
+order by cantidad desc
+limit 1;
+        """)
+        result = db.session.execute(query).fetchone()
+
+        # Construir el JSON con el resultado obtenido
+        data = {
+            "producto": result[0],
+            "unidades": float(result[1])  # Convertir a float si es necesario
+        }
+
+        return jsonify(data)
 
 
 class Insumo_InventarioView(ModelView):
@@ -119,23 +137,64 @@ class VentaView(ModelView):
     can_create = False
     can_edit = False
     can_delete = False
+    list_template = "ventas_hist.html"  
+    @expose('/showBestMargin/', methods=('GET',))
+    def showBestMargin(self):
+        query = text("""
+           SELECT precios.producto,  precios.pPrecio - sum(precios.precioInsumo )  as ganacia
+FROM (SELECT p.nombre as producto, r.nombre, r.id as idReceta, insumo_receta.insumo_id,  p.precio as pPrecio,
+		sum(avgPrecios.cola * insumo_receta.cantidadInsumo) as precioInsumo  
+	FROM receta r LEFT JOIN producto p on p.id = r.producto_id
+			left join (SELECT receta_id, sum(cantidad)/re.cantidad_producto as cantidadInsumo, insumo_id
+						FROM ingredientes_receta ir 
+                        left join receta re on re.id = ir.receta_id  GROUP BY receta_id, insumo_id) insumo_receta 
+            on insumo_receta.receta_id = r.id
+            left join (SELECT AVG(dc.subtotal/(abst.cantidad_insumo*dc.cantidad)) cola, ii.insumo_id as insumo FROM insumo_inventario ii
+									left join detalle_compra dc
+                                    on dc.id = ii.detalle_id
+                                    left join abastecimiento abst
+                                    on abst.id = dc.abastecimiento_id
+                                    group by ii.insumo_id) as avgPrecios
+                                    on avgPrecios.insumo = insumo_receta.insumo_id
+                                    group by r.id,insumo_receta.insumo_id) as precios 
+                                    group by precios.idReceta 
+                                    order by ganacia desc
+                                    limit 1;
+        """)
+        result = db.session.execute(query).fetchone()
+
+        # Construir el JSON con el resultado obtenido
+        data = {
+            "producto": result[0],
+            "ganancia": float(result[1])  # Convertir a float si es necesario
+        }
+
+        return jsonify(data)
+    
+    @expose('/showBestSelling/', methods=('GET',))
+    def showBestSelling(self):
+        query = text("""
+           SELECT ventas.nombre, sum(ventas.cantidad) total from (SELECT p.nombre nombre, if(dv.presentacion_id is null,dv.cantidad,dv.cantidad*pres.cantidad_producto) cantidad
+FROM detalle_venta dv left join producto p on dv.producto_id= p.id left join presentacion pres on dv.presentacion_id=pres.id and dv.presentacion_id is not null) as ventas
+group by nombre 
+order by total desc
+limit 1;
+        """)
+        result = db.session.execute(query).fetchone()
+
+        # Construir el JSON con el resultado obtenido
+        data = {
+            "producto": result[0],
+            "unidades": float(result[1])  # Convertir a float si es necesario
+        }
+
+        return jsonify(data)
+    
     def is_accessible(self):
         if not login.current_user.is_authenticated:
             return False
         else:
             return login.current_user.role.nombre== "admin" or login.current_user.role.nombre== "cuck"
-    @action('most_selling', 'Most Selling', 'Are you sure you want to get the most selling product?')
-    def action_most_selling(self, ids):
-        flash("oli")
-        return redirect(url_for('.mostSelling'))
-
-    @expose("/mostSelling", methods=("GET",))
-    def mostSelling(self):
-        flash("Llamada a mostSelling")
-        # Aquí puedes calcular el producto más vendido y pasarlo al método flash
-        most_sold_product = "Producto más vendido"  # Reemplaza esto con la lógica para obtener el producto más vendido
-        flash(most_sold_product)
-        return super(VentaView, self).render()
     
 class Producto_InventarioView(ModelView):
     column_auto_select_related = True
