@@ -12,7 +12,7 @@ from wtforms.validators import DataRequired, NumberRange
 import flask_login as login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.model.template import TemplateLinkRowAction
-from customValidators import  not_null, phonelenght
+from customValidators import  EstatusModelView, not_null, phonelenght
 from flask_admin.model.template import EndpointLinkRowAction
 from flask_admin.actions import action
 
@@ -118,7 +118,8 @@ class Insumo_InventarioView(ModelView):
 
         return redirect('/admin/insumo_inventario/') 
 
-class AdminRecetaView(ModelView):
+class AdminRecetaView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_list = [ 'nombre','descripcion','producto_receta','cantidad_producto', 'ingredientes_receta']
     inline_models = [(Ingredientes_Receta, dict(form_columns=['id','cantidad','insumo'],                    
     form_args = dict(
@@ -218,7 +219,9 @@ class Producto_InventarioView(ModelView):
     
       
     
-class ProveedorView(ModelView):
+class ProveedorView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
+    
     column_auto_select_related = True
     form_columns = ['nombre','direccion', 'telefono']  # Campos a mostrar en el formulario de edición
     form_args = dict(
@@ -232,7 +235,8 @@ class ProveedorView(ModelView):
             else:
                 return login.current_user.role.nombre== "almacen" or login.current_user.role.nombre== "admin" 
     
-class ProductoView(ModelView):
+class ProductoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_auto_select_related = True
     column_formatters = {
         'peso': lambda view, context, model, name: f"{model.peso} gr",
@@ -245,7 +249,8 @@ class ProductoView(ModelView):
             else:
                 return login.current_user.role.nombre== "cuck" or login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas" 
 
-class PresentacionView(ModelView):
+class PresentacionView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -568,7 +573,21 @@ class CompraView(ModelView):
         proveedor=dict(validators=[not_null])
     )
 
-class MedidaView(ModelView):
+class MedidaView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
+    def action_delete(self, ids):
+        try:
+            for model_id in ids:
+                model = self.get_one(model_id)
+                if model:
+                    print("hola")
+                    model.estatus = False
+                    db.session.add(model)
+                    db.session.commit()
+        except Exception as e:
+            flash(str(e), 'error')
+        else:
+            flash('El estatus ha sido cambiado a falso para los registros seleccionados.', 'success')
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -588,7 +607,11 @@ class MedidaView(ModelView):
     form_columns = ['medida']  
     
     
-class AbastecimientoView(ModelView):
+class AbastecimientoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
+    column_formatters = {
+        'cantidad_insumo': lambda view, context, model, name: f"{model.cantidad_insumo} {model.insumo.medida.medida}"
+    }
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -621,7 +644,8 @@ class ProduccionView(ModelView):
     #    'cantidad_insumo': str(cantidad_insumo_formatter)  # Cambia 'Fecha de Caducidad' por la etiqueta que desees
     #}
     
-class InsumoView(ModelView):
+class InsumoView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     def is_accessible(self):
             if not login.current_user.is_authenticated:
                 return False
@@ -917,7 +941,9 @@ class VentaPrincipalView(BaseView):
 
         return self.render('venta_principal.html',detalle=session['detalle'],total=session['total'],presentaciones=presentaciones,productos=productos,detalleVentaForm=detalleVentaForm,mensaje=['Venta Completada'])
 
-class UserView(ModelView):
+
+class UserView(EstatusModelView):
+    column_exclude_list = ['estatus' ,]
     column_list = [ 'first_name', 'last_name', 'login','prevLogin', 'role']  
     column_auto_select_related = True
     form_columns = ['first_name','last_name', 'login', 'role', 'password']  
