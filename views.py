@@ -221,7 +221,7 @@ class RecetaView(BaseView):
                 return login.current_user.role.nombre== "admin"  or login.current_user.role.nombre== "ventas"   or login.current_user.role.nombre== "cuck" 
 
 class ProduccionesView(ModelView):
-    column_list = [ 'fecha_hora','user','receta','cantidad',"estatus_string"]
+    column_list = [ 'fecha_hora','user','receta','cantidad',"completado"]
     can_create = False
     can_edit = False
     can_delete = False

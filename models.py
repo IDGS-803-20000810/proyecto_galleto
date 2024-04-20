@@ -226,7 +226,7 @@ class Produccion(db.Model):
     def __str__(self):
         return str(self.fecha_hora)
     @property
-    def estatus_string(self):
+    def completado(self):
         if self.estatus==1:
             return "Completado"
         if self.estatus==2:
